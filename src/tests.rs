@@ -2,7 +2,7 @@
 macro_rules! assert_display {
     ($display:expr, $expected:literal) => {{
         use core::fmt::Write as _;
-        let mut vec = arrayvec::ArrayString::<20>::new();
+        let mut vec = arrayvec::ArrayString::<30>::new();
 
         write!(&mut vec, "{}", $display).unwrap();
 

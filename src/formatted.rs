@@ -49,7 +49,7 @@ impl<C: Display> Display for Formatted<C> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Color, WithFormat as _, assert_display};
+    use crate::{Color, ColorInAPlane, Plane, WithFormat as _, assert_display};
 
     use super::*;
 
@@ -81,28 +81,64 @@ mod tests {
     }
 
     #[test]
+    fn fg() {
+        let fmtd = Formatted::new("CONTENT");
+        assert_eq!(fmtd.get_color(Plane::Foreground), None);
+
+        let fmtd = fmtd.fg(Color::Red);
+        assert_display!(fmtd, "\x1b[31mCONTENT\x1b[0m");
+        assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::Red));
+    }
+
+    #[test]
+    fn bg() {
+        let fmtd = Formatted::new("CONTENT");
+        assert_eq!(fmtd.get_color(Plane::Background), None);
+
+        let fmtd = fmtd.bg(Color::Red);
+        assert_display!(fmtd, "\x1b[41mCONTENT\x1b[0m");
+        assert_eq!(fmtd.get_color(Plane::Background), Some(Color::Red));
+    }
+
+    #[test]
     fn color() {
         let fmtd = Formatted::new("CONTENT");
-        assert_eq!(fmtd.get_color(), None);
+        assert_eq!(fmtd.get_color(Plane::Foreground), None);
+        assert_eq!(fmtd.get_color(Plane::Background), None);
 
-        let fmtd = fmtd.color(Color::Red);
-        assert_display!(fmtd, "\x1b[31mCONTENT\x1b[0m");
-        assert_eq!(fmtd.get_color(), Some(Color::Red));
+        let fmtd = fmtd.fg(Color::Red).bg(Color::Green);
+        assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::Red));
+        assert_eq!(fmtd.get_color(Plane::Background), Some(Color::Green));
 
-        let fmtd = fmtd.no_color();
-        assert_eq!(fmtd.get_color(), None);
+        let fmtd = fmtd
+            .color(ColorInAPlane::new(Color::Yellow, Plane::Foreground))
+            .color(ColorInAPlane::new(Color::Blue, Plane::Background));
+        assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::Yellow));
+        assert_eq!(fmtd.get_color(Plane::Background), Some(Color::Blue));
 
-        let fmtd = fmtd.with_color(Some(Color::Red));
-        assert_eq!(fmtd.get_color(), Some(Color::Red));
+        let fmtd = fmtd
+            .with_color(Some(Color::Magenta), Plane::Foreground)
+            .with_color(None, Plane::Background);
+        assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::Magenta));
+        assert_eq!(fmtd.get_color(Plane::Background), None);
 
-        let fmtd = fmtd.with_color(None);
-        assert_eq!(fmtd.get_color(), None);
+        let fmtd = fmtd
+            .with_color(None, Plane::Foreground)
+            .with_color(Some(Color::Cyan), Plane::Background);
+        assert_eq!(fmtd.get_color(Plane::Foreground), None);
+        assert_eq!(fmtd.get_color(Plane::Background), Some(Color::Cyan));
     }
 
     #[test]
     fn combined() {
-        let fmtd = Formatted::new("CONTENT").bold().color(Color::Red);
-        assert_eq!(fmtd.get_format(), Format::new().bold().color(Color::Red));
-        assert_display!(fmtd, "\x1b[1;31mCONTENT\x1b[0m");
+        let fmtd = Formatted::new("CONTENT")
+            .bold()
+            .fg(Color::Red)
+            .bg(Color::Green);
+        assert_eq!(
+            fmtd.get_format(),
+            Format::new().bold().fg(Color::Red).bg(Color::Green)
+        );
+        assert_display!(fmtd, "\x1b[1;31;42mCONTENT\x1b[0m");
     }
 }
