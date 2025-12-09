@@ -1,26 +1,82 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
-use crate::{Color, ColorInAPlane, Formatted, Plane, private::PrivateWithFormat};
+use crate::{Color, ColorInAPlane, Formatted, Plane, flags::Flag, private::PrivateWithFormat};
 
 pub trait WithFormat: PrivateWithFormat {
     #[must_use]
     fn bold(self) -> Self {
-        self.set_bold(true)
+        self.flag(Flag::Bold)
     }
 
     #[must_use]
-    fn no_bold(self) -> Self {
-        self.set_bold(false)
+    fn faint(self) -> Self {
+        self.flag(Flag::Faint)
     }
 
     #[must_use]
-    fn set_bold(self, bold: bool) -> Self {
-        self.modify_format(|fmt| fmt.bold = bold)
+    fn italic(self) -> Self {
+        self.flag(Flag::Italic)
     }
 
     #[must_use]
-    fn is_bold(&self) -> bool {
-        self.get_format().bold
+    fn underline(self) -> Self {
+        self.flag(Flag::Underline)
+    }
+
+    #[must_use]
+    fn slow_blink(self) -> Self {
+        self.flag(Flag::SlowBlink)
+    }
+
+    #[must_use]
+    fn rapid_blink(self) -> Self {
+        self.flag(Flag::RapidBlink)
+    }
+
+    #[must_use]
+    fn reverse(self) -> Self {
+        self.flag(Flag::Reverse)
+    }
+
+    #[must_use]
+    fn conceal(self) -> Self {
+        self.flag(Flag::Conceal)
+    }
+
+    #[must_use]
+    fn crossed_out(self) -> Self {
+        self.flag(Flag::CrossedOut)
+    }
+
+    #[must_use]
+    fn double_underline(self) -> Self {
+        self.flag(Flag::DoubleUnderline)
+    }
+
+    #[must_use]
+    fn overline(self) -> Self {
+        self.flag(Flag::Overline)
+    }
+
+    #[must_use]
+    fn flag(self, flag: Flag) -> Self {
+        self.with_flag(flag, true)
+    }
+
+    #[must_use]
+    fn with_flag(self, flag: Flag, value: bool) -> Self {
+        self.modify_format(|fmt| {
+            if value {
+                fmt.flags |= 1 << flag as u8;
+            } else {
+                fmt.flags &= !(1 << flag as u8);
+            }
+        })
+    }
+
+    #[must_use]
+    fn get_flag(&self, flag: Flag) -> bool {
+        self.get_format().flags & (1 << flag as u8) != 0
     }
 
     #[must_use]
@@ -62,7 +118,7 @@ impl<T: PrivateWithFormat> WithFormat for T {}
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Format {
-    bold: bool,
+    flags: u16,
     fg: Option<Color>,
     bg: Option<Color>,
 }
@@ -104,8 +160,10 @@ impl Display for Format {
                         Ok(())
                     };
 
-                    if self.0.bold {
-                        write_code(1)?;
+                    for flag in enum_iterator::all::<Flag>() {
+                        if self.0.get_flag(flag) {
+                            write_code(flag.get_code())?;
+                        }
                     }
                     if let Some(color) = self.0.fg {
                         write_code(30 + color as u8)?;
@@ -118,6 +176,11 @@ impl Display for Format {
             }
             write_escape_sequence(f, Codes(*self))
         }
+    }
+}
+impl From<Flag> for Format {
+    fn from(flag: Flag) -> Self {
+        Format::new().flag(flag)
     }
 }
 impl From<ColorInAPlane> for Format {
@@ -137,23 +200,30 @@ mod tests {
     use super::*;
 
     #[test]
-    fn bold() {
+    fn flags() {
         let fmt = Format::new();
-        assert!(!fmt.is_bold());
 
-        let fmt = fmt.bold();
-        assert_display!(fmt, "\x1b[1m");
-        assert!(fmt.is_bold());
+        assert_display!(fmt, "\x1b[0m");
+        assert_display!(fmt.bold(), "\x1b[1m");
+        assert_display!(fmt.faint(), "\x1b[2m");
+        assert_display!(fmt.italic(), "\x1b[3m");
+        assert_display!(fmt.underline(), "\x1b[4m");
+        assert_display!(fmt.slow_blink(), "\x1b[5m");
+        assert_display!(fmt.rapid_blink(), "\x1b[6m");
+        assert_display!(fmt.reverse(), "\x1b[7m");
+        assert_display!(fmt.conceal(), "\x1b[8m");
+        assert_display!(fmt.crossed_out(), "\x1b[9m");
+        assert_display!(fmt.double_underline(), "\x1b[21m");
+        assert_display!(fmt.overline(), "\x1b[53m");
 
-        let fmt = fmt.no_bold();
-        assert!(!fmt.is_bold());
-        assert_eq!(fmt, Format::default());
-
-        let fmt = fmt.set_bold(true);
-        assert!(fmt.is_bold());
-
-        let fmt = fmt.set_bold(false);
-        assert!(!fmt.is_bold());
+        let bold_format = fmt.bold();
+        assert_eq!(bold_format.flag(Flag::Faint), fmt.bold().faint());
+        assert_eq!(bold_format.with_flag(Flag::Bold, false), fmt);
+        assert_eq!(bold_format.with_flag(Flag::Bold, true), fmt.bold());
+        assert_eq!(bold_format.with_flag(Flag::Faint, false), fmt.bold());
+        assert_eq!(bold_format.with_flag(Flag::Faint, true), fmt.bold().faint());
+        assert_eq!(bold_format.get_flag(Flag::Bold), true);
+        assert_eq!(bold_format.get_flag(Flag::Faint), false);
     }
 
     #[test]
@@ -207,8 +277,12 @@ mod tests {
 
     #[test]
     fn combined() {
-        let fmt = Format::new().bold().fg(Color::Red).bg(Color::Green);
-        assert_display!(fmt, "\x1b[1;31;42m");
+        let fmt = Format::new()
+            .bold()
+            .fg(Color::Red)
+            .underline()
+            .bg(Color::Green);
+        assert_display!(fmt, "\x1b[1;4;31;42m");
     }
 
     #[test]
@@ -222,6 +296,11 @@ mod tests {
     #[test]
     fn default() {
         assert_display!(Format::default(), "\x1b[0m");
+    }
+
+    #[test]
+    fn from_flag() {
+        assert_eq!(Format::from(Flag::Bold), Format::new().bold());
     }
 
     #[test]

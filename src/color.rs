@@ -123,7 +123,7 @@ mod tests {
         let fmtd = Color::Red.fg().applied_to("CONTENT");
 
         assert_eq!(fmtd.get_content(), &"CONTENT");
-        assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::Red));
+        assert_eq!(fmtd.get_format(), Format::new().fg(Color::Red));
     }
 
     #[test]

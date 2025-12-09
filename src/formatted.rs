@@ -67,7 +67,7 @@ impl<C: Display> Display for Formatted<C> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Color, ColorInAPlane, Plane, WithFormat as _, assert_display};
+    use crate::{Color, ColorInAPlane, Flag, Plane, WithFormat as _, assert_display};
 
     use super::*;
 
@@ -96,22 +96,32 @@ mod tests {
     }
 
     #[test]
-    fn bold() {
+    fn flags() {
         let fmtd = Formatted::new("CONTENT");
-        assert_eq!(fmtd.is_bold(), false);
 
-        let fmtd = fmtd.bold();
-        assert_display!(fmtd, "\x1b[1mCONTENT\x1b[0m");
-        assert_eq!(fmtd.is_bold(), true);
+        assert_display!(fmtd, "CONTENT");
+        assert_display!(fmtd.bold(), "\x1b[1mCONTENT\x1b[0m");
+        assert_display!(fmtd.faint(), "\x1b[2mCONTENT\x1b[0m");
+        assert_display!(fmtd.italic(), "\x1b[3mCONTENT\x1b[0m");
+        assert_display!(fmtd.underline(), "\x1b[4mCONTENT\x1b[0m");
+        assert_display!(fmtd.slow_blink(), "\x1b[5mCONTENT\x1b[0m");
+        assert_display!(fmtd.rapid_blink(), "\x1b[6mCONTENT\x1b[0m");
+        assert_display!(fmtd.reverse(), "\x1b[7mCONTENT\x1b[0m");
+        assert_display!(fmtd.conceal(), "\x1b[8mCONTENT\x1b[0m");
+        assert_display!(fmtd.crossed_out(), "\x1b[9mCONTENT\x1b[0m");
+        assert_display!(fmtd.double_underline(), "\x1b[21mCONTENT\x1b[0m");
+        assert_display!(fmtd.overline(), "\x1b[53mCONTENT\x1b[0m");
 
-        let fmtd = fmtd.no_bold();
-        assert_eq!(fmtd.is_bold(), false);
-
-        let fmtd = fmtd.set_bold(true);
-        assert_eq!(fmtd.is_bold(), true);
-
-        let fmtd = fmtd.set_bold(false);
-        assert_eq!(fmtd.is_bold(), false);
+        assert_eq!(fmtd.bold().flag(Flag::Faint), fmtd.bold().faint());
+        assert_eq!(fmtd.bold().with_flag(Flag::Bold, false), fmtd);
+        assert_eq!(fmtd.bold().with_flag(Flag::Bold, true), fmtd.bold());
+        assert_eq!(fmtd.bold().with_flag(Flag::Faint, false), fmtd.bold());
+        assert_eq!(
+            fmtd.bold().with_flag(Flag::Faint, true),
+            fmtd.bold().faint()
+        );
+        assert_eq!(fmtd.bold().get_flag(Flag::Bold), true);
+        assert_eq!(fmtd.bold().get_flag(Flag::Faint), false);
     }
 
     #[test]
@@ -168,11 +178,16 @@ mod tests {
         let fmtd = Formatted::new("CONTENT")
             .bold()
             .fg(Color::Red)
+            .underline()
             .bg(Color::Green);
         assert_eq!(
             fmtd.get_format(),
-            Format::new().bold().fg(Color::Red).bg(Color::Green)
+            Format::new()
+                .bold()
+                .fg(Color::Red)
+                .underline()
+                .bg(Color::Green)
         );
-        assert_display!(fmtd, "\x1b[1;31;42mCONTENT\x1b[0m");
+        assert_display!(fmtd, "\x1b[1;4;31;42mCONTENT\x1b[0m");
     }
 }
