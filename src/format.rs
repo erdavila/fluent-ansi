@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
-use crate::{Color, ColorInAPlane, Plane, private::PrivateWithFormat};
+use crate::{Color, ColorInAPlane, Formatted, Plane, private::PrivateWithFormat};
 
 pub trait WithFormat: PrivateWithFormat {
     #[must_use]
@@ -70,6 +70,11 @@ impl Format {
     #[must_use]
     pub fn new() -> Self {
         Format::default()
+    }
+
+    #[must_use]
+    pub fn applied_to<C: Display>(self, content: C) -> Formatted<C> {
+        Formatted::new(content).with_format(self)
     }
 }
 impl PrivateWithFormat for Format {
@@ -204,6 +209,14 @@ mod tests {
     fn combined() {
         let fmt = Format::new().bold().fg(Color::Red).bg(Color::Green);
         assert_display!(fmt, "\x1b[1;31;42m");
+    }
+
+    #[test]
+    fn applied_to() {
+        let fmtd = Format::new().bold().applied_to("CONTENT");
+
+        assert_eq!(fmtd.get_content(), &"CONTENT");
+        assert_eq!(fmtd.get_format(), Format::new().bold());
     }
 
     #[test]

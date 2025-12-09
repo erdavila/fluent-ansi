@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::Format;
+use crate::{Format, Formatted};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
@@ -47,6 +47,11 @@ impl ColorInAPlane {
     #[must_use]
     pub fn new(color: Color, plane: Plane) -> Self {
         Self { color, plane }
+    }
+
+    #[must_use]
+    pub fn applied_to<C: Display>(self, content: C) -> Formatted<C> {
+        self.to_format().applied_to(content)
     }
 
     #[must_use]
@@ -111,6 +116,14 @@ mod tests {
             cp.to_format(),
             Format::new().with_color(Some(Color::Red), Plane::Foreground)
         );
+    }
+
+    #[test]
+    fn color_in_a_plane_applied_to() {
+        let fmtd = Color::Red.fg().applied_to("CONTENT");
+
+        assert_eq!(fmtd.get_content(), &"CONTENT");
+        assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::Red));
     }
 
     #[test]
