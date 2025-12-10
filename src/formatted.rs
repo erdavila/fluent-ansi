@@ -22,8 +22,26 @@ impl<C: Display> Formatted<C> {
     }
 
     #[must_use]
+    pub fn with_content<C2: Display>(&self, content: C2) -> Formatted<C2> {
+        Formatted {
+            content,
+            format: self.format,
+        }
+    }
+
+    #[must_use]
+    pub fn into_content(self) -> C {
+        self.content
+    }
+
+    #[must_use]
     pub fn get_format(&self) -> Format {
         <Self as PrivateWithFormat>::get_format(self)
+    }
+
+    #[must_use]
+    pub fn with_format(self, format: Format) -> Formatted<C> {
+        Self { format, ..self }
     }
 }
 impl<C: Display> PrivateWithFormat for Formatted<C> {
@@ -54,10 +72,26 @@ mod tests {
     use super::*;
 
     #[test]
-    fn content() {
-        let fmtd = Formatted::new("CONTENT");
-
+    fn content_and_format() {
+        let fmtd = Formatted::new("CONTENT").bold();
         assert_eq!(fmtd.get_content(), &"CONTENT");
+        assert_eq!(fmtd.get_format(), Format::new().bold());
+
+        let fmtd = fmtd.bold().with_content("NEW CONTENT");
+        assert_eq!(fmtd.get_content(), &"NEW CONTENT");
+        assert_eq!(fmtd.get_format(), Format::new().bold());
+
+        let fmtd = fmtd.with_format(Format::new().fg(Color::Red));
+        assert_eq!(fmtd.get_content(), &"NEW CONTENT");
+        assert_eq!(fmtd.get_format(), Format::new().fg(Color::Red));
+
+        let content = fmtd.into_content();
+        assert_eq!(content, "NEW CONTENT");
+    }
+
+    #[test]
+    fn display_no_format() {
+        let fmtd = Formatted::new("CONTENT");
         assert_display!(fmtd, "CONTENT");
     }
 
