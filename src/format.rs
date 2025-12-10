@@ -145,7 +145,7 @@ impl PrivateWithFormat for Format {
 impl Display for Format {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         if *self == Format::new() {
-            write_escape_sequence(f, 0)
+            write!(f, "{Reset}")
         } else {
             struct Codes(Format);
             impl Display for Codes {
@@ -186,6 +186,15 @@ impl From<Flag> for Format {
 impl From<ColorInAPlane> for Format {
     fn from(color_in_a_plane: ColorInAPlane) -> Self {
         Format::new().color(color_in_a_plane)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+pub struct Reset;
+
+impl Display for Reset {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        write_escape_sequence(f, 0)
     }
 }
 
@@ -309,5 +318,10 @@ mod tests {
             Format::from(Color::Red.fg()),
             Format::new().color(Color::Red.fg())
         );
+    }
+
+    #[test]
+    fn reset() {
+        assert_display!(Reset, "\x1b[0m");
     }
 }
