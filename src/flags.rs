@@ -56,7 +56,7 @@ impl Display for Flag {
 
 #[cfg(test)]
 mod tests {
-    use crate::{WithFormat, assert_display};
+    use crate::{Add as _, assert_display};
 
     use super::*;
 

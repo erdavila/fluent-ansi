@@ -1,126 +1,16 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
-use crate::{Color, ColorInAPlane, Formatted, Plane, flags::Flag, private::PrivateWithFormat};
-
-pub trait WithFormat: PrivateWithFormat {
-    #[must_use]
-    fn bold(self) -> Self {
-        self.flag(Flag::Bold)
-    }
-
-    #[must_use]
-    fn faint(self) -> Self {
-        self.flag(Flag::Faint)
-    }
-
-    #[must_use]
-    fn italic(self) -> Self {
-        self.flag(Flag::Italic)
-    }
-
-    #[must_use]
-    fn underline(self) -> Self {
-        self.flag(Flag::Underline)
-    }
-
-    #[must_use]
-    fn slow_blink(self) -> Self {
-        self.flag(Flag::SlowBlink)
-    }
-
-    #[must_use]
-    fn rapid_blink(self) -> Self {
-        self.flag(Flag::RapidBlink)
-    }
-
-    #[must_use]
-    fn reverse(self) -> Self {
-        self.flag(Flag::Reverse)
-    }
-
-    #[must_use]
-    fn conceal(self) -> Self {
-        self.flag(Flag::Conceal)
-    }
-
-    #[must_use]
-    fn crossed_out(self) -> Self {
-        self.flag(Flag::CrossedOut)
-    }
-
-    #[must_use]
-    fn double_underline(self) -> Self {
-        self.flag(Flag::DoubleUnderline)
-    }
-
-    #[must_use]
-    fn overline(self) -> Self {
-        self.flag(Flag::Overline)
-    }
-
-    #[must_use]
-    fn flag(self, flag: Flag) -> Self {
-        self.with_flag(flag, true)
-    }
-
-    #[must_use]
-    fn with_flag(self, flag: Flag, value: bool) -> Self {
-        self.modify_format(|fmt| {
-            if value {
-                fmt.flags |= 1 << flag as u8;
-            } else {
-                fmt.flags &= !(1 << flag as u8);
-            }
-        })
-    }
-
-    #[must_use]
-    fn get_flag(&self, flag: Flag) -> bool {
-        self.get_format().flags & (1 << flag as u8) != 0
-    }
-
-    #[must_use]
-    fn fg(self, color: Color) -> Self {
-        self.color(color.fg())
-    }
-
-    #[must_use]
-    fn bg(self, color: Color) -> Self {
-        self.color(color.bg())
-    }
-
-    #[must_use]
-    fn color(self, color_in_a_plane: ColorInAPlane) -> Self {
-        self.with_color(
-            Some(color_in_a_plane.get_color()),
-            color_in_a_plane.get_plane(),
-        )
-    }
-
-    #[must_use]
-    fn with_color(self, color: Option<Color>, plane: Plane) -> Self {
-        self.modify_format(|fmt| match plane {
-            Plane::Foreground => fmt.fg = color,
-            Plane::Background => fmt.bg = color,
-        })
-    }
-
-    #[must_use]
-    fn get_color(self, plane: Plane) -> Option<Color> {
-        match plane {
-            Plane::Foreground => self.get_format().fg,
-            Plane::Background => self.get_format().bg,
-        }
-    }
-}
-// Automatically implement WithFormat for every type that implements PrivateWithFormat
-impl<T: PrivateWithFormat> WithFormat for T {}
+use crate::{
+    Add, Clear, Color, ColorInAPlane, Formatted, Plane,
+    flags::Flag,
+    private::{self, ModifyFormat as _},
+};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Format {
-    flags: u16,
-    fg: Option<Color>,
-    bg: Option<Color>,
+    pub(crate) flags: u16,
+    pub(crate) fg: Option<Color>,
+    pub(crate) bg: Option<Color>,
 }
 impl Format {
     #[must_use]
@@ -132,14 +22,54 @@ impl Format {
     pub fn applied_to<C: Display>(self, content: C) -> Formatted<C> {
         Formatted::new(content).with_format(self)
     }
-}
-impl PrivateWithFormat for Format {
-    fn get_format(&self) -> Format {
-        *self
+
+    pub(crate) fn set_flags_bit(&mut self, flag: Flag) {
+        self.flags |= 1 << flag as u8;
     }
 
-    fn with_format(self, format: Format) -> Self {
-        format
+    pub(crate) fn clear_flags_bit(&mut self, flag: Flag) {
+        self.flags &= !(1 << flag as u8);
+    }
+
+    pub(crate) fn get_flags_bit(self, flag: Flag) -> bool {
+        self.flags & (1 << flag as u8) != 0
+    }
+}
+impl Add for Format {}
+impl Clear for Format {
+    fn set_flag(self, flag: Flag, value: bool) -> Self {
+        self.modify_format(|mut fmt| {
+            if value {
+                fmt.set_flags_bit(flag);
+            } else {
+                fmt.clear_flags_bit(flag);
+            }
+            fmt
+        })
+    }
+
+    fn get_flag(&self, flag: Flag) -> bool {
+        self.get_flags_bit(flag)
+    }
+
+    fn set_color(mut self, plane: Plane, color: Option<Color>) -> Self {
+        match plane {
+            Plane::Foreground => self.fg = color,
+            Plane::Background => self.bg = color,
+        }
+        self
+    }
+
+    fn get_color(&self, plane: Plane) -> Option<Color> {
+        match plane {
+            Plane::Foreground => self.fg,
+            Plane::Background => self.bg,
+        }
+    }
+}
+impl private::ModifyFormat for Format {
+    fn modify_format(self, modify: impl Fn(Format) -> Format) -> Format {
+        modify(self)
     }
 }
 impl Display for Format {
@@ -227,10 +157,10 @@ mod tests {
 
         let bold_format = fmt.bold();
         assert_eq!(bold_format.flag(Flag::Faint), fmt.bold().faint());
-        assert_eq!(bold_format.with_flag(Flag::Bold, false), fmt);
-        assert_eq!(bold_format.with_flag(Flag::Bold, true), fmt.bold());
-        assert_eq!(bold_format.with_flag(Flag::Faint, false), fmt.bold());
-        assert_eq!(bold_format.with_flag(Flag::Faint, true), fmt.bold().faint());
+        assert_eq!(bold_format.set_flag(Flag::Bold, false), fmt);
+        assert_eq!(bold_format.set_flag(Flag::Bold, true), fmt.bold());
+        assert_eq!(bold_format.set_flag(Flag::Faint, false), fmt.bold());
+        assert_eq!(bold_format.set_flag(Flag::Faint, true), fmt.bold().faint());
         assert_eq!(bold_format.get_flag(Flag::Bold), true);
         assert_eq!(bold_format.get_flag(Flag::Faint), false);
     }
@@ -272,14 +202,14 @@ mod tests {
         assert_eq!(fmt.get_color(Plane::Background), Some(Color::Blue));
 
         let fmt = fmt
-            .with_color(Some(Color::Magenta), Plane::Foreground)
-            .with_color(None, Plane::Background);
+            .set_color(Plane::Foreground, Some(Color::Magenta))
+            .set_color(Plane::Background, None);
         assert_eq!(fmt.get_color(Plane::Foreground), Some(Color::Magenta));
         assert_eq!(fmt.get_color(Plane::Background), None);
 
         let fmt = fmt
-            .with_color(None, Plane::Foreground)
-            .with_color(Some(Color::Cyan), Plane::Background);
+            .set_color(Plane::Foreground, None)
+            .set_color(Plane::Background, Some(Color::Cyan));
         assert_eq!(fmt.get_color(Plane::Foreground), None);
         assert_eq!(fmt.get_color(Plane::Background), Some(Color::Cyan));
     }

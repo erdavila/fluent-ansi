@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Format, private::PrivateWithFormat};
+use crate::{Add, Clear, Color, Flag, Format, Plane, private};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Formatted<C: Display> {
@@ -36,7 +36,7 @@ impl<C: Display> Formatted<C> {
 
     #[must_use]
     pub fn get_format(&self) -> Format {
-        <Self as PrivateWithFormat>::get_format(self)
+        self.format
     }
 
     #[must_use]
@@ -44,13 +44,30 @@ impl<C: Display> Formatted<C> {
         Self { format, ..self }
     }
 }
-impl<C: Display> PrivateWithFormat for Formatted<C> {
-    fn get_format(&self) -> Format {
-        self.format
+impl<C: Display> Add for Formatted<C> {}
+impl<C: Display> Clear for Formatted<C> {
+    fn set_flag(mut self, flag: Flag, value: bool) -> Self {
+        self.format = self.format.set_flag(flag, value);
+        self
     }
 
-    fn with_format(self, format: Format) -> Self {
-        Self { format, ..self }
+    fn get_flag(&self, flag: Flag) -> bool {
+        self.format.get_flag(flag)
+    }
+
+    fn set_color(mut self, plane: Plane, color: Option<Color>) -> Self {
+        self.format = self.format.set_color(plane, color);
+        self
+    }
+
+    fn get_color(&self, plane: Plane) -> Option<Color> {
+        self.format.get_color(plane)
+    }
+}
+impl<C: Display> private::ModifyFormat for Formatted<C> {
+    fn modify_format(mut self, modify: impl Fn(Format) -> Format) -> Self {
+        self.format = modify(self.format);
+        self
     }
 }
 impl<C: Display> Display for Formatted<C> {
@@ -67,7 +84,7 @@ impl<C: Display> Display for Formatted<C> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Color, ColorInAPlane, Flag, Plane, WithFormat as _, assert_display};
+    use crate::{Color, ColorInAPlane, Flag, Plane, assert_display};
 
     use super::*;
 
@@ -113,13 +130,10 @@ mod tests {
         assert_display!(fmtd.overline(), "\x1b[53mCONTENT\x1b[0m");
 
         assert_eq!(fmtd.bold().flag(Flag::Faint), fmtd.bold().faint());
-        assert_eq!(fmtd.bold().with_flag(Flag::Bold, false), fmtd);
-        assert_eq!(fmtd.bold().with_flag(Flag::Bold, true), fmtd.bold());
-        assert_eq!(fmtd.bold().with_flag(Flag::Faint, false), fmtd.bold());
-        assert_eq!(
-            fmtd.bold().with_flag(Flag::Faint, true),
-            fmtd.bold().faint()
-        );
+        assert_eq!(fmtd.bold().set_flag(Flag::Bold, false), fmtd);
+        assert_eq!(fmtd.bold().set_flag(Flag::Bold, true), fmtd.bold());
+        assert_eq!(fmtd.bold().set_flag(Flag::Faint, false), fmtd.bold());
+        assert_eq!(fmtd.bold().set_flag(Flag::Faint, true), fmtd.bold().faint());
         assert_eq!(fmtd.bold().get_flag(Flag::Bold), true);
         assert_eq!(fmtd.bold().get_flag(Flag::Faint), false);
     }
@@ -161,14 +175,14 @@ mod tests {
         assert_eq!(fmtd.get_color(Plane::Background), Some(Color::Blue));
 
         let fmtd = fmtd
-            .with_color(Some(Color::Magenta), Plane::Foreground)
-            .with_color(None, Plane::Background);
+            .set_color(Plane::Foreground, Some(Color::Magenta))
+            .set_color(Plane::Background, None);
         assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::Magenta));
         assert_eq!(fmtd.get_color(Plane::Background), None);
 
         let fmtd = fmtd
-            .with_color(None, Plane::Foreground)
-            .with_color(Some(Color::Cyan), Plane::Background);
+            .set_color(Plane::Foreground, None)
+            .set_color(Plane::Background, Some(Color::Cyan));
         assert_eq!(fmtd.get_color(Plane::Foreground), None);
         assert_eq!(fmtd.get_color(Plane::Background), Some(Color::Cyan));
     }

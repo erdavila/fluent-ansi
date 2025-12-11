@@ -78,7 +78,7 @@ impl Display for ColorInAPlane {
 
 #[cfg(test)]
 mod tests {
-    use crate::{WithFormat as _, assert_display};
+    use crate::{Add as _, Clear as _, assert_display};
 
     use super::*;
 
@@ -114,7 +114,7 @@ mod tests {
         assert_eq!(cp.get_plane(), Plane::Foreground);
         assert_eq!(
             cp.to_format(),
-            Format::new().with_color(Some(Color::Red), Plane::Foreground)
+            Format::new().set_color(Plane::Foreground, Some(Color::Red))
         );
     }
 
