@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Format, FormatElement, FormatSet as _, Formatted, ToFormatSet};
+use crate::{Format, FormatElement, FormatSet as _, Formatted, Position, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
@@ -35,6 +35,30 @@ impl Color {
 pub enum Plane {
     Foreground,
     Background,
+}
+
+impl Position for Plane {
+    type Value = Option<Color>;
+
+    fn set_in_format(self, format: Format, value: Self::Value) -> Format {
+        match self {
+            Plane::Foreground => Format {
+                fg: value,
+                ..format
+            },
+            Plane::Background => Format {
+                bg: value,
+                ..format
+            },
+        }
+    }
+
+    fn get_from_format(self, format: &Format) -> Self::Value {
+        match self {
+            Plane::Foreground => format.fg,
+            Plane::Background => format.bg,
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

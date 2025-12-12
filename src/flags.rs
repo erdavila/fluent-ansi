@@ -2,7 +2,7 @@ use core::fmt::Display;
 
 use enum_iterator::Sequence;
 
-use crate::{Format, FormatElement, FormatSet, Formatted, ToFormatSet};
+use crate::{Format, FormatElement, FormatSet, Formatted, Position, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Flag {
@@ -46,11 +46,34 @@ impl Flag {
             Flag::Overline => 53,
         }
     }
+
+    #[must_use]
+    fn bit_mask(self) -> u16 {
+        let bit_index = self as u16;
+        1 << bit_index
+    }
 }
 
 impl FormatElement for Flag {
     fn add_to_format(self, format: Format) -> Format {
         format.set_flag(self, true)
+    }
+}
+
+impl Position for Flag {
+    type Value = bool;
+
+    fn set_in_format(self, format: Format, value: Self::Value) -> Format {
+        let flags = if value {
+            format.flags | self.bit_mask()
+        } else {
+            format.flags & !self.bit_mask()
+        };
+        Format { flags, ..format }
+    }
+
+    fn get_from_format(self, format: &Format) -> Self::Value {
+        format.flags & self.bit_mask() != 0
     }
 }
 
