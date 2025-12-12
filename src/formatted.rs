@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Add, Clear, Color, Flag, Format, FormatElement, Plane, private};
+use crate::{Clear, Color, Flag, Format, FormatElement, Plane, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Formatted<C: Display> {
@@ -44,12 +44,16 @@ impl<C: Display> Formatted<C> {
         Self { format, ..self }
     }
 }
-impl<C: Display> Add for Formatted<C> {
+impl<C: Display> ToFormatSet for Formatted<C> {
     type FormatSet = Self;
 
     fn add(self, element: impl FormatElement) -> Self::FormatSet {
         let format = self.format.add(element);
         self.with_format(format)
+    }
+
+    fn to_format_set(self) -> Self::FormatSet {
+        self
     }
 }
 impl<C: Display> Clear for Formatted<C> {
@@ -69,11 +73,6 @@ impl<C: Display> Clear for Formatted<C> {
 
     fn get_color(&self, plane: Plane) -> Option<Color> {
         self.format.get_color(plane)
-    }
-}
-impl<C: Display> private::ToFormatSet<Self> for Formatted<C> {
-    fn to_format_set(self) -> Self {
-        self
     }
 }
 impl<C: Display> Display for Formatted<C> {
@@ -216,5 +215,11 @@ mod tests {
                 .bg(Color::Green)
         );
         assert_display!(fmtd, "\x1b[1;4;31;42mCONTENT\x1b[0m");
+    }
+
+    #[test]
+    fn to_format_set() {
+        let fmtd = Formatted::new("CONTENT").bold().fg(Color::Red);
+        assert_eq!(fmtd.to_format_set(), fmtd);
     }
 }

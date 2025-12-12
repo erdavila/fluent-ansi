@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    Add, Clear, Color, ColorInAPlane, FormatElement, Formatted, Plane, flags::Flag, private,
+    Clear, Color, ColorInAPlane, FormatElement, Formatted, Plane, ToFormatSet, flags::Flag,
 };
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
@@ -33,11 +33,15 @@ impl Format {
         self.flags & (1 << flag as u8) != 0
     }
 }
-impl Add for Format {
+impl ToFormatSet for Format {
     type FormatSet = Self;
 
     fn add(self, element: impl FormatElement) -> Self::FormatSet {
         element.add_to_format(self)
+    }
+
+    fn to_format_set(self) -> Self::FormatSet {
+        self
     }
 }
 impl Clear for Format {
@@ -67,11 +71,6 @@ impl Clear for Format {
             Plane::Foreground => self.fg,
             Plane::Background => self.bg,
         }
-    }
-}
-impl private::ToFormatSet<Self> for Format {
-    fn to_format_set(self) -> Format {
-        self
     }
 }
 impl Display for Format {
@@ -244,6 +243,12 @@ mod tests {
     #[test]
     fn default() {
         assert_display!(Format::default(), "\x1b[0m");
+    }
+
+    #[test]
+    fn to_format_set() {
+        let fmt = Format::new().bold().fg(Color::Red);
+        assert_eq!(fmt.to_format_set(), fmt);
     }
 
     #[test]

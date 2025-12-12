@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Add, Clear as _, Format, FormatElement, Formatted, private};
+use crate::{Clear as _, Format, FormatElement, Formatted, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
@@ -76,12 +76,10 @@ impl FormatElement for ColorInAPlane {
     }
 }
 
-impl Add for ColorInAPlane {
+impl ToFormatSet for ColorInAPlane {
     type FormatSet = Format;
-}
 
-impl private::ToFormatSet<Format> for ColorInAPlane {
-    fn to_format_set(self) -> Format {
+    fn to_format_set(self) -> Self::FormatSet {
         Format::new().color(self)
     }
 }
@@ -94,7 +92,7 @@ impl Display for ColorInAPlane {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Add as _, Clear as _, Flag, assert_display};
+    use crate::{Clear as _, Flag, ToFormatSet as _, assert_display};
 
     use super::*;
 
@@ -128,6 +126,10 @@ mod tests {
 
         assert_eq!(cp.get_color(), Color::Red);
         assert_eq!(cp.get_plane(), Plane::Foreground);
+        assert_eq!(
+            cp.to_format_set(),
+            Format::new().set_color(Plane::Foreground, Some(Color::Red))
+        );
         assert_eq!(
             cp.to_format(),
             Format::new().set_color(Plane::Foreground, Some(Color::Red))

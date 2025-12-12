@@ -1,11 +1,11 @@
-use crate::{Clear, Color, ColorInAPlane, Flag, Format, private};
+use crate::{Clear, Color, ColorInAPlane, Flag, Format};
 
 pub trait FormatElement {
     #[must_use]
     fn add_to_format(self, format: Format) -> Format;
 }
 
-pub trait Add: private::ToFormatSet<Self::FormatSet> + Sized {
+pub trait ToFormatSet: Sized {
     type FormatSet: Clear;
 
     #[must_use]
@@ -87,4 +87,7 @@ pub trait Add: private::ToFormatSet<Self::FormatSet> + Sized {
     fn add(self, element: impl FormatElement) -> Self::FormatSet {
         self.to_format_set().add(element)
     }
+
+    #[must_use]
+    fn to_format_set(self) -> Self::FormatSet;
 }

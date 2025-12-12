@@ -2,7 +2,7 @@ use core::fmt::Display;
 
 use enum_iterator::Sequence;
 
-use crate::{Add, Clear, Format, FormatElement, Formatted, private};
+use crate::{Clear, Format, FormatElement, Formatted, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Flag {
@@ -54,12 +54,10 @@ impl FormatElement for Flag {
     }
 }
 
-impl Add for Flag {
+impl ToFormatSet for Flag {
     type FormatSet = Format;
-}
 
-impl private::ToFormatSet<Format> for Flag {
-    fn to_format_set(self) -> Format {
+    fn to_format_set(self) -> Self::FormatSet {
         Format::new().flag(self)
     }
 }
@@ -72,7 +70,7 @@ impl Display for Flag {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Add as _, Color, assert_display};
+    use crate::{Color, ToFormatSet as _, assert_display};
 
     use super::*;
 
@@ -112,6 +110,11 @@ mod tests {
     #[test]
     fn to_format() {
         assert_eq!(Flag::Bold.to_format(), Format::new().bold());
+    }
+
+    #[test]
+    fn to_format_set() {
+        assert_eq!(Flag::Bold.to_format_set(), Format::new().bold());
     }
 
     #[test]
