@@ -1,10 +1,6 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
-use crate::{
-    Add, Clear, Color, ColorInAPlane, Formatted, Plane,
-    flags::Flag,
-    private::{self, ModifyFormat as _},
-};
+use crate::{Add, Clear, Color, ColorInAPlane, Formatted, Plane, flags::Flag, private};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Format {
@@ -35,17 +31,17 @@ impl Format {
         self.flags & (1 << flag as u8) != 0
     }
 }
-impl Add for Format {}
+impl Add for Format {
+    type FormatSet = Self;
+}
 impl Clear for Format {
-    fn set_flag(self, flag: Flag, value: bool) -> Self {
-        self.modify_format(|mut fmt| {
-            if value {
-                fmt.set_flags_bit(flag);
-            } else {
-                fmt.clear_flags_bit(flag);
-            }
-            fmt
-        })
+    fn set_flag(mut self, flag: Flag, value: bool) -> Self {
+        if value {
+            self.set_flags_bit(flag);
+        } else {
+            self.clear_flags_bit(flag);
+        }
+        self
     }
 
     fn get_flag(&self, flag: Flag) -> bool {
@@ -67,9 +63,9 @@ impl Clear for Format {
         }
     }
 }
-impl private::ModifyFormat for Format {
-    fn modify_format(self, modify: impl Fn(Format) -> Format) -> Format {
-        modify(self)
+impl private::ToFormatSet<Self> for Format {
+    fn to_format_set(self) -> Format {
+        self
     }
 }
 impl Display for Format {

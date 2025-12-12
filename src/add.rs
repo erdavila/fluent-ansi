@@ -1,83 +1,83 @@
 use crate::{Clear, Color, ColorInAPlane, Flag, private};
 
-pub trait Add: private::ModifyFormat + Sized {
+pub trait Add: private::ToFormatSet<Self::FormatSet> + Sized {
+    type FormatSet: Clear;
+
     #[must_use]
-    fn bold(self) -> Self {
+    fn bold(self) -> Self::FormatSet {
         self.flag(Flag::Bold)
     }
 
     #[must_use]
-    fn faint(self) -> Self {
+    fn faint(self) -> Self::FormatSet {
         self.flag(Flag::Faint)
     }
 
     #[must_use]
-    fn italic(self) -> Self {
+    fn italic(self) -> Self::FormatSet {
         self.flag(Flag::Italic)
     }
 
     #[must_use]
-    fn underline(self) -> Self {
+    fn underline(self) -> Self::FormatSet {
         self.flag(Flag::Underline)
     }
 
     #[must_use]
-    fn slow_blink(self) -> Self {
+    fn slow_blink(self) -> Self::FormatSet {
         self.flag(Flag::SlowBlink)
     }
 
     #[must_use]
-    fn rapid_blink(self) -> Self {
+    fn rapid_blink(self) -> Self::FormatSet {
         self.flag(Flag::RapidBlink)
     }
 
     #[must_use]
-    fn reverse(self) -> Self {
+    fn reverse(self) -> Self::FormatSet {
         self.flag(Flag::Reverse)
     }
 
     #[must_use]
-    fn conceal(self) -> Self {
+    fn conceal(self) -> Self::FormatSet {
         self.flag(Flag::Conceal)
     }
 
     #[must_use]
-    fn crossed_out(self) -> Self {
+    fn crossed_out(self) -> Self::FormatSet {
         self.flag(Flag::CrossedOut)
     }
 
     #[must_use]
-    fn double_underline(self) -> Self {
+    fn double_underline(self) -> Self::FormatSet {
         self.flag(Flag::DoubleUnderline)
     }
 
     #[must_use]
-    fn overline(self) -> Self {
+    fn overline(self) -> Self::FormatSet {
         self.flag(Flag::Overline)
     }
 
     #[must_use]
-    fn flag(self, flag: Flag) -> Self {
-        self.modify_format(|fmt| fmt.set_flag(flag, true))
+    fn flag(self, flag: Flag) -> Self::FormatSet {
+        self.to_format_set().set_flag(flag, true)
     }
 
     #[must_use]
-    fn fg(self, color: Color) -> Self {
+    fn fg(self, color: Color) -> Self::FormatSet {
         self.color(color.fg())
     }
 
     #[must_use]
-    fn bg(self, color: Color) -> Self {
+    fn bg(self, color: Color) -> Self::FormatSet {
         self.color(color.bg())
     }
 
     #[must_use]
-    fn color(self, color_in_a_plane: ColorInAPlane) -> Self {
-        self.modify_format(|fmt| {
-            fmt.set_color(
-                color_in_a_plane.get_plane(),
-                Some(color_in_a_plane.get_color()),
-            )
-        })
+    fn color(self, color_in_a_plane: ColorInAPlane) -> Self::FormatSet {
+        self.to_format_set().set_color(
+            color_in_a_plane.get_plane(),
+            Some(color_in_a_plane.get_color()),
+        )
     }
 }

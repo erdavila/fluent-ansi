@@ -44,7 +44,9 @@ impl<C: Display> Formatted<C> {
         Self { format, ..self }
     }
 }
-impl<C: Display> Add for Formatted<C> {}
+impl<C: Display> Add for Formatted<C> {
+    type FormatSet = Self;
+}
 impl<C: Display> Clear for Formatted<C> {
     fn set_flag(mut self, flag: Flag, value: bool) -> Self {
         self.format = self.format.set_flag(flag, value);
@@ -64,9 +66,8 @@ impl<C: Display> Clear for Formatted<C> {
         self.format.get_color(plane)
     }
 }
-impl<C: Display> private::ModifyFormat for Formatted<C> {
-    fn modify_format(mut self, modify: impl Fn(Format) -> Format) -> Self {
-        self.format = modify(self.format);
+impl<C: Display> private::ToFormatSet<Self> for Formatted<C> {
+    fn to_format_set(self) -> Self {
         self
     }
 }

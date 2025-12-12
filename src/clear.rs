@@ -1,6 +1,6 @@
 use crate::{Add, Color, Flag, Plane};
 
-pub trait Clear: Add {
+pub trait Clear: Add<FormatSet = Self> {
     #[must_use]
     fn set_flag(self, flag: Flag, value: bool) -> Self;
 

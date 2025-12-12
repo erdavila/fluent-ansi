@@ -2,7 +2,7 @@ use core::fmt::Display;
 
 use enum_iterator::Sequence;
 
-use crate::{Format, Formatted};
+use crate::{Add, Format, Formatted, private};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Flag {
@@ -48,6 +48,16 @@ impl Flag {
     }
 }
 
+impl Add for Flag {
+    type FormatSet = Format;
+}
+
+impl private::ToFormatSet<Format> for Flag {
+    fn to_format_set(self) -> Format {
+        Format::new().flag(self)
+    }
+}
+
 impl Display for Flag {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         self.to_format().fmt(f)
@@ -56,9 +66,29 @@ impl Display for Flag {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Add as _, assert_display};
+    use crate::{Add as _, Color, assert_display};
 
     use super::*;
+
+    #[test]
+    fn add_flag() {
+        let flag = Flag::Bold;
+
+        assert_eq!(flag.bold(), Format::new().bold());
+        assert_eq!(flag.italic(), Format::new().bold().italic());
+        assert_eq!(flag.flag(Flag::Italic), Format::new().bold().italic());
+    }
+
+    #[test]
+    fn add_color() {
+        let flag = Flag::Bold;
+
+        assert_eq!(flag.fg(Color::Green), Format::new().bold().fg(Color::Green));
+        assert_eq!(
+            flag.color(Color::Green.bg()),
+            Format::new().bold().bg(Color::Green)
+        );
+    }
 
     #[test]
     fn applied_to() {
