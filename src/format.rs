@@ -85,6 +85,11 @@ impl From<ColorInAPlane> for Format {
         Format::new().color(color_in_a_plane)
     }
 }
+impl PartialEq<Reset> for Format {
+    fn eq(&self, _other: &Reset) -> bool {
+        *self == Format::new()
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct Reset;
@@ -94,6 +99,13 @@ impl Display for Reset {
         write_escape_sequence(f, 0)
     }
 }
+
+impl PartialEq<Format> for Reset {
+    fn eq(&self, other: &Format) -> bool {
+        *other == Format::new()
+    }
+}
+
 
 fn write_escape_sequence(f: &mut impl Write, codes: impl Display) -> Result {
     write!(f, "\x1b[{codes}m")
@@ -261,5 +273,14 @@ mod tests {
     #[test]
     fn reset() {
         assert_display!(Reset, "\x1b[0m");
+    }
+
+    #[test]
+    fn reset_eq() {
+        assert_eq!(Reset, Reset);
+        assert_eq!(Reset, Format::new());
+        assert_ne!(Reset, Format::new().bold());
+        assert_eq!(Format::new(), Reset);
+        assert_ne!(Format::new().bold(), Reset);
     }
 }
