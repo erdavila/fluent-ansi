@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Clear, Color, Flag, Format, FormatElement, Plane, ToFormatSet};
+use crate::{Color, Flag, Format, FormatElement, FormatSet, Plane, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Formatted<C: Display> {
@@ -56,7 +56,7 @@ impl<C: Display> ToFormatSet for Formatted<C> {
         self
     }
 }
-impl<C: Display> Clear for Formatted<C> {
+impl<C: Display> FormatSet for Formatted<C> {
     fn set_flag(mut self, flag: Flag, value: bool) -> Self {
         self.format = self.format.set_flag(flag, value);
         self

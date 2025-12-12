@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    Clear, Color, ColorInAPlane, FormatElement, Formatted, Plane, ToFormatSet, flags::Flag,
+    Color, ColorInAPlane, FormatElement, FormatSet, Formatted, Plane, ToFormatSet, flags::Flag,
 };
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
@@ -44,7 +44,7 @@ impl ToFormatSet for Format {
         self
     }
 }
-impl Clear for Format {
+impl FormatSet for Format {
     fn set_flag(mut self, flag: Flag, value: bool) -> Self {
         if value {
             self.set_flags_bit(flag);

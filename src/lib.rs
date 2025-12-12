@@ -1,12 +1,12 @@
 #![no_std]
 #![warn(clippy::pedantic)]
 
-pub use crate::{clear::*, color::*, flags::*, format::*, formatted::*, to_format_set::*};
+pub use crate::{color::*, flags::*, format::*, format_set::*, formatted::*, to_format_set::*};
 
-mod clear;
 mod color;
 mod flags;
 mod format;
+mod format_set;
 mod formatted;
 mod to_format_set;
 

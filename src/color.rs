@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Clear as _, Format, FormatElement, Formatted, ToFormatSet};
+use crate::{Format, FormatElement, FormatSet as _, Formatted, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
@@ -92,7 +92,7 @@ impl Display for ColorInAPlane {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Clear as _, Flag, ToFormatSet as _, assert_display};
+    use crate::{Flag, FormatSet as _, ToFormatSet as _, assert_display};
 
     use super::*;
 

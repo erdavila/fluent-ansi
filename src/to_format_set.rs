@@ -1,4 +1,4 @@
-use crate::{Clear, Color, ColorInAPlane, Flag, Format};
+use crate::{Color, ColorInAPlane, Flag, Format, FormatSet};
 
 pub trait FormatElement {
     #[must_use]
@@ -6,7 +6,7 @@ pub trait FormatElement {
 }
 
 pub trait ToFormatSet: Sized {
-    type FormatSet: Clear;
+    type FormatSet: FormatSet;
 
     #[must_use]
     fn bold(self) -> Self::FormatSet {

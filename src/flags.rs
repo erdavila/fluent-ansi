@@ -2,7 +2,7 @@ use core::fmt::Display;
 
 use enum_iterator::Sequence;
 
-use crate::{Clear, Format, FormatElement, Formatted, ToFormatSet};
+use crate::{Format, FormatElement, FormatSet, Formatted, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Flag {
