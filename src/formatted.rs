@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Add, Clear, Color, Flag, Format, Plane, private};
+use crate::{Add, Clear, Color, Flag, Format, FormatElement, Plane, private};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Formatted<C: Display> {
@@ -46,6 +46,11 @@ impl<C: Display> Formatted<C> {
 }
 impl<C: Display> Add for Formatted<C> {
     type FormatSet = Self;
+
+    fn add(self, element: impl FormatElement) -> Self::FormatSet {
+        let format = self.format.add(element);
+        self.with_format(format)
+    }
 }
 impl<C: Display> Clear for Formatted<C> {
     fn set_flag(mut self, flag: Flag, value: bool) -> Self {
@@ -114,7 +119,7 @@ mod tests {
     }
 
     #[test]
-    fn flags() {
+    fn add_flag() {
         let fmtd = Formatted::new("CONTENT");
 
         assert_display!(fmtd, "CONTENT");
@@ -131,6 +136,7 @@ mod tests {
         assert_display!(fmtd.overline(), "\x1b[53mCONTENT\x1b[0m");
 
         assert_eq!(fmtd.bold().flag(Flag::Faint), fmtd.bold().faint());
+        assert_eq!(fmtd.bold().add(Flag::Faint), fmtd.bold().faint());
         assert_eq!(fmtd.bold().set_flag(Flag::Bold, false), fmtd);
         assert_eq!(fmtd.bold().set_flag(Flag::Bold, true), fmtd.bold());
         assert_eq!(fmtd.bold().set_flag(Flag::Faint, false), fmtd.bold());
@@ -160,12 +166,12 @@ mod tests {
     }
 
     #[test]
-    fn color() {
-        let fmtd = Formatted::new("CONTENT");
-        assert_eq!(fmtd.get_color(Plane::Foreground), None);
-        assert_eq!(fmtd.get_color(Plane::Background), None);
+    fn add_color() {
+        let fmtd_base = Formatted::new("CONTENT");
+        assert_eq!(fmtd_base.get_color(Plane::Foreground), None);
+        assert_eq!(fmtd_base.get_color(Plane::Background), None);
 
-        let fmtd = fmtd.fg(Color::Red).bg(Color::Green);
+        let fmtd = fmtd_base.fg(Color::Red).bg(Color::Green);
         assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::Red));
         assert_eq!(fmtd.get_color(Plane::Background), Some(Color::Green));
 
@@ -174,6 +180,12 @@ mod tests {
             .color(ColorInAPlane::new(Color::Blue, Plane::Background));
         assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::Yellow));
         assert_eq!(fmtd.get_color(Plane::Background), Some(Color::Blue));
+
+        let fmtd = fmtd
+            .add(ColorInAPlane::new(Color::White, Plane::Foreground))
+            .add(ColorInAPlane::new(Color::Black, Plane::Background));
+        assert_eq!(fmtd.get_color(Plane::Foreground), Some(Color::White));
+        assert_eq!(fmtd.get_color(Plane::Background), Some(Color::Black));
 
         let fmtd = fmtd
             .set_color(Plane::Foreground, Some(Color::Magenta))

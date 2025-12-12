@@ -1,6 +1,8 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
-use crate::{Add, Clear, Color, ColorInAPlane, Formatted, Plane, flags::Flag, private};
+use crate::{
+    Add, Clear, Color, ColorInAPlane, FormatElement, Formatted, Plane, flags::Flag, private,
+};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Format {
@@ -33,6 +35,10 @@ impl Format {
 }
 impl Add for Format {
     type FormatSet = Self;
+
+    fn add(self, element: impl FormatElement) -> Self::FormatSet {
+        element.add_to_format(self)
+    }
 }
 impl Clear for Format {
     fn set_flag(mut self, flag: Flag, value: bool) -> Self {
@@ -135,7 +141,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn flags() {
+    fn add_flag() {
         let fmt = Format::new();
 
         assert_display!(fmt, "\x1b[0m");
@@ -153,6 +159,7 @@ mod tests {
 
         let bold_format = fmt.bold();
         assert_eq!(bold_format.flag(Flag::Faint), fmt.bold().faint());
+        assert_eq!(bold_format.add(Flag::Faint), fmt.bold().faint());
         assert_eq!(bold_format.set_flag(Flag::Bold, false), fmt);
         assert_eq!(bold_format.set_flag(Flag::Bold, true), fmt.bold());
         assert_eq!(bold_format.set_flag(Flag::Faint, false), fmt.bold());
@@ -182,7 +189,7 @@ mod tests {
     }
 
     #[test]
-    fn color() {
+    fn add_color() {
         let fmt = Format::new();
         assert_eq!(fmt.get_color(Plane::Foreground), None);
         assert_eq!(fmt.get_color(Plane::Background), None);
@@ -196,6 +203,12 @@ mod tests {
             .color(ColorInAPlane::new(Color::Blue, Plane::Background));
         assert_eq!(fmt.get_color(Plane::Foreground), Some(Color::Yellow));
         assert_eq!(fmt.get_color(Plane::Background), Some(Color::Blue));
+
+        let fmt = fmt
+            .add(ColorInAPlane::new(Color::White, Plane::Foreground))
+            .add(ColorInAPlane::new(Color::Black, Plane::Background));
+        assert_eq!(fmt.get_color(Plane::Foreground), Some(Color::White));
+        assert_eq!(fmt.get_color(Plane::Background), Some(Color::Black));
 
         let fmt = fmt
             .set_color(Plane::Foreground, Some(Color::Magenta))

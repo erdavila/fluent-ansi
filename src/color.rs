@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Add, Format, Formatted, private};
+use crate::{Add, Clear as _, Format, FormatElement, Formatted, private};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
@@ -70,6 +70,12 @@ impl ColorInAPlane {
     }
 }
 
+impl FormatElement for ColorInAPlane {
+    fn add_to_format(self, format: Format) -> Format {
+        format.set_color(self.plane, Some(self.color))
+    }
+}
+
 impl Add for ColorInAPlane {
     type FormatSet = Format;
 }
@@ -88,7 +94,7 @@ impl Display for ColorInAPlane {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Add as _, Clear as _, assert_display};
+    use crate::{Add as _, Clear as _, Flag, assert_display};
 
     use super::*;
 
@@ -134,7 +140,11 @@ mod tests {
 
         assert_eq!(color_in_a_plane.bold(), Format::new().fg(Color::Red).bold());
         assert_eq!(
-            color_in_a_plane.flag(crate::Flag::Bold),
+            color_in_a_plane.flag(Flag::Bold),
+            Format::new().fg(Color::Red).bold()
+        );
+        assert_eq!(
+            color_in_a_plane.add(Flag::Bold),
             Format::new().fg(Color::Red).bold()
         );
     }
@@ -153,6 +163,10 @@ mod tests {
         );
         assert_eq!(
             color_in_a_plane.color(Color::Green.bg()),
+            Format::new().fg(Color::Red).bg(Color::Green)
+        );
+        assert_eq!(
+            color_in_a_plane.add(Color::Green.bg()),
             Format::new().fg(Color::Red).bg(Color::Green)
         );
     }

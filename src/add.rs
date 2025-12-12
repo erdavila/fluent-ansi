@@ -1,4 +1,9 @@
-use crate::{Clear, Color, ColorInAPlane, Flag, private};
+use crate::{Clear, Color, ColorInAPlane, Flag, Format, private};
+
+pub trait FormatElement {
+    #[must_use]
+    fn add_to_format(self, format: Format) -> Format;
+}
 
 pub trait Add: private::ToFormatSet<Self::FormatSet> + Sized {
     type FormatSet: Clear;
@@ -60,7 +65,7 @@ pub trait Add: private::ToFormatSet<Self::FormatSet> + Sized {
 
     #[must_use]
     fn flag(self, flag: Flag) -> Self::FormatSet {
-        self.to_format_set().set_flag(flag, true)
+        self.add(flag)
     }
 
     #[must_use]
@@ -75,9 +80,11 @@ pub trait Add: private::ToFormatSet<Self::FormatSet> + Sized {
 
     #[must_use]
     fn color(self, color_in_a_plane: ColorInAPlane) -> Self::FormatSet {
-        self.to_format_set().set_color(
-            color_in_a_plane.get_plane(),
-            Some(color_in_a_plane.get_color()),
-        )
+        self.add(color_in_a_plane)
+    }
+
+    #[must_use]
+    fn add(self, element: impl FormatElement) -> Self::FormatSet {
+        self.to_format_set().add(element)
     }
 }
