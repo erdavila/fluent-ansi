@@ -2,7 +2,7 @@ use core::fmt::Display;
 
 use enum_iterator::Sequence;
 
-use crate::{Format, FormatElement, FormatSet, Formatted, Position, ToFormatSet};
+use crate::{Format, FormatElement, FormatSet, Formatted, Position, ToFormat, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Flag {
@@ -23,11 +23,6 @@ impl Flag {
     #[must_use]
     pub fn applied_to<C: Display>(self, content: C) -> Formatted<C> {
         self.to_format().applied_to(content)
-    }
-
-    #[must_use]
-    pub fn to_format(self) -> Format {
-        self.into()
     }
 
     #[must_use]
@@ -81,7 +76,13 @@ impl ToFormatSet for Flag {
     type FormatSet = Format;
 
     fn to_format_set(self) -> Self::FormatSet {
-        Format::new().flag(self)
+        self.to_format()
+    }
+}
+
+impl ToFormat for Flag {
+    fn to_format(self) -> Format {
+        self.into()
     }
 }
 

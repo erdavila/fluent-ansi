@@ -1,6 +1,8 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
-use crate::{Color, ColorInAPlane, Flag, FormatElement, FormatSet, Formatted, ToFormatSet};
+use crate::{
+    Color, ColorInAPlane, Flag, FormatElement, FormatSet, Formatted, ToFormat, ToFormatSet,
+};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Format {
@@ -8,6 +10,7 @@ pub struct Format {
     pub(crate) fg: Option<Color>,
     pub(crate) bg: Option<Color>,
 }
+
 impl Format {
     #[must_use]
     pub fn new() -> Self {
@@ -19,6 +22,7 @@ impl Format {
         Formatted::new(content).with_format(self)
     }
 }
+
 impl ToFormatSet for Format {
     type FormatSet = Self;
 
@@ -30,6 +34,13 @@ impl ToFormatSet for Format {
         self
     }
 }
+
+impl ToFormat for Format {
+    fn to_format(self) -> Format {
+        self
+    }
+}
+
 impl FormatSet for Format {
     fn set<P: crate::Position>(self, position: P, value: P::Value) -> Self {
         position.set_in_format(self, value)
@@ -39,6 +50,7 @@ impl FormatSet for Format {
         position.get_from_format(self)
     }
 }
+
 impl Display for Format {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         if *self == Format::new() {
@@ -85,9 +97,14 @@ impl From<ColorInAPlane> for Format {
         Format::new().color(color_in_a_plane)
     }
 }
+impl From<Reset> for Format {
+    fn from(_: Reset) -> Self {
+        Format::new()
+    }
+}
 impl PartialEq<Reset> for Format {
-    fn eq(&self, _other: &Reset) -> bool {
-        *self == Format::new()
+    fn eq(&self, other: &Reset) -> bool {
+        *self == other.to_format()
     }
 }
 
@@ -102,10 +119,15 @@ impl Display for Reset {
 
 impl PartialEq<Format> for Reset {
     fn eq(&self, other: &Format) -> bool {
-        *other == Format::new()
+        self.to_format() == *other
     }
 }
 
+impl ToFormat for Reset {
+    fn to_format(self) -> Format {
+        self.into()
+    }
+}
 
 fn write_escape_sequence(f: &mut impl Write, codes: impl Display) -> Result {
     write!(f, "\x1b[{codes}m")
@@ -258,6 +280,12 @@ mod tests {
     }
 
     #[test]
+    fn to_format() {
+        let fmt = Format::new().bold().fg(Color::Red);
+        assert_eq!(fmt.to_format(), fmt);
+    }
+
+    #[test]
     fn from_flag() {
         assert_eq!(Format::from(Flag::Bold), Format::new().bold());
     }
@@ -268,6 +296,11 @@ mod tests {
             Format::from(Color::Red.fg()),
             Format::new().color(Color::Red.fg())
         );
+    }
+
+    #[test]
+    fn from_reset() {
+        assert_eq!(Format::from(Reset), Format::new());
     }
 
     #[test]
@@ -282,5 +315,10 @@ mod tests {
         assert_ne!(Reset, Format::new().bold());
         assert_eq!(Format::new(), Reset);
         assert_ne!(Format::new().bold(), Reset);
+    }
+
+    #[test]
+    fn reset_to_format() {
+        assert_eq!(Reset.to_format(), Format::new());
     }
 }
