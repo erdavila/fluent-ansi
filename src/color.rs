@@ -1,9 +1,10 @@
 use core::fmt::Result;
 
-use crate::{BasicColor, CodeWriter, ColorInAPlane, EightBitColor, Plane};
+use crate::{BasicColor, CodeWriter, ColorInAPlane, EightBitColor, Plane, RGBColor};
 
 pub(crate) mod basic;
 pub(crate) mod eight_bit;
+pub(crate) mod rgb;
 
 pub trait ColorKind: Into<Color> {
     #[must_use]
@@ -35,6 +36,7 @@ pub(crate) trait WriteColorCodes: ColorKind {
 pub enum Color {
     Basic(BasicColor),
     EightBit(EightBitColor),
+    RGB(RGBColor),
 }
 
 impl ColorKind for Color {}
@@ -44,6 +46,7 @@ impl WriteColorCodes for Color {
         match self {
             Color::Basic(basic) => basic.write_color_codes(plane, writer),
             Color::EightBit(eight_bit) => eight_bit.write_color_codes(plane, writer),
+            Color::RGB(rgb) => rgb.write_color_codes(plane, writer),
         }
     }
 }
@@ -57,6 +60,12 @@ impl From<BasicColor> for Color {
 impl From<EightBitColor> for Color {
     fn from(eight_bit: EightBitColor) -> Self {
         Color::EightBit(eight_bit)
+    }
+}
+
+impl From<RGBColor> for Color {
+    fn from(rgb: RGBColor) -> Self {
+        Color::RGB(rgb)
     }
 }
 
@@ -94,6 +103,14 @@ mod tests {
         assert_eq!(
             Color::from(EightBitColor(7)),
             Color::EightBit(EightBitColor(7))
+        );
+    }
+
+    #[test]
+    fn from_rgb() {
+        assert_eq!(
+            Color::from(RGBColor::new(0, 128, 255)),
+            Color::RGB(RGBColor::new(0, 128, 255))
         );
     }
 }
