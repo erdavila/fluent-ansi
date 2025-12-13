@@ -1,31 +1,53 @@
-use crate::{ColorInAPlane, Plane};
+use core::fmt::Result;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Color {
-    Black,
-    Red,
-    Green,
-    Yellow,
-    Blue,
-    Magenta,
-    Cyan,
-    White,
-}
+use crate::{BasicColor, CodeWriter, ColorInAPlane, Plane};
 
-impl Color {
+pub(crate) mod basic;
+
+pub trait ColorKind: Into<Color> {
     #[must_use]
-    pub fn fg(self) -> ColorInAPlane {
+    fn in_fg(self) -> ColorInAPlane {
         self.in_plane(Plane::Foreground)
     }
 
     #[must_use]
-    pub fn bg(self) -> ColorInAPlane {
+    fn in_bg(self) -> ColorInAPlane {
         self.in_plane(Plane::Background)
     }
 
     #[must_use]
-    pub fn in_plane(self, plane: Plane) -> ColorInAPlane {
+    fn in_plane(self, plane: Plane) -> ColorInAPlane {
         ColorInAPlane::new(self, plane)
+    }
+
+    #[must_use]
+    fn to_color(self) -> Color {
+        self.into()
+    }
+}
+
+pub(crate) trait WriteColorCodes: ColorKind {
+    fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result;
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum Color {
+    Basic(BasicColor),
+}
+
+impl ColorKind for Color {}
+
+impl WriteColorCodes for Color {
+    fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
+        match self {
+            Color::Basic(basic) => basic.write_color_codes(plane, writer),
+        }
+    }
+}
+
+impl From<BasicColor> for Color {
+    fn from(basic: BasicColor) -> Self {
+        Color::Basic(basic)
     }
 }
 
@@ -34,26 +56,27 @@ mod tests {
     use super::*;
 
     #[test]
-    fn color_fg() {
+    fn in_fg() {
+        let color = Color::Basic(BasicColor::Red);
+        assert_eq!(color.in_fg(), ColorInAPlane::new(color, Plane::Foreground));
         assert_eq!(
-            Color::Red.fg(),
-            ColorInAPlane::new(Color::Red, Plane::Foreground)
-        );
-        assert_eq!(
-            Color::Red.in_plane(Plane::Foreground),
-            ColorInAPlane::new(Color::Red, Plane::Foreground)
+            color.in_plane(Plane::Foreground),
+            ColorInAPlane::new(color, Plane::Foreground)
         );
     }
 
     #[test]
-    fn color_bg() {
+    fn in_bg() {
+        let color = Color::Basic(BasicColor::Red);
+        assert_eq!(color.in_bg(), ColorInAPlane::new(color, Plane::Background));
         assert_eq!(
-            Color::Red.bg(),
-            ColorInAPlane::new(Color::Red, Plane::Background)
+            color.in_plane(Plane::Background),
+            ColorInAPlane::new(color, Plane::Background)
         );
-        assert_eq!(
-            Color::Red.in_plane(Plane::Background),
-            ColorInAPlane::new(Color::Red, Plane::Background)
-        );
+    }
+
+    #[test]
+    fn from_basic_color() {
+        assert_eq!(Color::from(BasicColor::Red), Color::Basic(BasicColor::Red));
     }
 }

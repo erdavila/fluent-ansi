@@ -22,7 +22,8 @@ pub trait FormatSet: ToFormatSet<FormatSet = Self> {
     }
 
     #[must_use]
-    fn set_color(self, plane: Plane, color: Option<Color>) -> Self {
+    fn set_color(self, plane: Plane, color: Option<impl Into<Color>>) -> Self {
+        let color: Option<Color> = color.map(Into::into);
         self.set(plane, color)
     }
 

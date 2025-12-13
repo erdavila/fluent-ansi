@@ -91,7 +91,7 @@ impl Display for Flag {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Color, ToFormatSet as _, assert_display};
+    use crate::{BasicColor, ColorKind, ToFormatSet as _, assert_display};
 
     use super::*;
 
@@ -109,14 +109,17 @@ mod tests {
     fn add_color() {
         let flag = Flag::Bold;
 
-        assert_eq!(flag.fg(Color::Green), Format::new().bold().fg(Color::Green));
         assert_eq!(
-            flag.color(Color::Green.bg()),
-            Format::new().bold().bg(Color::Green)
+            flag.fg(BasicColor::Green),
+            Format::new().bold().fg(BasicColor::Green)
         );
         assert_eq!(
-            flag.add(Color::Green.bg()),
-            Format::new().bold().bg(Color::Green)
+            flag.color(BasicColor::Green.in_bg()),
+            Format::new().bold().bg(BasicColor::Green)
+        );
+        assert_eq!(
+            flag.add(BasicColor::Green.in_bg()),
+            Format::new().bold().bg(BasicColor::Green)
         );
     }
 

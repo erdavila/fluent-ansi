@@ -69,13 +69,13 @@ pub trait ToFormatSet: Sized {
     }
 
     #[must_use]
-    fn fg(self, color: Color) -> Self::FormatSet {
-        self.color(color.fg())
+    fn fg(self, color: impl Into<Color>) -> Self::FormatSet {
+        self.color(ColorInAPlane::new_in_fg(color))
     }
 
     #[must_use]
-    fn bg(self, color: Color) -> Self::FormatSet {
-        self.color(color.bg())
+    fn bg(self, color: impl Into<Color>) -> Self::FormatSet {
+        self.color(ColorInAPlane::new_in_bg(color))
     }
 
     #[must_use]
