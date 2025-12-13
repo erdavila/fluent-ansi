@@ -128,7 +128,7 @@ fn write_escape_sequence(f: &mut impl Write, codes: impl Display) -> Result {
 
 #[cfg(test)]
 mod tests {
-    use crate::{BasicColor, ColorKind, Plane, assert_display};
+    use crate::{BasicColor, ColorKind, Plane, SimpleColor, assert_display};
 
     use super::*;
 
@@ -177,7 +177,7 @@ mod tests {
         assert_display!(fmt, "\x1b[31m");
         assert_eq!(
             fmt.get_color(Plane::Foreground),
-            Some(Color::Basic(BasicColor::Red))
+            Some(Color::Simple(SimpleColor::new(BasicColor::Red)))
         );
     }
 
@@ -190,7 +190,7 @@ mod tests {
         assert_display!(fmt, "\x1b[41m");
         assert_eq!(
             fmt.get_color(Plane::Background),
-            Some(Color::Basic(BasicColor::Red))
+            Some(Color::Simple(SimpleColor::new(BasicColor::Red)))
         );
     }
 
@@ -203,11 +203,11 @@ mod tests {
         let fmt = Format::new().fg(BasicColor::Red).bg(BasicColor::Green);
         assert_eq!(
             fmt.get_color(Plane::Foreground),
-            Some(Color::Basic(BasicColor::Red))
+            Some(Color::Simple(SimpleColor::new(BasicColor::Red)))
         );
         assert_eq!(
             fmt.get_color(Plane::Background),
-            Some(Color::Basic(BasicColor::Green))
+            Some(Color::Simple(SimpleColor::new(BasicColor::Green)))
         );
 
         let fmt = Format::new()
@@ -215,11 +215,11 @@ mod tests {
             .color(ColorInAPlane::new(BasicColor::Blue, Plane::Background));
         assert_eq!(
             fmt.get_color(Plane::Foreground),
-            Some(Color::Basic(BasicColor::Yellow))
+            Some(Color::Simple(SimpleColor::new(BasicColor::Yellow)))
         );
         assert_eq!(
             fmt.get_color(Plane::Background),
-            Some(Color::Basic(BasicColor::Blue))
+            Some(Color::Simple(SimpleColor::new(BasicColor::Blue)))
         );
 
         let fmt = Format::new()
@@ -227,11 +227,11 @@ mod tests {
             .add(ColorInAPlane::new(BasicColor::Black, Plane::Background));
         assert_eq!(
             fmt.get_color(Plane::Foreground),
-            Some(Color::Basic(BasicColor::White))
+            Some(Color::Simple(SimpleColor::new(BasicColor::White)))
         );
         assert_eq!(
             fmt.get_color(Plane::Background),
-            Some(Color::Basic(BasicColor::Black))
+            Some(Color::Simple(SimpleColor::new(BasicColor::Black)))
         );
 
         let fmt = fmt
@@ -239,7 +239,7 @@ mod tests {
             .set_color(Plane::Background, None::<Color>);
         assert_eq!(
             fmt.get_color(Plane::Foreground),
-            Some(Color::Basic(BasicColor::Magenta))
+            Some(Color::Simple(SimpleColor::new(BasicColor::Magenta)))
         );
         assert_eq!(fmt.get_color(Plane::Background), None);
 
@@ -249,25 +249,25 @@ mod tests {
         assert_eq!(fmt.get_color(Plane::Foreground), None);
         assert_eq!(
             fmt.get_color(Plane::Background),
-            Some(Color::Basic(BasicColor::Cyan))
+            Some(Color::Simple(SimpleColor::new(BasicColor::Cyan)))
         );
 
         let fmt = fmt
-            .set(Plane::Foreground, Some(Color::Basic(BasicColor::Magenta)))
+            .set(Plane::Foreground, Some(BasicColor::Magenta.to_color()))
             .set(Plane::Background, None);
         assert_eq!(
             fmt.get(Plane::Foreground),
-            Some(Color::Basic(BasicColor::Magenta))
+            Some(BasicColor::Magenta.to_color())
         );
         assert_eq!(fmt.get(Plane::Background), None);
 
         let fmt = fmt
             .set(Plane::Foreground, None)
-            .set(Plane::Background, Some(Color::Basic(BasicColor::Cyan)));
+            .set(Plane::Background, Some(BasicColor::Cyan.to_color()));
         assert_eq!(fmt.get(Plane::Foreground), None);
         assert_eq!(
             fmt.get(Plane::Background),
-            Some(Color::Basic(BasicColor::Cyan))
+            Some(BasicColor::Cyan.to_color())
         );
 
         let fmt = fmt.unset(Plane::Background);

@@ -101,7 +101,8 @@ impl Position for Plane {
 #[cfg(test)]
 mod tests {
     use crate::{
-        BasicColor, ColorKind, EightBitColor, Flag, FormatSet as _, RGBColor, assert_display,
+        BasicColor, ColorKind, EightBitColor, Flag, FormatSet as _, RGBColor, SimpleColor,
+        assert_display,
     };
 
     use super::*;
@@ -110,7 +111,7 @@ mod tests {
     fn color_in_a_plane() {
         let cp = ColorInAPlane::new(BasicColor::Red, Plane::Foreground);
 
-        assert_eq!(cp.get_color(), Color::Basic(BasicColor::Red));
+        assert_eq!(cp.get_color(), BasicColor::Red.to_color());
         assert_eq!(cp.get_plane(), Plane::Foreground);
         assert_eq!(
             cp.to_format_set(),
@@ -200,6 +201,37 @@ mod tests {
         assert_display!(BasicColor::Magenta.in_bg(), "\x1b[45m");
         assert_display!(BasicColor::Cyan.in_bg(), "\x1b[46m");
         assert_display!(BasicColor::White.in_bg(), "\x1b[47m");
+
+        assert_display!(SimpleColor::new(BasicColor::Black).in_fg(), "\x1b[30m");
+        assert_display!(SimpleColor::new(BasicColor::Red).in_fg(), "\x1b[31m");
+        assert_display!(SimpleColor::new(BasicColor::White).in_fg(), "\x1b[37m");
+
+        assert_display!(SimpleColor::new(BasicColor::Black).in_bg(), "\x1b[40m");
+        assert_display!(SimpleColor::new(BasicColor::Red).in_bg(), "\x1b[41m");
+        assert_display!(SimpleColor::new(BasicColor::White).in_bg(), "\x1b[47m");
+
+        assert_display!(
+            SimpleColor::new_bright(BasicColor::Black).in_fg(),
+            "\x1b[90m"
+        );
+        assert_display!(SimpleColor::new_bright(BasicColor::Red).in_fg(), "\x1b[91m");
+        assert_display!(
+            SimpleColor::new_bright(BasicColor::White).in_fg(),
+            "\x1b[97m"
+        );
+
+        assert_display!(
+            SimpleColor::new_bright(BasicColor::Black).in_bg(),
+            "\x1b[100m"
+        );
+        assert_display!(
+            SimpleColor::new_bright(BasicColor::Red).in_bg(),
+            "\x1b[101m"
+        );
+        assert_display!(
+            SimpleColor::new_bright(BasicColor::White).in_bg(),
+            "\x1b[107m"
+        );
 
         assert_display!(EightBitColor(0).in_fg(), "\x1b[38;5;0m");
         assert_display!(EightBitColor(7).in_fg(), "\x1b[38;5;7m");

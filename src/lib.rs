@@ -4,7 +4,7 @@
 pub use crate::{
     applied_to::*,
     color::*,
-    color::{basic::*, eight_bit::*, rgb::*},
+    color::{eight_bit::*, rgb::*, simple::*},
     color_in_a_plane::*,
     flags::*,
     format::*,

@@ -1,10 +1,10 @@
 use core::fmt::Result;
 
-use crate::{BasicColor, CodeWriter, ColorInAPlane, EightBitColor, Plane, RGBColor};
+use crate::{BasicColor, CodeWriter, ColorInAPlane, EightBitColor, Plane, RGBColor, SimpleColor};
 
-pub(crate) mod basic;
 pub(crate) mod eight_bit;
 pub(crate) mod rgb;
+pub(crate) mod simple;
 
 pub trait ColorKind: Into<Color> {
     #[must_use]
@@ -34,7 +34,7 @@ pub(crate) trait WriteColorCodes: ColorKind {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
-    Basic(BasicColor),
+    Simple(SimpleColor),
     EightBit(EightBitColor),
     RGB(RGBColor),
 }
@@ -44,7 +44,7 @@ impl ColorKind for Color {}
 impl WriteColorCodes for Color {
     fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
         match self {
-            Color::Basic(basic) => basic.write_color_codes(plane, writer),
+            Color::Simple(simple) => simple.write_color_codes(plane, writer),
             Color::EightBit(eight_bit) => eight_bit.write_color_codes(plane, writer),
             Color::RGB(rgb) => rgb.write_color_codes(plane, writer),
         }
@@ -53,7 +53,13 @@ impl WriteColorCodes for Color {
 
 impl From<BasicColor> for Color {
     fn from(basic: BasicColor) -> Self {
-        Color::Basic(basic)
+        Color::Simple(basic.to_simple_color())
+    }
+}
+
+impl From<SimpleColor> for Color {
+    fn from(simple: SimpleColor) -> Self {
+        Color::Simple(simple)
     }
 }
 
@@ -75,7 +81,7 @@ mod tests {
 
     #[test]
     fn in_fg() {
-        let color = Color::Basic(BasicColor::Red);
+        let color = BasicColor::Red.to_color();
         assert_eq!(color.in_fg(), ColorInAPlane::new(color, Plane::Foreground));
         assert_eq!(
             color.in_plane(Plane::Foreground),
@@ -85,7 +91,7 @@ mod tests {
 
     #[test]
     fn in_bg() {
-        let color = Color::Basic(BasicColor::Red);
+        let color = BasicColor::Red.to_color();
         assert_eq!(color.in_bg(), ColorInAPlane::new(color, Plane::Background));
         assert_eq!(
             color.in_plane(Plane::Background),
@@ -95,7 +101,18 @@ mod tests {
 
     #[test]
     fn from_basic_color() {
-        assert_eq!(Color::from(BasicColor::Red), Color::Basic(BasicColor::Red));
+        assert_eq!(
+            Color::from(BasicColor::Red),
+            Color::Simple(SimpleColor::new(BasicColor::Red))
+        );
+    }
+
+    #[test]
+    fn from_simple_color() {
+        assert_eq!(
+            Color::from(SimpleColor::new(BasicColor::Red)),
+            Color::Simple(SimpleColor::new(BasicColor::Red))
+        );
     }
 
     #[test]
