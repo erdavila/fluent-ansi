@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    Color, ColorInAPlane, Flag, FormatElement, FormatSet, Formatted, ToFormat, ToFormatSet,
+    Color, ColorInAPlane, Flag, FormatElement, FormatSet, Formatted, Reset, ToFormat, ToFormatSet,
 };
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
@@ -54,7 +54,7 @@ impl FormatSet for Format {
 impl Display for Format {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         if *self == Format::new() {
-            write!(f, "{Reset}")
+            write_escape_sequence(f, 0)
         } else {
             struct Codes(Format);
             impl Display for Codes {
@@ -87,45 +87,28 @@ impl Display for Format {
         }
     }
 }
+
 impl From<Flag> for Format {
     fn from(flag: Flag) -> Self {
         Format::new().flag(flag)
     }
 }
+
 impl From<ColorInAPlane> for Format {
     fn from(color_in_a_plane: ColorInAPlane) -> Self {
         Format::new().color(color_in_a_plane)
     }
 }
+
 impl From<Reset> for Format {
     fn from(_: Reset) -> Self {
         Format::new()
     }
 }
+
 impl PartialEq<Reset> for Format {
     fn eq(&self, other: &Reset) -> bool {
         *self == other.to_format()
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
-pub struct Reset;
-
-impl Display for Reset {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write_escape_sequence(f, 0)
-    }
-}
-
-impl PartialEq<Format> for Reset {
-    fn eq(&self, other: &Format) -> bool {
-        self.to_format() == *other
-    }
-}
-
-impl ToFormat for Reset {
-    fn to_format(self) -> Format {
-        self.into()
     }
 }
 
@@ -196,7 +179,7 @@ mod tests {
     }
 
     #[test]
-    fn add_color() {
+    fn color() {
         let fmt = Format::new();
         assert_eq!(fmt.get_color(Plane::Foreground), None);
         assert_eq!(fmt.get_color(Plane::Background), None);
@@ -301,24 +284,5 @@ mod tests {
     #[test]
     fn from_reset() {
         assert_eq!(Format::from(Reset), Format::new());
-    }
-
-    #[test]
-    fn reset() {
-        assert_display!(Reset, "\x1b[0m");
-    }
-
-    #[test]
-    fn reset_eq() {
-        assert_eq!(Reset, Reset);
-        assert_eq!(Reset, Format::new());
-        assert_ne!(Reset, Format::new().bold());
-        assert_eq!(Format::new(), Reset);
-        assert_ne!(Format::new().bold(), Reset);
-    }
-
-    #[test]
-    fn reset_to_format() {
-        assert_eq!(Reset.to_format(), Format::new());
     }
 }
