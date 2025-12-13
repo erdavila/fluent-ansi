@@ -100,7 +100,7 @@ impl Position for Plane {
 
 #[cfg(test)]
 mod tests {
-    use crate::{BasicColor, ColorKind, Flag, FormatSet as _, assert_display};
+    use crate::{BasicColor, ColorKind, EightBitColor, Flag, FormatSet as _, assert_display};
 
     use super::*;
 
@@ -198,5 +198,13 @@ mod tests {
         assert_display!(BasicColor::Magenta.in_bg(), "\x1b[45m");
         assert_display!(BasicColor::Cyan.in_bg(), "\x1b[46m");
         assert_display!(BasicColor::White.in_bg(), "\x1b[47m");
+
+        assert_display!(EightBitColor(0).in_fg(), "\x1b[38;5;0m");
+        assert_display!(EightBitColor(7).in_fg(), "\x1b[38;5;7m");
+        assert_display!(EightBitColor(255).in_fg(), "\x1b[38;5;255m");
+
+        assert_display!(EightBitColor(0).in_bg(), "\x1b[48;5;0m");
+        assert_display!(EightBitColor(7).in_bg(), "\x1b[48;5;7m");
+        assert_display!(EightBitColor(255).in_bg(), "\x1b[48;5;255m");
     }
 }

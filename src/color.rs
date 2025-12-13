@@ -1,8 +1,9 @@
 use core::fmt::Result;
 
-use crate::{BasicColor, CodeWriter, ColorInAPlane, Plane};
+use crate::{BasicColor, CodeWriter, ColorInAPlane, EightBitColor, Plane};
 
 pub(crate) mod basic;
+pub(crate) mod eight_bit;
 
 pub trait ColorKind: Into<Color> {
     #[must_use]
@@ -33,6 +34,7 @@ pub(crate) trait WriteColorCodes: ColorKind {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
     Basic(BasicColor),
+    EightBit(EightBitColor),
 }
 
 impl ColorKind for Color {}
@@ -41,6 +43,7 @@ impl WriteColorCodes for Color {
     fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
         match self {
             Color::Basic(basic) => basic.write_color_codes(plane, writer),
+            Color::EightBit(eight_bit) => eight_bit.write_color_codes(plane, writer),
         }
     }
 }
@@ -48,6 +51,12 @@ impl WriteColorCodes for Color {
 impl From<BasicColor> for Color {
     fn from(basic: BasicColor) -> Self {
         Color::Basic(basic)
+    }
+}
+
+impl From<EightBitColor> for Color {
+    fn from(eight_bit: EightBitColor) -> Self {
+        Color::EightBit(eight_bit)
     }
 }
 
@@ -78,5 +87,13 @@ mod tests {
     #[test]
     fn from_basic_color() {
         assert_eq!(Color::from(BasicColor::Red), Color::Basic(BasicColor::Red));
+    }
+
+    #[test]
+    fn from_eight_bit_color() {
+        assert_eq!(
+            Color::from(EightBitColor(7)),
+            Color::EightBit(EightBitColor(7))
+        );
     }
 }
