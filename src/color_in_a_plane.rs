@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Color, Format, FormatElement, FormatSet as _, Formatted, Position, ToFormat, ToFormatSet,
+    AppliedTo, Color, Format, FormatElement, FormatSet as _, Position, ToFormat, ToFormatSet,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -14,11 +14,6 @@ impl ColorInAPlane {
     #[must_use]
     pub fn new(color: Color, plane: Plane) -> Self {
         Self { color, plane }
-    }
-
-    #[must_use]
-    pub fn applied_to<C: Display>(self, content: C) -> Formatted<C> {
-        self.to_format().applied_to(content)
     }
 
     #[must_use]
@@ -51,6 +46,8 @@ impl ToFormat for ColorInAPlane {
         self.into()
     }
 }
+
+impl AppliedTo for ColorInAPlane {}
 
 impl Display for ColorInAPlane {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {

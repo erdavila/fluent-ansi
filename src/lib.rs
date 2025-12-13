@@ -2,10 +2,11 @@
 #![warn(clippy::pedantic)]
 
 pub use crate::{
-    color::*, color_in_a_plane::*, flags::*, format::*, format_set::*, formatted::*, reset::*,
-    to_format::*, to_format_set::*,
+    applied_to::*, color::*, color_in_a_plane::*, flags::*, format::*, format_set::*, formatted::*,
+    reset::*, to_format::*, to_format_set::*,
 };
 
+mod applied_to;
 mod color;
 mod color_in_a_plane;
 mod flags;

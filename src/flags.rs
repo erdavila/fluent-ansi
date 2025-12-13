@@ -2,7 +2,7 @@ use core::fmt::Display;
 
 use enum_iterator::Sequence;
 
-use crate::{Format, FormatElement, FormatSet, Formatted, Position, ToFormat, ToFormatSet};
+use crate::{AppliedTo, Format, FormatElement, FormatSet, Position, ToFormat, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Flag {
@@ -20,11 +20,6 @@ pub enum Flag {
 }
 
 impl Flag {
-    #[must_use]
-    pub fn applied_to<C: Display>(self, content: C) -> Formatted<C> {
-        self.to_format().applied_to(content)
-    }
-
     #[must_use]
     pub(crate) fn get_code(self) -> u8 {
         match self {
@@ -85,6 +80,8 @@ impl ToFormat for Flag {
         self.into()
     }
 }
+
+impl AppliedTo for Flag {}
 
 impl Display for Flag {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {

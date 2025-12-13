@@ -1,7 +1,8 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    Color, ColorInAPlane, Flag, FormatElement, FormatSet, Formatted, Reset, ToFormat, ToFormatSet,
+    AppliedTo, Color, ColorInAPlane, Flag, FormatElement, FormatSet, Formatted, Reset, ToFormat,
+    ToFormatSet,
 };
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
@@ -15,11 +16,6 @@ impl Format {
     #[must_use]
     pub fn new() -> Self {
         Format::default()
-    }
-
-    #[must_use]
-    pub fn applied_to<C: Display>(self, content: C) -> Formatted<C> {
-        Formatted::new(content).with_format(self)
     }
 }
 
@@ -38,6 +34,12 @@ impl ToFormatSet for Format {
 impl ToFormat for Format {
     fn to_format(self) -> Format {
         self
+    }
+}
+
+impl AppliedTo for Format {
+    fn applied_to<C: Display>(self, content: C) -> Formatted<C> {
+        Formatted::new(content).with_format(self)
     }
 }
 
