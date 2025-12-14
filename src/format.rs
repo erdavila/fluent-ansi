@@ -1,8 +1,9 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, Color, ColorInAPlane, Flag, FormatElement, FormatSet, Formatted, Plane, Reset,
-    ToFormat, ToFormatSet, WriteColorCodes as _,
+    AppliedTo, ColorInAPlane, Flag, FormatElement, FormatSet, Formatted, Plane, Reset, ToFormat,
+    ToFormatSet,
+    color::{Color, WriteColorCodes as _},
 };
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
@@ -128,7 +129,10 @@ fn write_escape_sequence(f: &mut impl Write, codes: impl Display) -> Result {
 
 #[cfg(test)]
 mod tests {
-    use crate::{BasicColor, ColorKind, Plane, SimpleColor, assert_display};
+    use crate::{
+        Plane, assert_display,
+        color::{BasicColor, ColorKind as _, SimpleColor},
+    };
 
     use super::*;
 

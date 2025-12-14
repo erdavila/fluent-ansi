@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    AppliedTo, Color, Format, FormatElement, FormatSet as _, Position, ToFormat, ToFormatSet,
+    AppliedTo, Format, FormatElement, FormatSet as _, Position, ToFormat, ToFormatSet, color::Color,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -101,8 +101,8 @@ impl Position for Plane {
 #[cfg(test)]
 mod tests {
     use crate::{
-        BasicColor, ColorKind, EightBitColor, Flag, FormatSet as _, RGBColor, SimpleColor,
-        assert_display,
+        Flag, FormatSet as _, assert_display,
+        color::{BasicColor, ColorKind as _, EightBitColor, RGBColor, SimpleColor},
     };
 
     use super::*;

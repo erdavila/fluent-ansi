@@ -1,4 +1,4 @@
-use crate::{Color, Flag, Format, Plane, ToFormatSet};
+use crate::{Flag, Format, Plane, ToFormatSet, color::Color};
 
 pub trait Position {
     type Value: Default;

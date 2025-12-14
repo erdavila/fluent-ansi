@@ -91,7 +91,10 @@ impl Display for Flag {
 
 #[cfg(test)]
 mod tests {
-    use crate::{BasicColor, ColorKind, ToFormatSet as _, assert_display};
+    use crate::{
+        ToFormatSet as _, assert_display,
+        color::{BasicColor, ColorKind as _},
+    };
 
     use super::*;
 

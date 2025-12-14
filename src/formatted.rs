@@ -80,7 +80,10 @@ impl<C: Display> Display for Formatted<C> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{BasicColor, Color, ColorInAPlane, ColorKind, Flag, Plane, assert_display};
+    use crate::{
+        ColorInAPlane, Flag, Plane, assert_display,
+        color::{BasicColor, Color, ColorKind as _},
+    };
 
     use super::*;
 

@@ -1,10 +1,13 @@
 use core::fmt::Result;
 
-use crate::{BasicColor, CodeWriter, ColorInAPlane, EightBitColor, Plane, RGBColor, SimpleColor};
+use crate::{CodeWriter, ColorInAPlane, Plane};
+pub use eight_bit::*;
+pub use rgb::*;
+pub use simple::*;
 
-pub(crate) mod eight_bit;
-pub(crate) mod rgb;
-pub(crate) mod simple;
+mod eight_bit;
+mod rgb;
+mod simple;
 
 pub trait ColorKind: Into<Color> {
     #[must_use]

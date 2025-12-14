@@ -1,4 +1,4 @@
-use crate::{Color, ColorInAPlane, Flag, Format, FormatSet};
+use crate::{ColorInAPlane, Flag, Format, FormatSet, color::Color};
 
 pub trait FormatElement {
     #[must_use]

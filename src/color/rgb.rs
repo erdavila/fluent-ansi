@@ -1,6 +1,9 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, ColorKind, Plane, WriteColorCodes};
+use crate::{
+    CodeWriter, Plane,
+    color::{ColorKind, WriteColorCodes},
+};
 
 pub type RGB = RGBColor;
 
@@ -38,7 +41,7 @@ impl WriteColorCodes for RGBColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Color, ColorInAPlane, Plane};
+    use crate::{ColorInAPlane, Plane, color::Color};
 
     use super::*;
 
