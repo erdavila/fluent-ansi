@@ -2,10 +2,10 @@
 macro_rules! assert_display {
     ($display:expr, $expected:literal) => {{
         use core::fmt::Write as _;
-        let mut vec = arrayvec::ArrayString::<30>::new();
+        let mut s = String::new();
 
-        write!(&mut vec, "{}", $display).unwrap();
+        write!(&mut s, "{}", $display).unwrap();
 
-        assert_eq!(vec.as_str(), $expected);
+        assert_eq!(s.as_str(), $expected);
     }};
 }
