@@ -1,8 +1,8 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, ColorInAPlane, Flag, FormatElement, FormatSet, Formatted, Plane, Reset, ToFormat,
-    ToFormatSet,
+    AppliedTo, ColorInAPlane, Flag, FormatAttribute, FormatElement, FormatSet, Formatted, Plane,
+    Reset, ToFormat, ToFormatSet,
     color::{Color, WriteColorCodes as _},
 };
 
@@ -45,12 +45,12 @@ impl AppliedTo for Format {
 }
 
 impl FormatSet for Format {
-    fn set<P: crate::Position>(self, position: P, value: P::Value) -> Self {
-        position.set_in_format(self, value)
+    fn set<A: FormatAttribute>(self, attr: A, value: A::Value) -> Self {
+        attr.set_in_format(self, value)
     }
 
-    fn get<P: crate::Position>(&self, position: P) -> P::Value {
-        position.get_from_format(self)
+    fn get<A: FormatAttribute>(&self, attr: A) -> A::Value {
+        attr.get_from_format(self)
     }
 }
 

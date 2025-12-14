@@ -2,7 +2,7 @@ use core::fmt::Display;
 
 use enum_iterator::Sequence;
 
-use crate::{AppliedTo, Format, FormatElement, FormatSet, Position, ToFormat, ToFormatSet};
+use crate::{AppliedTo, Format, FormatAttribute, FormatElement, FormatSet, ToFormat, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Flag {
@@ -50,7 +50,7 @@ impl FormatElement for Flag {
     }
 }
 
-impl Position for Flag {
+impl FormatAttribute for Flag {
     type Value = bool;
 
     fn set_in_format(self, format: Format, value: Self::Value) -> Format {

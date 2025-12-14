@@ -1,6 +1,6 @@
 use crate::{Flag, Format, Plane, ToFormatSet, color::Color};
 
-pub trait Position {
+pub trait FormatAttribute {
     type Value: Default;
 
     #[must_use]
@@ -33,13 +33,13 @@ pub trait FormatSet: ToFormatSet<FormatSet = Self> {
     }
 
     #[must_use]
-    fn set<P: Position>(self, position: P, value: P::Value) -> Self;
+    fn set<A: FormatAttribute>(self, attr: A, value: A::Value) -> Self;
 
     #[must_use]
-    fn get<P: Position>(&self, position: P) -> P::Value;
+    fn get<A: FormatAttribute>(&self, attr: A) -> A::Value;
 
     #[must_use]
-    fn unset<P: Position>(self, position: P) -> Self {
-        self.set(position, P::Value::default())
+    fn unset<A: FormatAttribute>(self, attr: A) -> Self {
+        self.set(attr, A::Value::default())
     }
 }

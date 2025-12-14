@@ -1,7 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    AppliedTo, Format, FormatElement, FormatSet as _, Position, ToFormat, ToFormatSet, color::Color,
+    AppliedTo, Format, FormatAttribute, FormatElement, FormatSet as _, ToFormat, ToFormatSet,
+    color::Color,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -74,7 +75,7 @@ pub enum Plane {
     Background,
 }
 
-impl Position for Plane {
+impl FormatAttribute for Plane {
     type Value = Option<Color>;
 
     fn set_in_format(self, format: Format, value: Self::Value) -> Format {

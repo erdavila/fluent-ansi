@@ -57,13 +57,13 @@ impl<C: Display> ToFormatSet for Formatted<C> {
     }
 }
 impl<C: Display> FormatSet for Formatted<C> {
-    fn set<P: crate::Position>(self, position: P, value: P::Value) -> Self {
-        let format = self.format.set(position, value);
+    fn set<A: crate::FormatAttribute>(self, attr: A, value: A::Value) -> Self {
+        let format = self.format.set(attr, value);
         self.with_format(format)
     }
 
-    fn get<P: crate::Position>(&self, position: P) -> P::Value {
-        self.format.get(position)
+    fn get<A: crate::FormatAttribute>(&self, attr: A) -> A::Value {
+        self.format.get(attr)
     }
 }
 impl<C: Display> Display for Formatted<C> {
