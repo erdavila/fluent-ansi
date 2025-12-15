@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Format, FormatElement, FormatSet, ToFormatSet};
+use crate::{Format, FormatElement, FormatSet, GetFlags, ToFormatSet};
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Formatted<C: Display> {
@@ -57,6 +57,10 @@ impl<C: Display> ToFormatSet for Formatted<C> {
     }
 }
 impl<C: Display> FormatSet for Formatted<C> {
+    fn get_flags(&self) -> GetFlags<'_> {
+        self.format.get_flags()
+    }
+
     fn set<A: crate::FormatAttribute>(self, attr: A, value: A::Value) -> Self {
         let format = self.format.set(attr, value);
         self.with_format(format)
@@ -145,6 +149,17 @@ mod tests {
         assert_eq!(bold_fmtd.get(Flag::Faint), false);
         assert_eq!(bold_fmtd.unset(Flag::Bold), fmtd);
         assert_eq!(bold_fmtd.unset(Flag::Faint), fmtd.bold());
+    }
+
+    #[test]
+    fn get_flags() {
+        let format = Format::new().bold().italic().underline();
+        let mut flags = format.get_flags();
+
+        assert_eq!(flags.next(), Some(Flag::Bold));
+        assert_eq!(flags.next(), Some(Flag::Italic));
+        assert_eq!(flags.next(), Some(Flag::Underline));
+        assert_eq!(flags.next(), None);
     }
 
     #[test]

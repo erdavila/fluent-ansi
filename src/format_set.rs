@@ -22,6 +22,9 @@ pub trait FormatSet: ToFormatSet<FormatSet = Self> {
     }
 
     #[must_use]
+    fn get_flags(&self) -> GetFlags<'_>;
+
+    #[must_use]
     fn set_color(self, plane: Plane, color: Option<impl Into<Color>>) -> Self {
         let color: Option<Color> = color.map(Into::into);
         self.set(plane, color)
@@ -41,5 +44,17 @@ pub trait FormatSet: ToFormatSet<FormatSet = Self> {
     #[must_use]
     fn unset<A: FormatAttribute>(self, attr: A) -> Self {
         self.set(attr, A::Value::default())
+    }
+}
+
+pub struct GetFlags<'a> {
+    pub(crate) inner: enum_iterator::All<Flag>,
+    pub(crate) format: &'a Format,
+}
+impl Iterator for GetFlags<'_> {
+    type Item = Flag;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.inner.by_ref().find(|&flag| self.format.get_flag(flag))
     }
 }

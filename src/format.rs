@@ -1,8 +1,8 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, ColorInAPlane, Flag, FormatAttribute, FormatElement, FormatSet, Formatted, Plane,
-    Reset, ToFormat, ToFormatSet,
+    AppliedTo, ColorInAPlane, Flag, FormatAttribute, FormatElement, FormatSet, Formatted, GetFlags,
+    Plane, Reset, ToFormat, ToFormatSet,
     color::{Color, WriteColorCodes as _},
 };
 
@@ -45,6 +45,13 @@ impl AppliedTo for Format {
 }
 
 impl FormatSet for Format {
+    fn get_flags(&self) -> GetFlags<'_> {
+        GetFlags {
+            inner: enum_iterator::all(),
+            format: self,
+        }
+    }
+
     fn set<A: FormatAttribute>(self, attr: A, value: A::Value) -> Self {
         attr.set_in_format(self, value)
     }
@@ -170,6 +177,17 @@ mod tests {
         assert_eq!(bold_format.get(Flag::Faint), false);
         assert_eq!(bold_format.unset(Flag::Bold), fmt);
         assert_eq!(bold_format.unset(Flag::Faint), fmt.bold());
+    }
+
+    #[test]
+    fn get_flags() {
+        let format = Format::new().bold().italic().underline();
+        let mut flags = format.get_flags();
+
+        assert_eq!(flags.next(), Some(Flag::Bold));
+        assert_eq!(flags.next(), Some(Flag::Italic));
+        assert_eq!(flags.next(), Some(Flag::Underline));
+        assert_eq!(flags.next(), None);
     }
 
     #[test]
