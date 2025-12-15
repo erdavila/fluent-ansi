@@ -1,5 +1,6 @@
 #![cfg_attr(not(test), no_std)]
 #![warn(clippy::pedantic)]
+#![warn(missing_docs)]
 //! `yet_another_ansi_lib` is a library to handle ANSI escape sequences for the terminal.
 //! It is `no_std`, and relies on the [`Display`](core::fmt::Display) trait to render the sequences.
 //!

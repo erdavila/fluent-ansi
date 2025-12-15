@@ -1,3 +1,4 @@
+/// A macro to assert that a type implementing `Display` produces the expected output.
 #[macro_export]
 macro_rules! assert_display {
     ($display:expr, $expected:literal) => {{
