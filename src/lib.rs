@@ -17,5 +17,10 @@ mod reset;
 mod to_format;
 mod to_format_set;
 
+pub mod prelude {
+    pub use crate::color::{BasicColor, ColorKind, EightBitColor, RGBColor};
+    pub use crate::{AppliedTo, Flag, FormatSet, ToFormatSet};
+}
+
 #[cfg(test)]
 mod tests;
