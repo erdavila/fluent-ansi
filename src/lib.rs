@@ -196,6 +196,16 @@ mod reset;
 mod to_format;
 mod to_format_set;
 
+/// Re-exports the minimal set of items to format some content.
+///
+/// This module can be imported to have access to the minimal items to build a [`Formatted<C>`] value from
+/// flags and colors.
+///
+/// ```
+/// use yet_another_ansi_lib::prelude::*;
+///
+/// let formatted = BasicColor::Red.in_fg().bold().applied_to("Some content");
+/// ```
 pub mod prelude {
     pub use crate::color::{BasicColor, ColorKind, EightBitColor, RGBColor};
     pub use crate::{AppliedTo, Flag, FormatSet, ToFormatSet};

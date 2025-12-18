@@ -1,3 +1,39 @@
+//! Color types and trait.
+//!
+//! There are 4 color types:
+//! - [`BasicColor`]: 3-bit colors with 8 variants.
+//! - [`SimpleColor`]: Adds bright variants to the [`BasicColor`]s, totalling 16 colors.
+//! - [`EightBitColor`]: 8-bit colors (256 colors).
+//! - [`RGBColor`]: RGB colors (24-bit/true color).
+//!
+//! The enum [`Color`] unifies all the color types in a single type.
+//!
+//! All color types are convertible to [`Color`] and can be used where an `impl Into<Color>` value is expected:
+//!
+//! ```
+//! use yet_another_ansi_lib::{prelude::*, color::SimpleColor, Format, Plane};
+//!
+//! let format = Format::new();
+//!
+//! let _ = format.fg(BasicColor::Red);
+//! let _ = format.fg(SimpleColor::new_bright(BasicColor::Red));
+//! let _ = format.fg(EightBitColor::new(128));
+//! let _ = format.fg(RGBColor::new(0, 128, 255));
+//!
+//! let _ = format.bg(BasicColor::Red);
+//! let _ = format.bg(SimpleColor::new_bright(BasicColor::Red));
+//! let _ = format.bg(EightBitColor::new(128));
+//! let _ = format.bg(RGBColor::new(0, 128, 255));
+//!
+//! let _ = format.set_color(Plane::Foreground, Some(BasicColor::Red));
+//! let _ = format.set_color(Plane::Background, Some(SimpleColor::new_bright(BasicColor::Red)));
+//! let _ = format.set_color(Plane::Foreground, Some(EightBitColor::new(128)));
+//! let _ = format.set_color(Plane::Background, Some(RGBColor::new(0, 128, 255)));
+//! ```
+//!
+//! The trait [`ColorKind`] is implemented for all color types, and provides methods to associate a color
+//! to a [`Plane`] (foreground or background), returning a [`ColorInAPlane`] value.
+
 use core::fmt::Result;
 
 use crate::{CodeWriter, ColorInAPlane, Plane};
@@ -9,22 +45,27 @@ mod eight_bit;
 mod rgb;
 mod simple;
 
+/// A trait for color kinds that can be converted into a [`Color`].
 pub trait ColorKind: Into<Color> {
+    /// Associate this color with the foreground plane.
     #[must_use]
     fn in_fg(self) -> ColorInAPlane {
         self.in_plane(Plane::Foreground)
     }
 
+    /// Associate this color with the background plane.
     #[must_use]
     fn in_bg(self) -> ColorInAPlane {
         self.in_plane(Plane::Background)
     }
 
+    /// Associate this color with the specified plane.
     #[must_use]
     fn in_plane(self, plane: Plane) -> ColorInAPlane {
         ColorInAPlane::new(self, plane)
     }
 
+    /// Convert this color kind into a [`Color`].
     #[must_use]
     fn to_color(self) -> Color {
         self.into()
@@ -35,10 +76,14 @@ pub(crate) trait WriteColorCodes: ColorKind {
     fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result;
 }
 
+/// An enum representing all supported color types.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
+    /// A simple color (16 colors).
     Simple(SimpleColor),
+    /// An 8-bit color (256 colors).
     EightBit(EightBitColor),
+    /// An RGB color (24-bit/true color).
     RGB(RGBColor),
 }
 
