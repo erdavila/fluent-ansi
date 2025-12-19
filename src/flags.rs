@@ -4,18 +4,30 @@ use enum_iterator::Sequence;
 
 use crate::{AppliedTo, Format, FormatAttribute, FormatElement, FormatSet, ToFormat, ToFormatSet};
 
+/// An enumeration of all supported text formatting flags.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Flag {
+    /// Bold formatting.
     Bold,
+    /// Faint formatting.
     Faint,
+    /// Italic formatting.
     Italic,
+    /// Underline formatting.
     Underline,
+    /// Slow blink formatting.
     SlowBlink,
+    /// Rapid blink formatting.
     RapidBlink,
+    /// Reverse video formatting.
     Reverse,
+    /// Conceal (hidden) formatting.
     Conceal,
+    /// Crossed-out (strikethrough) formatting.
     CrossedOut,
+    /// Double underline formatting.
     DoubleUnderline,
+    /// Overline formatting.
     Overline,
 }
 
