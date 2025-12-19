@@ -5,16 +5,24 @@ use crate::{
     color::{ColorKind, WriteColorCodes},
 };
 
+/// A type alias for [`RGBColor`].
 pub type RGB = RGBColor;
 
+/// An RGB color type representing 24-bit/true color.
+///
+/// See Wikipedia's article on [24-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct RGBColor {
+    /// The red component.
     pub r: u8,
+    /// The green component.
     pub g: u8,
+    /// The blue component.
     pub b: u8,
 }
 
 impl RGBColor {
+    /// Creates a new RGB color with the given red, green, and blue components.
     #[must_use]
     pub fn new(r: u8, g: u8, b: u8) -> Self {
         Self { r, g, b }
