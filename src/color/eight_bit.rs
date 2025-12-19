@@ -5,15 +5,20 @@ use crate::{
     color::{ColorKind, WriteColorCodes},
 };
 
+/// An 8-bit color type representing colors in the 256-color ANSI palette.
+///
+/// See Wikipedia's article on [8-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct EightBitColor(pub u8);
 
 impl EightBitColor {
+    /// Creates a new 8-bit color with the given color number (0-255).
     #[must_use]
     pub fn new(number: u8) -> Self {
         EightBitColor(number)
     }
 
+    /// Returns the color number of this 8-bit color.
     #[must_use]
     pub fn get_number(self) -> u8 {
         self.0
