@@ -5,6 +5,9 @@ use crate::{
     color::{ColorKind, WriteColorCodes},
 };
 
+/// A simple color type representing the 16 basic terminal colors (8 basic colors + bright variants).
+///
+/// See Wikipedia's article on [3-bit and 4-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct SimpleColor {
     basic_color: BasicColor,
@@ -12,6 +15,7 @@ pub struct SimpleColor {
 }
 
 impl SimpleColor {
+    /// Creates a new simple, non-bright color.
     #[must_use]
     pub fn new(basic_color: BasicColor) -> Self {
         Self {
@@ -20,11 +24,13 @@ impl SimpleColor {
         }
     }
 
+    /// Creates a new bright simple color.
     #[must_use]
     pub fn new_bright(basic_color: BasicColor) -> Self {
         Self::new(basic_color).bright()
     }
 
+    /// Returns a bright variant of this simple color.
     #[must_use]
     pub fn bright(self) -> Self {
         Self {
@@ -33,11 +39,13 @@ impl SimpleColor {
         }
     }
 
+    /// Returns the basic color of this simple color.
     #[must_use]
     pub fn get_basic_color(self) -> BasicColor {
         self.basic_color
     }
 
+    /// Returns whether this simple color is bright.
     #[must_use]
     pub fn is_bright(self) -> bool {
         self.bright
@@ -68,23 +76,36 @@ impl From<BasicColor> for SimpleColor {
     }
 }
 
+/// The 8 basic non-bright terminal colors.
+///
+/// See Wikipedia's article on [3-bit and 4-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BasicColor {
+    /// The black color.
     Black,
+    /// The red color.
     Red,
+    /// The green color.
     Green,
+    /// The yellow color.
     Yellow,
+    /// The blue color.
     Blue,
+    /// The magenta color.
     Magenta,
+    /// The cyan color.
     Cyan,
+    /// The white color.
     White,
 }
 impl BasicColor {
+    /// Convert this basic color into a [`SimpleColor`].
     #[must_use]
     pub fn to_simple_color(self) -> SimpleColor {
         self.into()
     }
 
+    /// Returns a bright variant of this basic color.
     #[must_use]
     pub fn bright(self) -> SimpleColor {
         SimpleColor::new_bright(self)
