@@ -2,12 +2,14 @@ use core::fmt::{Display, Formatter, Result};
 
 use crate::{Format, FormatElement, FormatSet, GetFlags, ToFormatSet};
 
+/// A value that associates some content with a specific formatting.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Formatted<C: Display> {
     content: C,
     format: Format,
 }
 impl<C: Display> Formatted<C> {
+    /// Creates a new `Formatted<C>` value with the given content and no formatting.
     #[must_use]
     pub fn new(content: C) -> Self {
         Self {
@@ -16,11 +18,13 @@ impl<C: Display> Formatted<C> {
         }
     }
 
+    /// Gets a reference to the enclosed content.
     #[must_use]
     pub fn get_content(&self) -> &C {
         &self.content
     }
 
+    /// Returns a new `Formatted<C2>` value with the same formatting and the given content.
     #[must_use]
     pub fn with_content<C2: Display>(&self, content: C2) -> Formatted<C2> {
         Formatted {
@@ -29,16 +33,19 @@ impl<C: Display> Formatted<C> {
         }
     }
 
+    /// Consumes the `Formatted<C>` value and returns the enclosed content.
     #[must_use]
     pub fn into_content(self) -> C {
         self.content
     }
 
+    /// Gets the current formatting.
     #[must_use]
     pub fn get_format(&self) -> Format {
         self.format
     }
 
+    /// Returns a new `Formatted<C>` value with the same content and the given formatting.
     #[must_use]
     pub fn with_format(self, format: Format) -> Formatted<C> {
         Self { format, ..self }

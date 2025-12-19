@@ -6,6 +6,7 @@ use crate::{
     color::{Color, WriteColorCodes as _},
 };
 
+/// A structure representing text formatting with flags and colors.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Format {
     pub(crate) flags: u16,
@@ -14,6 +15,7 @@ pub struct Format {
 }
 
 impl Format {
+    /// Creates a new, empty `Format` value.
     #[must_use]
     pub fn new() -> Self {
         Format::default()
