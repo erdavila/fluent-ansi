@@ -5,6 +5,7 @@ use crate::{
     color::Color,
 };
 
+/// A color in a specific plane (foreground or background).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct ColorInAPlane {
     color: Color,
@@ -12,6 +13,7 @@ pub struct ColorInAPlane {
 }
 
 impl ColorInAPlane {
+    /// Creates a new color in a specific plane.
     #[must_use]
     pub fn new(color: impl Into<Color>, plane: Plane) -> Self {
         Self {
@@ -20,21 +22,25 @@ impl ColorInAPlane {
         }
     }
 
+    /// Creates a new color in the foreground plane.
     #[must_use]
     pub fn new_in_fg(color: impl Into<Color>) -> Self {
         Self::new(color, Plane::Foreground)
     }
 
+    /// Creates a new color in the background plane.
     #[must_use]
     pub fn new_in_bg(color: impl Into<Color>) -> Self {
         Self::new(color, Plane::Background)
     }
 
+    /// Gets the color.
     #[must_use]
     pub fn get_color(self) -> Color {
         self.color
     }
 
+    /// Gets the plane.
     #[must_use]
     pub fn get_plane(self) -> Plane {
         self.plane
@@ -69,9 +75,12 @@ impl Display for ColorInAPlane {
     }
 }
 
+/// The plane where a color is applied: foreground or background.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Plane {
+    /// The foreground plane.
     Foreground,
+    /// The background plane.
     Background,
 }
 
