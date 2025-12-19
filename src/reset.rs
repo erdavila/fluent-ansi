@@ -2,6 +2,13 @@ use core::fmt::{Display, Formatter, Result};
 
 use crate::{Format, ToFormat};
 
+/// A type that represents the reset of all formatting.
+///
+/// When formatted, it produces the ANSI escape sequence to reset all formatting.
+///
+/// It is equal to a [`Format::new()`].
+///
+/// See [The `Reset` singleton](crate#the-reset-singleton).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct Reset;
 
