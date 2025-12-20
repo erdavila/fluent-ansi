@@ -1,12 +1,12 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Format, ToFormat};
+use crate::{Style, ToStyle};
 
-/// A type that represents the reset of all formatting.
+/// A type that represents the reset of all styling.
 ///
-/// When formatted, it produces the ANSI escape sequence to reset all formatting.
+/// When rendered, it produces the ANSI escape sequence to reset all styling.
 ///
-/// It is equal to a [`Format::new()`].
+/// It is equal to a [`Style::new()`].
 ///
 /// See [The `Reset` singleton](crate#the-reset-singleton).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
@@ -14,25 +14,25 @@ pub struct Reset;
 
 impl Display for Reset {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(f, "{}", Format::new())
+        write!(f, "{}", Style::new())
     }
 }
 
-impl PartialEq<Format> for Reset {
-    fn eq(&self, other: &Format) -> bool {
-        self.to_format() == *other
+impl PartialEq<Style> for Reset {
+    fn eq(&self, other: &Style) -> bool {
+        self.to_style() == *other
     }
 }
 
-impl ToFormat for Reset {
-    fn to_format(self) -> Format {
+impl ToStyle for Reset {
+    fn to_style(self) -> Style {
         self.into()
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{ToFormatSet as _, assert_display};
+    use crate::{ToStyleSet as _, assert_display};
 
     use super::*;
 
@@ -44,14 +44,14 @@ mod tests {
     #[test]
     fn eq() {
         assert_eq!(Reset, Reset);
-        assert_eq!(Reset, Format::new());
-        assert_ne!(Reset, Format::new().bold());
-        assert_eq!(Format::new(), Reset);
-        assert_ne!(Format::new().bold(), Reset);
+        assert_eq!(Reset, Style::new());
+        assert_ne!(Reset, Style::new().bold());
+        assert_eq!(Style::new(), Reset);
+        assert_ne!(Style::new().bold(), Reset);
     }
 
     #[test]
-    fn to_format() {
-        assert_eq!(Reset.to_format(), Format::new());
+    fn to_style() {
+        assert_eq!(Reset.to_style(), Style::new());
     }
 }

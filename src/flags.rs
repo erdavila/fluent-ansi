@@ -1,33 +1,33 @@
-use core::fmt::Display;
+use core::fmt::{Display, Formatter, Result};
 
 use enum_iterator::Sequence;
 
-use crate::{AppliedTo, Format, FormatAttribute, FormatElement, FormatSet, ToFormat, ToFormatSet};
+use crate::{AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet};
 
-/// An enumeration of all supported text formatting flags.
+/// An enumeration of all supported text styling flags.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
 pub enum Flag {
-    /// Bold formatting.
+    /// Bold styling.
     Bold,
-    /// Faint formatting.
+    /// Faint styling.
     Faint,
-    /// Italic formatting.
+    /// Italic styling.
     Italic,
-    /// Underline formatting.
+    /// Underline styling.
     Underline,
-    /// Slow blink formatting.
+    /// Slow blink styling.
     SlowBlink,
-    /// Rapid blink formatting.
+    /// Rapid blink styling.
     RapidBlink,
-    /// Reverse video formatting.
+    /// Reverse video styling.
     Reverse,
-    /// Conceal (hidden) formatting.
+    /// Conceal (hidden) styling.
     Conceal,
-    /// Crossed-out (strikethrough) formatting.
+    /// Crossed-out (strikethrough) styling.
     CrossedOut,
-    /// Double underline formatting.
+    /// Double underline styling.
     DoubleUnderline,
-    /// Overline formatting.
+    /// Overline styling.
     Overline,
 }
 
@@ -56,39 +56,39 @@ impl Flag {
     }
 }
 
-impl FormatElement for Flag {
-    fn add_to_format(self, format: Format) -> Format {
-        format.set_flag(self, true)
+impl StyleElement for Flag {
+    fn add_to_style(self, style: Style) -> Style {
+        style.set_flag(self, true)
     }
 }
 
-impl FormatAttribute for Flag {
+impl StyleAttribute for Flag {
     type Value = bool;
 
-    fn set_in_format(self, format: Format, value: Self::Value) -> Format {
+    fn set_in_style(self, style: Style, value: Self::Value) -> Style {
         let flags = if value {
-            format.flags | self.bit_mask()
+            style.flags | self.bit_mask()
         } else {
-            format.flags & !self.bit_mask()
+            style.flags & !self.bit_mask()
         };
-        Format { flags, ..format }
+        Style { flags, ..style }
     }
 
-    fn get_from_format(self, format: &Format) -> Self::Value {
-        format.flags & self.bit_mask() != 0
-    }
-}
-
-impl ToFormatSet for Flag {
-    type FormatSet = Format;
-
-    fn to_format_set(self) -> Self::FormatSet {
-        self.to_format()
+    fn get_from_style(self, style: &Style) -> Self::Value {
+        style.flags & self.bit_mask() != 0
     }
 }
 
-impl ToFormat for Flag {
-    fn to_format(self) -> Format {
+impl ToStyleSet for Flag {
+    type StyleSet = Style;
+
+    fn to_style_set(self) -> Self::StyleSet {
+        self.to_style()
+    }
+}
+
+impl ToStyle for Flag {
+    fn to_style(self) -> Style {
         self.into()
     }
 }
@@ -96,15 +96,15 @@ impl ToFormat for Flag {
 impl AppliedTo for Flag {}
 
 impl Display for Flag {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        self.to_format().fmt(f)
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
+        self.to_style().fmt(f)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::{
-        ToFormatSet as _, assert_display,
+        ToStyleSet as _, assert_display,
         color::{BasicColor, ColorKind as _},
     };
 
@@ -114,10 +114,10 @@ mod tests {
     fn add_flag() {
         let flag = Flag::Bold;
 
-        assert_eq!(flag.bold(), Format::new().bold());
-        assert_eq!(flag.italic(), Format::new().bold().italic());
-        assert_eq!(flag.flag(Flag::Italic), Format::new().bold().italic());
-        assert_eq!(flag.add(Flag::Italic), Format::new().bold().italic());
+        assert_eq!(flag.bold(), Style::new().bold());
+        assert_eq!(flag.italic(), Style::new().bold().italic());
+        assert_eq!(flag.flag(Flag::Italic), Style::new().bold().italic());
+        assert_eq!(flag.add(Flag::Italic), Style::new().bold().italic());
     }
 
     #[test]
@@ -126,34 +126,34 @@ mod tests {
 
         assert_eq!(
             flag.fg(BasicColor::Green),
-            Format::new().bold().fg(BasicColor::Green)
+            Style::new().bold().fg(BasicColor::Green)
         );
         assert_eq!(
             flag.color(BasicColor::Green.in_bg()),
-            Format::new().bold().bg(BasicColor::Green)
+            Style::new().bold().bg(BasicColor::Green)
         );
         assert_eq!(
             flag.add(BasicColor::Green.in_bg()),
-            Format::new().bold().bg(BasicColor::Green)
+            Style::new().bold().bg(BasicColor::Green)
         );
     }
 
     #[test]
     fn applied_to() {
-        let fmtd = Flag::Bold.applied_to("CONTENT");
+        let stld = Flag::Bold.applied_to("CONTENT");
 
-        assert_eq!(fmtd.get_content(), &"CONTENT");
-        assert_eq!(fmtd.get_format(), Format::new().bold());
+        assert_eq!(stld.get_content(), &"CONTENT");
+        assert_eq!(stld.get_style(), Style::new().bold());
     }
 
     #[test]
-    fn to_format() {
-        assert_eq!(Flag::Bold.to_format(), Format::new().bold());
+    fn to_style() {
+        assert_eq!(Flag::Bold.to_style(), Style::new().bold());
     }
 
     #[test]
-    fn to_format_set() {
-        assert_eq!(Flag::Bold.to_format_set(), Format::new().bold());
+    fn to_style_set() {
+        assert_eq!(Flag::Bold.to_style_set(), Style::new().bold());
     }
 
     #[test]

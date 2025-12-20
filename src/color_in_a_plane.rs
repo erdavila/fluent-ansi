@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    AppliedTo, Format, FormatAttribute, FormatElement, FormatSet as _, ToFormat, ToFormatSet,
+    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet as _, ToStyle, ToStyleSet,
     color::Color,
 };
 
@@ -47,22 +47,22 @@ impl ColorInAPlane {
     }
 }
 
-impl FormatElement for ColorInAPlane {
-    fn add_to_format(self, format: Format) -> Format {
-        format.set_color(self.plane, Some(self.color))
+impl StyleElement for ColorInAPlane {
+    fn add_to_style(self, style: Style) -> Style {
+        style.set_color(self.plane, Some(self.color))
     }
 }
 
-impl ToFormatSet for ColorInAPlane {
-    type FormatSet = Format;
+impl ToStyleSet for ColorInAPlane {
+    type StyleSet = Style;
 
-    fn to_format_set(self) -> Self::FormatSet {
-        self.to_format()
+    fn to_style_set(self) -> Self::StyleSet {
+        self.to_style()
     }
 }
 
-impl ToFormat for ColorInAPlane {
-    fn to_format(self) -> Format {
+impl ToStyle for ColorInAPlane {
+    fn to_style(self) -> Style {
         self.into()
     }
 }
@@ -71,7 +71,7 @@ impl AppliedTo for ColorInAPlane {}
 
 impl Display for ColorInAPlane {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        self.to_format().fmt(f)
+        self.to_style().fmt(f)
     }
 }
 
@@ -84,26 +84,20 @@ pub enum Plane {
     Background,
 }
 
-impl FormatAttribute for Plane {
+impl StyleAttribute for Plane {
     type Value = Option<Color>;
 
-    fn set_in_format(self, format: Format, value: Self::Value) -> Format {
+    fn set_in_style(self, style: Style, value: Self::Value) -> Style {
         match self {
-            Plane::Foreground => Format {
-                fg: value,
-                ..format
-            },
-            Plane::Background => Format {
-                bg: value,
-                ..format
-            },
+            Plane::Foreground => Style { fg: value, ..style },
+            Plane::Background => Style { bg: value, ..style },
         }
     }
 
-    fn get_from_format(self, format: &Format) -> Self::Value {
+    fn get_from_style(self, style: &Style) -> Self::Value {
         match self {
-            Plane::Foreground => format.fg,
-            Plane::Background => format.bg,
+            Plane::Foreground => style.fg,
+            Plane::Background => style.bg,
         }
     }
 }
@@ -111,7 +105,7 @@ impl FormatAttribute for Plane {
 #[cfg(test)]
 mod tests {
     use crate::{
-        Flag, FormatSet as _, assert_display,
+        Flag, StyleSet as _, assert_display,
         color::{BasicColor, ColorKind as _, EightBitColor, RGBColor, SimpleColor},
     };
 
@@ -124,12 +118,12 @@ mod tests {
         assert_eq!(cp.get_color(), BasicColor::Red.to_color());
         assert_eq!(cp.get_plane(), Plane::Foreground);
         assert_eq!(
-            cp.to_format_set(),
-            Format::new().set_color(Plane::Foreground, Some(BasicColor::Red))
+            cp.to_style_set(),
+            Style::new().set_color(Plane::Foreground, Some(BasicColor::Red))
         );
         assert_eq!(
-            cp.to_format(),
-            Format::new().set_color(Plane::Foreground, Some(BasicColor::Red))
+            cp.to_style(),
+            Style::new().set_color(Plane::Foreground, Some(BasicColor::Red))
         );
     }
 
@@ -139,15 +133,15 @@ mod tests {
 
         assert_eq!(
             color_in_a_plane.bold(),
-            Format::new().fg(BasicColor::Red).bold()
+            Style::new().fg(BasicColor::Red).bold()
         );
         assert_eq!(
             color_in_a_plane.flag(Flag::Bold),
-            Format::new().fg(BasicColor::Red).bold()
+            Style::new().fg(BasicColor::Red).bold()
         );
         assert_eq!(
             color_in_a_plane.add(Flag::Bold),
-            Format::new().fg(BasicColor::Red).bold()
+            Style::new().fg(BasicColor::Red).bold()
         );
     }
     #[test]
@@ -156,39 +150,39 @@ mod tests {
 
         assert_eq!(
             color_in_a_plane.fg(BasicColor::Green),
-            Format::new().fg(BasicColor::Green)
+            Style::new().fg(BasicColor::Green)
         );
         assert_eq!(
             color_in_a_plane.bg(BasicColor::Green),
-            Format::new().fg(BasicColor::Red).bg(BasicColor::Green)
+            Style::new().fg(BasicColor::Red).bg(BasicColor::Green)
         );
         assert_eq!(
             color_in_a_plane.color(BasicColor::Green.in_bg()),
-            Format::new().fg(BasicColor::Red).bg(BasicColor::Green)
+            Style::new().fg(BasicColor::Red).bg(BasicColor::Green)
         );
         assert_eq!(
             color_in_a_plane.add(BasicColor::Green.in_bg()),
-            Format::new().fg(BasicColor::Red).bg(BasicColor::Green)
+            Style::new().fg(BasicColor::Red).bg(BasicColor::Green)
         );
     }
 
     #[test]
     fn color_in_a_plane_applied_to() {
-        let fmtd = BasicColor::Red.in_fg().applied_to("CONTENT");
+        let stld = BasicColor::Red.in_fg().applied_to("CONTENT");
 
-        assert_eq!(fmtd.get_content(), &"CONTENT");
-        assert_eq!(fmtd.get_format(), Format::new().fg(BasicColor::Red));
+        assert_eq!(stld.get_content(), &"CONTENT");
+        assert_eq!(stld.get_style(), Style::new().fg(BasicColor::Red));
     }
 
     #[test]
-    fn color_in_a_plane_to_format() {
+    fn color_in_a_plane_to_style() {
         assert_eq!(
-            BasicColor::Red.in_fg().to_format(),
-            Format::new().fg(BasicColor::Red)
+            BasicColor::Red.in_fg().to_style(),
+            Style::new().fg(BasicColor::Red)
         );
         assert_eq!(
-            BasicColor::Green.in_bg().to_format(),
-            Format::new().bg(BasicColor::Green)
+            BasicColor::Green.in_bg().to_style(),
+            Style::new().bg(BasicColor::Green)
         );
     }
 

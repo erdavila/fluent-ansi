@@ -1,12 +1,12 @@
 use core::fmt::Display;
 
-use crate::{Format, Formatted, ToFormat, ToFormatSet};
+use crate::{Style, Styled, ToStyle, ToStyleSet};
 
-/// A trait to apply a formatting to some content.
-pub trait AppliedTo: ToFormat + ToFormatSet<FormatSet = Format> {
-    /// Applies the formatting to the given content, returning a [`Formatted<C>`](Formatted) instance.
+/// A trait to apply styling to some content.
+pub trait AppliedTo: ToStyle + ToStyleSet<StyleSet = Style> {
+    /// Applies the styling to the given content, returning a [`Styled<C>`](Styled) instance.
     #[must_use]
-    fn applied_to<C: Display>(self, content: C) -> Formatted<C> {
-        self.to_format().applied_to(content)
+    fn applied_to<C: Display>(self, content: C) -> Styled<C> {
+        self.to_style().applied_to(content)
     }
 }

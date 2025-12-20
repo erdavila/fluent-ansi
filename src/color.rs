@@ -20,24 +20,24 @@
 //! All color types are convertible to [`Color`] and can be used where an `impl Into<Color>` value is expected:
 //!
 //! ```
-//! use fluent_ansi::{prelude::*, color::{BasicColor, EightBitColor, RGBColor, SimpleColor}, Format, Plane};
+//! use fluent_ansi::{prelude::*, color::{BasicColor, EightBitColor, RGBColor, SimpleColor}, Style, Plane};
 //!
-//! let format = Format::new();
+//! let style = Style::new();
 //!
-//! let _ = format.fg(BasicColor::Red);
-//! let _ = format.fg(SimpleColor::new_bright(BasicColor::Red));
-//! let _ = format.fg(EightBitColor::new(128));
-//! let _ = format.fg(RGBColor::new(0, 128, 255));
+//! let _ = style.fg(BasicColor::Red);
+//! let _ = style.fg(SimpleColor::new_bright(BasicColor::Red));
+//! let _ = style.fg(EightBitColor::new(128));
+//! let _ = style.fg(RGBColor::new(0, 128, 255));
 //!
-//! let _ = format.bg(BasicColor::Red);
-//! let _ = format.bg(SimpleColor::new_bright(BasicColor::Red));
-//! let _ = format.bg(EightBitColor::new(128));
-//! let _ = format.bg(RGBColor::new(0, 128, 255));
+//! let _ = style.bg(BasicColor::Red);
+//! let _ = style.bg(SimpleColor::new_bright(BasicColor::Red));
+//! let _ = style.bg(EightBitColor::new(128));
+//! let _ = style.bg(RGBColor::new(0, 128, 255));
 //!
-//! let _ = format.set_color(Plane::Foreground, Some(BasicColor::Red));
-//! let _ = format.set_color(Plane::Background, Some(SimpleColor::new_bright(BasicColor::Red)));
-//! let _ = format.set_color(Plane::Foreground, Some(EightBitColor::new(128)));
-//! let _ = format.set_color(Plane::Background, Some(RGBColor::new(0, 128, 255)));
+//! let _ = style.set_color(Plane::Foreground, Some(BasicColor::Red));
+//! let _ = style.set_color(Plane::Background, Some(SimpleColor::new_bright(BasicColor::Red)));
+//! let _ = style.set_color(Plane::Foreground, Some(EightBitColor::new(128)));
+//! let _ = style.set_color(Plane::Background, Some(RGBColor::new(0, 128, 255)));
 //! ```
 //!
 //! The trait [`ColorKind`] is implemented for all color types, and provides methods to associate a color

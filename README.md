@@ -1,12 +1,12 @@
 # fluent-ansi
 
-`fluent-ansi` is a Rust library designed to handle ANSI escape sequences for the terminal. It provides a modular, composable, and fluent API for styling text with colors and formatting flags (like bold, italic).
+`fluent-ansi` is a Rust library designed to handle ANSI escape sequences for the terminal. It provides a modular, composable, and fluent API for styling text with colors and flags (like bold, italic).
 
 ## Key Features
 
 *   **`no_std` Compatible:** Designed to work without the standard library, relying on `core::fmt::Display`.
 *   **Fluent API:** Allows method chaining (e.g., `Color::RED.in_fg().bold().applied_to("text")`).
-*   **Immutability:** All formatting types are immutable and most implement `Copy`.
+*   **Immutability:** All styling types are immutable and most implement `Copy`.
 
 ## Installation
 
@@ -19,22 +19,22 @@ fluent-ansi = "0.1"
 
 ## Usage
 
-The primary way to use `fluent-ansi` is through its fluent API. You can combine colors and flags to create a `Format`, and then apply it to any type that implements `Display`.
+The primary way to use `fluent-ansi` is through its fluent API. You can combine colors and flags to create a `Style`, and then apply it to any type that implements `Display`.
 
 ```rust
-use fluent_ansi::{prelude::*, Format, Formatted};
+use fluent_ansi::{prelude::*, Style, Styled};
 
-// Create a format
-let format: Format = Color::RED.in_fg().bold();
+// Create a style
+let style: Style = Color::RED.in_fg().bold();
 
 // Apply it to some content
-let formatted: Formatted<&str> = format.applied_to("Some content");
+let styled: Styled<&str> = style.applied_to("Some content");
 
 // Print it directly
-println!("{}", formatted);
+println!("{}", styled);
 
 // Or get the string with escape sequences
-let content_with_escape_sequences = format!("{}", formatted);
+let content_with_escape_sequences = format!("{}", styled);
 assert_eq!(content_with_escape_sequences, "\x1b[1;31mSome content\x1b[0m");
 ```
 
@@ -43,18 +43,18 @@ assert_eq!(content_with_escape_sequences, "\x1b[1;31mSome content\x1b[0m");
 There are several ways to reach the same result, depending on your preference:
 
 ```rust
-use fluent_ansi::{prelude::*, ColorInAPlane, Format, Plane};
+use fluent_ansi::{prelude::*, ColorInAPlane, Style, Plane};
 
-let fmt: Format = Format::new().set(Flag::Bold, true).set(Plane::Foreground, Some(Color::RED.to_color()));
-let fmt: Format = Format::new().set_flag(Flag::Bold, true).set_color(Plane::Foreground, Some(Color::RED));
-let fmt: Format = Format::new().add(Flag::Bold).add(ColorInAPlane::new(Color::RED, Plane::Foreground));
-let fmt: Format = Format::new().flag(Flag::Bold).color(ColorInAPlane::new(Color::RED, Plane::Foreground));
-let fmt: Format = Format::new().bold().fg(Color::RED);
-let fmt: Format = Flag::Bold.fg(Color::RED);
-let fmt: Format = Color::RED.in_fg().bold();
+let stl: Style = Style::new().set(Flag::Bold, true).set(Plane::Foreground, Some(Color::RED.to_color()));
+let stl: Style = Style::new().set_flag(Flag::Bold, true).set_color(Plane::Foreground, Some(Color::RED));
+let stl: Style = Style::new().add(Flag::Bold).add(ColorInAPlane::new(Color::RED, Plane::Foreground));
+let stl: Style = Style::new().flag(Flag::Bold).color(ColorInAPlane::new(Color::RED, Plane::Foreground));
+let stl: Style = Style::new().bold().fg(Color::RED);
+let stl: Style = Flag::Bold.fg(Color::RED);
+let stl: Style = Color::RED.in_fg().bold();
 ```
 
-### Formatting Elements
+### Styling Elements
 
 #### Flags
 

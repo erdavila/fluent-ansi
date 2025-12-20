@@ -1,24 +1,24 @@
-use crate::{Flag, Format, Plane, ToFormatSet, color::Color};
+use crate::{Flag, Plane, Style, ToStyleSet, color::Color};
 
-/// A trait to represent an attribute that can be set or retrieved from a [`Format`].
-pub trait FormatAttribute {
+/// A trait to represent an attribute that can be set or retrieved from a [`Style`].
+pub trait StyleAttribute {
     /// The type of value associated with this attribute.
     type Value: Default;
 
-    /// Sets this attribute in the given `Format`, returning the updated `Format`.
+    /// Sets this attribute in the given `Style`, returning the updated `Style`.
     #[must_use]
-    fn set_in_format(self, format: Format, value: Self::Value) -> Format;
+    fn set_in_style(self, style: Style, value: Self::Value) -> Style;
 
-    /// Gets the value of this attribute from the given `Format`.
+    /// Gets the value of this attribute from the given `Style`.
     #[must_use]
-    fn get_from_format(self, format: &Format) -> Self::Value;
+    fn get_from_style(self, style: &Style) -> Self::Value;
 }
 
-/// A trait to set and get formatting options on a type.
+/// A trait to set and get styling options on a type.
 ///
-/// This trait extends [`ToFormatSet`] with methods to get the current state of formatting options,
+/// This trait extends [`ToStyleSet`] with methods to get the current state of styling options,
 /// such as checking if a flag is set or getting the color of a plane.
-pub trait FormatSet: ToFormatSet<FormatSet = Self> {
+pub trait StyleSet: ToStyleSet<StyleSet = Self> {
     /// Sets the given flag to the specified value.
     #[must_use]
     fn set_flag(self, flag: Flag, value: bool) -> Self {
@@ -50,28 +50,28 @@ pub trait FormatSet: ToFormatSet<FormatSet = Self> {
 
     /// Sets the given attribute to the specified value.
     #[must_use]
-    fn set<A: FormatAttribute>(self, attr: A, value: A::Value) -> Self;
+    fn set<A: StyleAttribute>(self, attr: A, value: A::Value) -> Self;
 
     /// Gets the value of the given attribute.
     #[must_use]
-    fn get<A: FormatAttribute>(&self, attr: A) -> A::Value;
+    fn get<A: StyleAttribute>(&self, attr: A) -> A::Value;
 
     /// Unsets the given attribute.
     #[must_use]
-    fn unset<A: FormatAttribute>(self, attr: A) -> Self {
+    fn unset<A: StyleAttribute>(self, attr: A) -> Self {
         self.set(attr, A::Value::default())
     }
 }
 
-/// An iterator over the flags that are currently set in a [`Format`] or [`Formatted<C>`](crate::Formatted).
+/// An iterator over the flags that are currently set in a [`Style`] or [`Styled<C>`](crate::Styled).
 pub struct GetFlags<'a> {
     pub(crate) inner: enum_iterator::All<Flag>,
-    pub(crate) format: &'a Format,
+    pub(crate) style: &'a Style,
 }
 impl Iterator for GetFlags<'_> {
     type Item = Flag;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.inner.by_ref().find(|&flag| self.format.get_flag(flag))
+        self.inner.by_ref().find(|&flag| self.style.get_flag(flag))
     }
 }
