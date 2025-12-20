@@ -1,6 +1,11 @@
 [package]
 name = "fluent-ansi"
+description = "A fluent interface for ANSI terminal colors and styles in Rust."
 version = "0.1.0"
+license = "MIT"
+repository = "https://github.com/erdavila/fluent-ansi"
+keywords = ["ansi", "terminal", "colors", "styles"]
+categories = ["command-line-interface", "no-std", "no-std::no-alloc"]
 edition = "2024"
 
 [dependencies]
