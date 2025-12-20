@@ -11,7 +11,7 @@
 //! All color types are convertible to [`Color`] and can be used where an `impl Into<Color>` value is expected:
 //!
 //! ```
-//! use yet_another_ansi_lib::{prelude::*, color::SimpleColor, Format, Plane};
+//! use fluent_ansi::{prelude::*, color::SimpleColor, Format, Plane};
 //!
 //! let format = Format::new();
 //!

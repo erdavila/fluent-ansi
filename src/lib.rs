@@ -1,11 +1,11 @@
 #![cfg_attr(not(test), no_std)]
 #![warn(clippy::pedantic)]
 #![warn(missing_docs)]
-//! `yet_another_ansi_lib` is a library to handle ANSI escape sequences for the terminal.
+//! `fluent-ansi` is a library to handle ANSI escape sequences for the terminal.
 //! It is `no_std`, and relies on the [`Display`](core::fmt::Display) trait to render the sequences.
 //!
 //! ```
-//! use yet_another_ansi_lib::{prelude::*, Format, Formatted};
+//! use fluent_ansi::{prelude::*, Format, Formatted};
 //!
 //! let format: Format = BasicColor::Red.in_fg().bold();
 //! let formatted: Formatted<&str> = format.applied_to("Some content");
@@ -20,7 +20,7 @@
 //! reach the same result. For instance, all the lines below result in the same [`Format`] value:
 //!
 //! ```
-//! use yet_another_ansi_lib::{prelude::*, ColorInAPlane, Format, Plane};
+//! use fluent_ansi::{prelude::*, ColorInAPlane, Format, Plane};
 //!
 //! let fmt: Format = Format::new().set(Flag::Bold, true).set(Plane::Foreground, Some(BasicColor::Red.to_color()));
 //! let fmt: Format = Format::new().set_flag(Flag::Bold, true).set_color(Plane::Foreground, Some(BasicColor::Red));
@@ -47,7 +47,7 @@
 //! or with [`Formatted<C>::new()`] to create an instance without any formatting.
 //!
 //! ```
-//! use yet_another_ansi_lib::{prelude::*, Formatted};
+//! use fluent_ansi::{prelude::*, Formatted};
 //!
 //! let flag = Flag::Bold;
 //! let fg_color = BasicColor::Red.in_fg();
@@ -67,7 +67,7 @@
 //! includes those traits, and may be imported too:
 //!
 //! ```
-//! use yet_another_ansi_lib::prelude::*;
+//! use fluent_ansi::prelude::*;
 //! ```
 //!
 //! ## Flags
@@ -75,7 +75,7 @@
 //! Flags can be used on their own, combined with other formatting elements, or applied to some content:
 //!
 //! ```
-//! use yet_another_ansi_lib::prelude::*;
+//! use fluent_ansi::prelude::*;
 //!
 //! assert_eq!(format!("{}", Flag::Bold), "\x1b[1m");
 //! assert_eq!(format!("{}", Flag::Bold.fg(BasicColor::Red)), "\x1b[1;31m");
@@ -90,7 +90,7 @@
 //! background. The type [`ColorInAPlane`] associates a color with a [`Plane`].
 //!
 //! ```
-//! use yet_another_ansi_lib::{prelude::*, ColorInAPlane, Plane};
+//! use fluent_ansi::{prelude::*, ColorInAPlane, Plane};
 //!
 //! // Both lines below are equivalent
 //! let red_in_foreground: ColorInAPlane = BasicColor::Red.in_fg();
@@ -141,7 +141,7 @@
 //! *Note* \[1]: to clear a color with [`set_color()`](FormatSet::set_color), the color type must be specified in the `None` value:
 //!
 //! ```
-//! # use yet_another_ansi_lib::{prelude::*, Format, Plane, color::Color};
+//! # use fluent_ansi::{prelude::*, Format, Plane, color::Color};
 //! # let format = Format::new();
 //! # let plane = Plane::Foreground;
 //! format.set_color(plane, None::<Color>);
@@ -173,7 +173,7 @@
 //! the starting and ending escape sequences instead of using the [`Formatted<C>`] type with an enclosed content.
 //!
 //! ```
-//! use yet_another_ansi_lib::{prelude::*, Reset};
+//! use fluent_ansi::{prelude::*, Reset};
 //!
 //! let format = BasicColor::Red.in_fg().bold();
 //! let output = format!("{format}Some content{Reset}");
@@ -203,7 +203,7 @@ mod to_format_set;
 /// flags and colors.
 ///
 /// ```
-/// use yet_another_ansi_lib::prelude::*;
+/// use fluent_ansi::prelude::*;
 ///
 /// let formatted = BasicColor::Red.in_fg().bold().applied_to("Some content");
 /// ```
