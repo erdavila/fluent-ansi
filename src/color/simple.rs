@@ -7,6 +7,16 @@ use crate::{
 
 /// A simple color type representing the 16 basic terminal colors (8 basic colors + bright variants).
 ///
+/// These colors are also available as associated [`BasicColor`] constants in the [`Color`](super::Color) enum, which
+/// can be turned into a [`SimpleColor`] value:
+///
+/// ```
+/// use fluent_ansi::{prelude::*, color::{BasicColor, SimpleColor}};
+///
+/// assert_eq!(Color::RED.to_simple_color(), SimpleColor::new(BasicColor::Red));
+/// assert_eq!(Color::RED.bright(), SimpleColor::new_bright(BasicColor::Red));
+/// ```
+///
 /// See Wikipedia's article on [3-bit and 4-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct SimpleColor {
@@ -77,6 +87,17 @@ impl From<BasicColor> for SimpleColor {
 }
 
 /// The 8 basic non-bright terminal colors.
+///
+/// These colors are also available as associated constants in the [`Color`](super::Color) enum:
+///
+/// ```
+/// use fluent_ansi::{prelude::*, color::BasicColor};
+///
+/// assert_eq!(Color::RED, BasicColor::Red);
+/// assert_eq!(Color::GREEN, BasicColor::Green);
+/// assert_eq!(Color::BLUE, BasicColor::Blue);
+/// // etc.
+/// ```
 ///
 /// See Wikipedia's article on [3-bit and 4-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

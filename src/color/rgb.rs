@@ -10,6 +10,14 @@ pub type RGB = RGBColor;
 
 /// An RGB color type representing 24-bit/true color.
 ///
+/// These colors are also available from the method [`Color::rgb()`](super::Color::rgb):
+///
+/// ```
+/// use fluent_ansi::{prelude::*, color::RGBColor};
+///
+/// assert_eq!(Color::rgb(0, 128, 255), RGBColor { r: 0, g: 128, b: 255 });
+/// ```
+///
 /// See Wikipedia's article on [24-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct RGBColor {

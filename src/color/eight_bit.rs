@@ -7,6 +7,14 @@ use crate::{
 
 /// An 8-bit color type representing colors in the 256-color ANSI palette.
 ///
+/// These colors are also available from the method [`Color::eight_bit()`](super::Color::eight_bit):
+///
+/// ```
+/// use fluent_ansi::{prelude::*, color::EightBitColor};
+///
+/// assert_eq!(Color::eight_bit(127), EightBitColor(127));
+/// ```
+///
 /// See Wikipedia's article on [8-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct EightBitColor(pub u8);

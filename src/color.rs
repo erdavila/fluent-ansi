@@ -6,12 +6,21 @@
 //! - [`EightBitColor`]: 8-bit colors (256 colors).
 //! - [`RGBColor`]: RGB colors (24-bit/true color).
 //!
-//! The enum [`Color`] unifies all the color types in a single type.
+//! The enum [`Color`] unifies all the color types in a single type and have members to access or create colors of all types:
+//!
+//! ```
+//! use fluent_ansi::{prelude::*, color::{BasicColor, EightBitColor, RGBColor, SimpleColor}};
+//!
+//! assert_eq!(Color::RED, BasicColor::Red);
+//! assert_eq!(Color::RED.bright(), SimpleColor::new_bright(BasicColor::Red));
+//! assert_eq!(Color::eight_bit(127), EightBitColor(127));
+//! assert_eq!(Color::rgb(0, 128, 255), RGBColor::new(0, 128, 255));
+//! ```
 //!
 //! All color types are convertible to [`Color`] and can be used where an `impl Into<Color>` value is expected:
 //!
 //! ```
-//! use fluent_ansi::{prelude::*, color::SimpleColor, Format, Plane};
+//! use fluent_ansi::{prelude::*, color::{BasicColor, EightBitColor, RGBColor, SimpleColor}, Format, Plane};
 //!
 //! let format = Format::new();
 //!
@@ -87,6 +96,37 @@ pub enum Color {
     RGB(RGBColor),
 }
 
+impl Color {
+    /// Constant for the basic color black.
+    pub const BLACK: BasicColor = BasicColor::Black;
+    /// Constant for the basic color red.
+    pub const RED: BasicColor = BasicColor::Red;
+    /// Constant for the basic color green.
+    pub const GREEN: BasicColor = BasicColor::Green;
+    /// Constant for the basic color yellow.
+    pub const YELLOW: BasicColor = BasicColor::Yellow;
+    /// Constant for the basic color blue.
+    pub const BLUE: BasicColor = BasicColor::Blue;
+    /// Constant for the basic color magenta.
+    pub const MAGENTA: BasicColor = BasicColor::Magenta;
+    /// Constant for the basic color cyan.
+    pub const CYAN: BasicColor = BasicColor::Cyan;
+    /// Constant for the basic color white.
+    pub const WHITE: BasicColor = BasicColor::White;
+
+    /// Create an 8-bit color from the given value.
+    #[must_use]
+    pub fn eight_bit(value: u8) -> EightBitColor {
+        EightBitColor::new(value)
+    }
+
+    /// Create an RGB color from the given red, green, and blue components.
+    #[must_use]
+    pub fn rgb(r: u8, g: u8, b: u8) -> RGBColor {
+        RGBColor::new(r, g, b)
+    }
+}
+
 impl ColorKind for Color {}
 
 impl WriteColorCodes for Color {
@@ -148,6 +188,22 @@ impl_reflexive_partial_eq!(BasicColor::to_simple_color() -> SimpleColor);
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn shortcuts() {
+        assert_eq!(Color::BLACK, BasicColor::Black);
+        assert_eq!(Color::RED, BasicColor::Red);
+        assert_eq!(Color::GREEN, BasicColor::Green);
+        assert_eq!(Color::YELLOW, BasicColor::Yellow);
+        assert_eq!(Color::BLUE, BasicColor::Blue);
+        assert_eq!(Color::MAGENTA, BasicColor::Magenta);
+        assert_eq!(Color::CYAN, BasicColor::Cyan);
+        assert_eq!(Color::WHITE, BasicColor::White);
+
+        assert_eq!(Color::eight_bit(127), EightBitColor(127));
+
+        assert_eq!(Color::rgb(0, 128, 255), RGBColor::new(0, 128, 255));
+    }
 
     #[test]
     fn in_fg() {

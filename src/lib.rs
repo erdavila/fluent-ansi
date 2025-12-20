@@ -7,7 +7,7 @@
 //! ```
 //! use fluent_ansi::{prelude::*, Format, Formatted};
 //!
-//! let format: Format = BasicColor::Red.in_fg().bold();
+//! let format: Format = Color::RED.in_fg().bold();
 //! let formatted: Formatted<&str> = format.applied_to("Some content");
 //!
 //! println!("{}", formatted);
@@ -22,13 +22,13 @@
 //! ```
 //! use fluent_ansi::{prelude::*, ColorInAPlane, Format, Plane};
 //!
-//! let fmt: Format = Format::new().set(Flag::Bold, true).set(Plane::Foreground, Some(BasicColor::Red.to_color()));
-//! let fmt: Format = Format::new().set_flag(Flag::Bold, true).set_color(Plane::Foreground, Some(BasicColor::Red));
-//! let fmt: Format = Format::new().add(Flag::Bold).add(ColorInAPlane::new(BasicColor::Red, Plane::Foreground));
-//! let fmt: Format = Format::new().flag(Flag::Bold).color(ColorInAPlane::new(BasicColor::Red, Plane::Foreground));
-//! let fmt: Format = Format::new().bold().fg(BasicColor::Red);
-//! let fmt: Format = Flag::Bold.fg(BasicColor::Red);
-//! let fmt: Format = BasicColor::Red.in_fg().bold();
+//! let fmt: Format = Format::new().set(Flag::Bold, true).set(Plane::Foreground, Some(Color::RED.to_color()));
+//! let fmt: Format = Format::new().set_flag(Flag::Bold, true).set_color(Plane::Foreground, Some(Color::RED));
+//! let fmt: Format = Format::new().add(Flag::Bold).add(ColorInAPlane::new(Color::RED, Plane::Foreground));
+//! let fmt: Format = Format::new().flag(Flag::Bold).color(ColorInAPlane::new(Color::RED, Plane::Foreground));
+//! let fmt: Format = Format::new().bold().fg(Color::RED);
+//! let fmt: Format = Flag::Bold.fg(Color::RED);
+//! let fmt: Format = Color::RED.in_fg().bold();
 //! ```
 //!
 //! All types are immutable and implement [`Copy`], except for [`Formatted<C>`](Formatted),
@@ -50,13 +50,13 @@
 //! use fluent_ansi::{prelude::*, Formatted};
 //!
 //! let flag = Flag::Bold;
-//! let fg_color = BasicColor::Red.in_fg();
-//! let format = BasicColor::Red.in_fg().bold();
+//! let fg_color = Color::RED.in_fg();
+//! let format = Color::RED.in_fg().bold();
 //!
 //! assert_eq!(format!("{}", Flag::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
-//! assert_eq!(format!("{}", BasicColor::Red.in_fg().applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
-//! assert_eq!(format!("{}", BasicColor::Red.in_fg().bold().applied_to("Some content")), "\x1b[1;31mSome content\x1b[0m");
-//! assert_eq!(format!("{}", Formatted::new("Some content").bold().fg(BasicColor::Red)), "\x1b[1;31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Color::RED.in_fg().applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Color::RED.in_fg().bold().applied_to("Some content")), "\x1b[1;31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Formatted::new("Some content").bold().fg(Color::RED)), "\x1b[1;31mSome content\x1b[0m");
 //! ```
 //!
 //! # Formatting elements
@@ -78,7 +78,7 @@
 //! use fluent_ansi::prelude::*;
 //!
 //! assert_eq!(format!("{}", Flag::Bold), "\x1b[1m");
-//! assert_eq!(format!("{}", Flag::Bold.fg(BasicColor::Red)), "\x1b[1;31m");
+//! assert_eq!(format!("{}", Flag::Bold.fg(Color::RED)), "\x1b[1;31m");
 //! assert_eq!(format!("{}", Flag::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 //! ```
 //!
@@ -93,13 +93,13 @@
 //! use fluent_ansi::{prelude::*, ColorInAPlane, Plane};
 //!
 //! // Both lines below are equivalent
-//! let red_in_foreground: ColorInAPlane = BasicColor::Red.in_fg();
-//! let red_in_foreground: ColorInAPlane = BasicColor::Red.in_plane(Plane::Foreground);
+//! let red_in_foreground: ColorInAPlane = Color::RED.in_fg();
+//! let red_in_foreground: ColorInAPlane = Color::RED.in_plane(Plane::Foreground);
 //! assert_eq!(format!("{red_in_foreground}"), "\x1b[31m");
 //!
 //! // Both lines below are equivalent
-//! let red_in_background: ColorInAPlane = BasicColor::Red.in_bg();
-//! let red_in_background: ColorInAPlane = BasicColor::Red.in_plane(Plane::Background);
+//! let red_in_background: ColorInAPlane = Color::RED.in_bg();
+//! let red_in_background: ColorInAPlane = Color::RED.in_plane(Plane::Background);
 //! assert_eq!(format!("{red_in_background}"), "\x1b[41m");
 //! ```
 //!
@@ -175,7 +175,7 @@
 //! ```
 //! use fluent_ansi::{prelude::*, Reset};
 //!
-//! let format = BasicColor::Red.in_fg().bold();
+//! let format = Color::RED.in_fg().bold();
 //! let output = format!("{format}Some content{Reset}");
 //!
 //! assert_eq!(output, "\x1b[1;31mSome content\x1b[0m");
@@ -205,10 +205,10 @@ mod to_format_set;
 /// ```
 /// use fluent_ansi::prelude::*;
 ///
-/// let formatted = BasicColor::Red.in_fg().bold().applied_to("Some content");
+/// let formatted = Color::RED.in_fg().bold().applied_to("Some content");
 /// ```
 pub mod prelude {
-    pub use crate::color::{BasicColor, ColorKind, EightBitColor, RGBColor};
+    pub use crate::color::{Color, ColorKind};
     pub use crate::{AppliedTo, Flag, FormatSet, ToFormatSet};
 }
 
