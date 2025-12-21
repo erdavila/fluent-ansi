@@ -22,13 +22,13 @@ pub struct EightBitColor(pub u8);
 impl EightBitColor {
     /// Creates a new 8-bit color with the given color number (0-255).
     #[must_use]
-    pub fn new(number: u8) -> Self {
+    pub const fn new(number: u8) -> Self {
         EightBitColor(number)
     }
 
     /// Returns the color number of this 8-bit color.
     #[must_use]
-    pub fn get_number(self) -> u8 {
+    pub const fn get_number(self) -> u8 {
         self.0
     }
 }

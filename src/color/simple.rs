@@ -27,7 +27,7 @@ pub struct SimpleColor {
 impl SimpleColor {
     /// Creates a new simple, non-bright color.
     #[must_use]
-    pub fn new(basic_color: BasicColor) -> Self {
+    pub const fn new(basic_color: BasicColor) -> Self {
         Self {
             basic_color,
             bright: false,
@@ -36,13 +36,13 @@ impl SimpleColor {
 
     /// Creates a new bright simple color.
     #[must_use]
-    pub fn new_bright(basic_color: BasicColor) -> Self {
+    pub const fn new_bright(basic_color: BasicColor) -> Self {
         Self::new(basic_color).bright()
     }
 
     /// Returns a bright variant of this simple color.
     #[must_use]
-    pub fn bright(self) -> Self {
+    pub const fn bright(self) -> Self {
         Self {
             bright: true,
             ..self
@@ -51,13 +51,13 @@ impl SimpleColor {
 
     /// Returns the basic color of this simple color.
     #[must_use]
-    pub fn get_basic_color(self) -> BasicColor {
+    pub const fn get_basic_color(self) -> BasicColor {
         self.basic_color
     }
 
     /// Returns whether this simple color is bright.
     #[must_use]
-    pub fn is_bright(self) -> bool {
+    pub const fn is_bright(self) -> bool {
         self.bright
     }
 }

@@ -32,7 +32,7 @@ pub struct RGBColor {
 impl RGBColor {
     /// Creates a new RGB color with the given red, green, and blue components.
     #[must_use]
-    pub fn new(r: u8, g: u8, b: u8) -> Self {
+    pub const fn new(r: u8, g: u8, b: u8) -> Self {
         Self { r, g, b }
     }
 }

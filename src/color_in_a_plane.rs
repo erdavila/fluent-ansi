@@ -36,13 +36,13 @@ impl ColorInAPlane {
 
     /// Gets the color.
     #[must_use]
-    pub fn get_color(self) -> Color {
+    pub const fn get_color(self) -> Color {
         self.color
     }
 
     /// Gets the plane.
     #[must_use]
-    pub fn get_plane(self) -> Plane {
+    pub const fn get_plane(self) -> Plane {
         self.plane
     }
 }

@@ -33,7 +33,7 @@ pub enum Flag {
 
 impl Flag {
     #[must_use]
-    pub(crate) fn get_code(self) -> u8 {
+    pub(crate) const fn get_code(self) -> u8 {
         match self {
             Flag::Bold => 1,
             Flag::Faint => 2,
@@ -50,7 +50,7 @@ impl Flag {
     }
 
     #[must_use]
-    fn bit_mask(self) -> u16 {
+    const fn bit_mask(self) -> u16 {
         let bit_index = self as u16;
         1 << bit_index
     }

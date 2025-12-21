@@ -17,8 +17,12 @@ pub struct Style {
 impl Style {
     /// Creates a new, empty `Style` value.
     #[must_use]
-    pub fn new() -> Self {
-        Style::default()
+    pub const fn new() -> Self {
+        Style {
+            flags: 0,
+            fg: None,
+            bg: None,
+        }
     }
 }
 

@@ -11,22 +11,22 @@ pub struct Styled<C: Display> {
 impl<C: Display> Styled<C> {
     /// Creates a new `Styled<C>` value with the given content and empty style.
     #[must_use]
-    pub fn new(content: C) -> Self {
+    pub const fn new(content: C) -> Self {
         Self {
             content,
-            style: Style::default(),
+            style: Style::new(),
         }
     }
 
     /// Gets a reference to the enclosed content.
     #[must_use]
-    pub fn get_content(&self) -> &C {
+    pub const fn get_content(&self) -> &C {
         &self.content
     }
 
     /// Returns a new `Styled<C2>` value with the same style and the given content.
     #[must_use]
-    pub fn with_content<C2: Display>(&self, content: C2) -> Styled<C2> {
+    pub const fn with_content<C2: Display>(&self, content: C2) -> Styled<C2> {
         Styled {
             content,
             style: self.style,
@@ -41,7 +41,7 @@ impl<C: Display> Styled<C> {
 
     /// Gets the current style.
     #[must_use]
-    pub fn get_style(&self) -> Style {
+    pub const fn get_style(&self) -> Style {
         self.style
     }
 

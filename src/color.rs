@@ -116,13 +116,13 @@ impl Color {
 
     /// Create an 8-bit color from the given value.
     #[must_use]
-    pub fn eight_bit(value: u8) -> EightBitColor {
+    pub const fn eight_bit(value: u8) -> EightBitColor {
         EightBitColor::new(value)
     }
 
     /// Create an RGB color from the given red, green, and blue components.
     #[must_use]
-    pub fn rgb(r: u8, g: u8, b: u8) -> RGBColor {
+    pub const fn rgb(r: u8, g: u8, b: u8) -> RGBColor {
         RGBColor::new(r, g, b)
     }
 }
