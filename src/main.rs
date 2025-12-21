@@ -56,20 +56,13 @@ fn simple_colors() {
         (Color::CYAN, "Cyan"),
         (Color::WHITE, "White"),
     ];
-    print_subtitle("Basic");
     for (color, name) in colors {
         println!(
-            "{} {} {name}",
-            color.in_fg().applied_to("Foreground"),
-            color.in_bg().applied_to("Background")
-        );
-    }
-    print_subtitle("Bright");
-    for (color, name) in colors {
-        println!(
-            "{} {} Bright {name}",
-            color.bright().in_fg().applied_to("Foreground"),
-            color.bright().in_bg().applied_to("Background")
+            "{}│{}│{}│{}│ {name}",
+            color.in_fg().applied_to(" Normal "),
+            color.bright().in_fg().applied_to(" Bright "),
+            color.in_bg().applied_to(" Normal "),
+            color.bright().in_bg().applied_to(" Bright "),
         );
     }
 }
@@ -191,10 +184,6 @@ fn rgb() {
 
 fn print_title(title: &str) {
     println!("{}", Styled::new(format!("=== {title} ===")).bold());
-}
-
-fn print_subtitle(subtitle: &str) {
-    println!("{}", Styled::new(format!("--- {subtitle} ---")).bold());
 }
 
 fn calculate_rgb_color_for_eight_bit_color(eight_bit_color: EightBitColor) -> RGBColor {
