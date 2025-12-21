@@ -77,9 +77,15 @@ fn simple_colors() {
 fn eight_bit_colors() {
     print_title("Eight Bit Colors");
     for index in 0..=255u8 {
+        let color = EightBitColor(index);
+        let text_color =
+            RGBf64::from(calculate_rgb_color_for_eight_bit_color(color)).best_constrast_color();
+
         let content = format!(" {index:3} ");
-        let formatted = EightBitColor(index).in_bg().applied_to(content);
-        print!("{formatted}");
+        print!(
+            "{}",
+            color.in_bg().add(text_color.in_fg()).applied_to(content)
+        );
         match index {
             7 | 15 | 51 | 87 | 123 | 159 | 195 | 231 | 255 => println!(),
             _ => {}
@@ -90,9 +96,14 @@ fn eight_bit_colors() {
 #[expect(clippy::similar_names)]
 fn rgb() {
     fn print_color(color: RGBf64) {
+        let text_color = color.best_constrast_color();
         let color = color.to_rgb_color();
+
         let hexcode = format!(" {:02x}{:02x}{:02x} ", color.r, color.g, color.b);
-        print!("{}", color.in_bg().applied_to(hexcode));
+        print!(
+            "{}",
+            color.in_bg().add(text_color.in_fg()).applied_to(hexcode)
+        );
     }
 
     const CELL_WIDTH: u16 = 8; // 6 for hexcode + 2 for padding
@@ -184,4 +195,70 @@ fn print_title(title: &str) {
 
 fn print_subtitle(subtitle: &str) {
     println!("{}", Styled::new(format!("--- {subtitle} ---")).bold());
+}
+
+fn calculate_rgb_color_for_eight_bit_color(eight_bit_color: EightBitColor) -> RGBColor {
+    let code = eight_bit_color.get_number();
+
+    // Algorithm from:
+    // https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+    // https://github.com/ThomasDickey/xterm-snapshots/blob/master/256colres.pl
+    if code < 16 {
+        // Basic and bright colors
+        let level = if code > 8 {
+            255
+        } else if code == 7 {
+            229
+        } else {
+            205
+        };
+
+        let r = if code == 8 {
+            127
+        } else if code & 1 != 0 {
+            level
+        } else if code == 12 {
+            92
+        } else {
+            0
+        };
+        let g = if code == 8 {
+            127
+        } else if code & 2 != 0 {
+            level
+        } else if code == 12 {
+            92
+        } else {
+            0
+        };
+        let b = if code == 8 {
+            127
+        } else if code == 4 {
+            238
+        } else if code & 4 != 0 {
+            level
+        } else {
+            0
+        };
+        Color::rgb(r, g, b)
+    } else if code < 232 {
+        // 6x6x6 color cube
+        fn transform(component: u8) -> u8 {
+            if component == 0 {
+                0
+            } else {
+                55 + component * 40
+            }
+        }
+        let n = code - 16;
+
+        let r = transform(n % 6);
+        let g = transform((n / 6) % 6);
+        let b = transform(n / 36);
+        Color::rgb(r, g, b)
+    } else {
+        // Grayscale from black to white
+        let level = 8 + (code - 232) * 10;
+        Color::rgb(level, level, level)
+    }
 }
