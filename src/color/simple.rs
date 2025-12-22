@@ -1,9 +1,6 @@
 use core::fmt::Result;
 
-use crate::{
-    CodeWriter, Plane,
-    color::{ColorKind, WriteColorCodes},
-};
+use crate::{CodeWriter, Plane, color::WriteColorCodes};
 
 /// A simple color type representing the 16 basic terminal colors (8 basic colors + bright variants).
 ///
@@ -61,8 +58,6 @@ impl SimpleColor {
         self.bright
     }
 }
-
-impl ColorKind for SimpleColor {}
 
 impl WriteColorCodes for SimpleColor {
     fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
@@ -138,11 +133,12 @@ impl BasicColor {
     }
 }
 
-impl ColorKind for BasicColor {}
-
 #[cfg(test)]
 mod tests {
-    use crate::{ColorInAPlane, Plane, color::Color};
+    use crate::{
+        ColorInAPlane, Plane,
+        color::{Color, ColorKind as _},
+    };
 
     use super::*;
 

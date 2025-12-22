@@ -85,6 +85,8 @@ pub(crate) trait WriteColorCodes: ColorKind {
     fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result;
 }
 
+impl<C: Into<Color>> ColorKind for C {}
+
 /// An enum representing all supported color types.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Color {
@@ -126,8 +128,6 @@ impl Color {
         RGBColor::new(r, g, b)
     }
 }
-
-impl ColorKind for Color {}
 
 impl WriteColorCodes for Color {
     fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {

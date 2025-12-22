@@ -1,9 +1,6 @@
 use core::fmt::Result;
 
-use crate::{
-    CodeWriter, Plane,
-    color::{ColorKind, WriteColorCodes},
-};
+use crate::{CodeWriter, Plane, color::WriteColorCodes};
 
 /// An 8-bit color type representing colors in the 256-color ANSI palette.
 ///
@@ -33,8 +30,6 @@ impl EightBitColor {
     }
 }
 
-impl ColorKind for EightBitColor {}
-
 impl WriteColorCodes for EightBitColor {
     fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
         let plane_code = match plane {
@@ -51,7 +46,10 @@ impl WriteColorCodes for EightBitColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::{ColorInAPlane, Plane, color::Color};
+    use crate::{
+        ColorInAPlane, Plane,
+        color::{Color, ColorKind as _},
+    };
 
     use super::*;
 

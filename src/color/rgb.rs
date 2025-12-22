@@ -1,9 +1,6 @@
 use core::fmt::Result;
 
-use crate::{
-    CodeWriter, Plane,
-    color::{ColorKind, WriteColorCodes},
-};
+use crate::{CodeWriter, Plane, color::WriteColorCodes};
 
 /// A type alias for [`RGBColor`].
 pub type RGB = RGBColor;
@@ -37,8 +34,6 @@ impl RGBColor {
     }
 }
 
-impl ColorKind for RGBColor {}
-
 impl WriteColorCodes for RGBColor {
     fn write_color_codes(self, plane: crate::Plane, writer: &mut CodeWriter) -> Result {
         let plane_code = match plane {
@@ -57,7 +52,10 @@ impl WriteColorCodes for RGBColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::{ColorInAPlane, Plane, color::Color};
+    use crate::{
+        ColorInAPlane, Plane,
+        color::{Color, ColorKind as _},
+    };
 
     use super::*;
 
