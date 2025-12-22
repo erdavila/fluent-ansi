@@ -14,7 +14,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-fluent-ansi = "0.1"
+fluent-ansi = "0.2.1"
 ```
 
 ## Usage
