@@ -145,9 +145,12 @@ mod tests {
     use crate::{
         Plane, assert_display,
         color::{BasicColor, ColorKind as _, SimpleColor},
+        test_to_style_set_methods,
     };
 
     use super::*;
+
+    test_to_style_set_methods!(Style::new(), Style::new());
 
     #[test]
     fn effect() {
@@ -166,8 +169,6 @@ mod tests {
         assert_display!(stl.overline(), "\x1b[53m");
 
         let bold_style = stl.bold();
-        assert_eq!(bold_style.effect(Effect::Faint), stl.bold().faint());
-        assert_eq!(bold_style.add(Effect::Faint), stl.bold().faint());
         assert_eq!(bold_style.set_effect(Effect::Bold, false), stl);
         assert_eq!(bold_style.set_effect(Effect::Bold, true), stl.bold());
         assert_eq!(bold_style.set_effect(Effect::Faint, false), stl.bold());
@@ -229,40 +230,6 @@ mod tests {
         let stl = Style::new();
         assert_eq!(stl.get_color(Plane::Foreground), None);
         assert_eq!(stl.get_color(Plane::Background), None);
-
-        let stl = Style::new().fg(BasicColor::Red).bg(BasicColor::Green);
-        assert_eq!(
-            stl.get_color(Plane::Foreground),
-            Some(Color::Simple(SimpleColor::new(BasicColor::Red)))
-        );
-        assert_eq!(
-            stl.get_color(Plane::Background),
-            Some(Color::Simple(SimpleColor::new(BasicColor::Green)))
-        );
-
-        let stl = Style::new()
-            .color(ColorInAPlane::new(BasicColor::Yellow, Plane::Foreground))
-            .color(ColorInAPlane::new(BasicColor::Blue, Plane::Background));
-        assert_eq!(
-            stl.get_color(Plane::Foreground),
-            Some(Color::Simple(SimpleColor::new(BasicColor::Yellow)))
-        );
-        assert_eq!(
-            stl.get_color(Plane::Background),
-            Some(Color::Simple(SimpleColor::new(BasicColor::Blue)))
-        );
-
-        let stl = Style::new()
-            .add(ColorInAPlane::new(BasicColor::White, Plane::Foreground))
-            .add(ColorInAPlane::new(BasicColor::Black, Plane::Background));
-        assert_eq!(
-            stl.get_color(Plane::Foreground),
-            Some(Color::Simple(SimpleColor::new(BasicColor::White)))
-        );
-        assert_eq!(
-            stl.get_color(Plane::Background),
-            Some(Color::Simple(SimpleColor::new(BasicColor::Black)))
-        );
 
         let stl = stl
             .set_color(Plane::Foreground, Some(BasicColor::Magenta))
@@ -330,12 +297,6 @@ mod tests {
     #[test]
     fn default() {
         assert_display!(Style::default(), "\x1b[0m");
-    }
-
-    #[test]
-    fn to_style_set() {
-        let stl = Style::new().bold().fg(BasicColor::Red);
-        assert_eq!(stl.to_style_set(), stl);
     }
 
     #[test]
