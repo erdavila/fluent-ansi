@@ -55,12 +55,14 @@ impl BasicColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        ColorInAPlane, Plane,
-        color::{Color, ColorKind as _},
-    };
+    use crate::{color::BasicColor, test_color_kind_methods};
 
     use super::*;
+
+    test_color_kind_methods!(
+        BasicColor::Red,
+        Color::Simple(SimpleColor::new(BasicColor::Red))
+    );
 
     #[test]
     fn bright() {
@@ -71,42 +73,10 @@ mod tests {
     }
 
     #[test]
-    fn in_fg() {
-        assert_eq!(
-            BasicColor::Red.in_fg(),
-            ColorInAPlane::new(BasicColor::Red, Plane::Foreground)
-        );
-        assert_eq!(
-            BasicColor::Red.in_plane(Plane::Foreground),
-            ColorInAPlane::new(BasicColor::Red, Plane::Foreground)
-        );
-    }
-
-    #[test]
-    fn in_bg() {
-        assert_eq!(
-            BasicColor::Red.in_bg(),
-            ColorInAPlane::new(BasicColor::Red, Plane::Background)
-        );
-        assert_eq!(
-            BasicColor::Red.in_plane(Plane::Background),
-            ColorInAPlane::new(BasicColor::Red, Plane::Background)
-        );
-    }
-
-    #[test]
     fn to_simple_color() {
         assert_eq!(
             BasicColor::Red.to_simple_color(),
             SimpleColor::new(BasicColor::Red)
-        );
-    }
-
-    #[test]
-    fn to_color() {
-        assert_eq!(
-            BasicColor::Red.to_color(),
-            Color::Simple(SimpleColor::new(BasicColor::Red))
         );
     }
 }

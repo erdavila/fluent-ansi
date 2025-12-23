@@ -86,9 +86,27 @@ impl From<BasicColor> for SimpleColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::color::{Color, ColorKind as _};
+    use crate::test_color_kind_methods;
 
     use super::*;
+
+    test_color_kind_methods!(
+        non_bright;
+        SimpleColor::new(Color::RED),
+        Color::Simple(SimpleColor {
+            basic_color: BasicColor::Red,
+            bright: false
+        })
+    );
+
+    test_color_kind_methods!(
+        bright;
+        SimpleColor::new_bright(Color::RED),
+        Color::Simple(SimpleColor {
+            basic_color: BasicColor::Red,
+            bright: true
+        })
+    );
 
     #[test]
     fn new() {
@@ -127,15 +145,6 @@ mod tests {
 
         assert_eq!(simple_regular_color.bright(), simple_bright_color);
         assert_eq!(simple_bright_color.bright(), simple_bright_color);
-    }
-
-    #[test]
-    fn to_color() {
-        let simple_color = SimpleColor::new(BasicColor::Red);
-        assert_eq!(
-            simple_color.to_color(),
-            Color::Simple(SimpleColor::new(BasicColor::Red))
-        );
     }
 
     #[test]
