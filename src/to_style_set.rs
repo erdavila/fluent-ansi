@@ -112,3 +112,96 @@ pub trait ToStyleSet: Sized {
     #[must_use]
     fn to_style_set(self) -> Self::StyleSet;
 }
+
+#[cfg(test)]
+mod tests {
+    /// Includes tests for the [`ToStyleSet`] trait methods.
+    #[macro_export]
+    macro_rules! test_to_style_set_methods {
+        ($mod:ident; $value:expr, $style_set:expr) => {
+            mod $mod {
+                $crate::test_to_style_set_methods!($value, $style_set);
+            }
+        };
+        ($value:expr, $style_set:expr) => {
+            mod to_style_set {
+                use crate::{color::*, *};
+
+                #[test]
+                fn effects() {
+                    let value = $value;
+
+                    macro_rules! assert_effect_method {
+                        ($effect:expr, $method:ident) => {{
+                            let expected_style = $style_set.$method();
+
+                            assert_eq!(
+                                value.$method(),
+                                expected_style,
+                                "{}.{}()",
+                                stringify!($value),
+                                stringify!($method)
+                            );
+                            assert_eq!(
+                                value.effect($effect),
+                                expected_style,
+                                "{}.effect({})",
+                                stringify!($value),
+                                stringify!($effect)
+                            );
+                            assert_eq!(
+                                value.add($effect),
+                                expected_style,
+                                "{}.add({})",
+                                stringify!($value),
+                                stringify!($effect)
+                            );
+                        }};
+                    }
+
+                    assert_effect_method!(Effect::Bold, bold);
+                    assert_effect_method!(Effect::Faint, faint);
+                    assert_effect_method!(Effect::Italic, italic);
+                    assert_effect_method!(Effect::Underline, underline);
+                    assert_effect_method!(Effect::Blink, blink);
+                    assert_effect_method!(Effect::Reverse, reverse);
+                    assert_effect_method!(Effect::Conceal, conceal);
+                    assert_effect_method!(Effect::Strikethrough, strikethrough);
+                    assert_effect_method!(Effect::DoubleUnderline, double_underline);
+                    assert_effect_method!(Effect::Overline, overline);
+                }
+
+                #[test]
+                fn colors() {
+                    let value = $value;
+
+                    macro_rules! assert_color {
+                        ($color:expr, $method:ident, $color_kind_method:ident) => {{
+                            let color_in_a_plane = $color.$color_kind_method();
+                            let expected_style = $style_set.$method($color);
+
+                            assert_eq!(value.$method($color), expected_style);
+                            assert_eq!(value.color(color_in_a_plane), expected_style);
+                            assert_eq!(value.add(color_in_a_plane), expected_style);
+                        }};
+                    }
+
+                    assert_color!(BasicColor::Red, fg, in_fg);
+                    assert_color!(BasicColor::Green, fg, in_fg);
+                    assert_color!(BasicColor::Red, bg, in_bg);
+                    assert_color!(BasicColor::Green, bg, in_bg);
+                }
+
+                #[test]
+                fn to_style_set() {
+                    assert_eq!(
+                        $value.to_style_set(),
+                        $style_set,
+                        "{}.to_style_set()",
+                        stringify!($value)
+                    );
+                }
+            }
+        };
+    }
+}

@@ -105,8 +105,9 @@ impl StyleAttribute for Plane {
 #[cfg(test)]
 mod tests {
     use crate::{
-        Effect, StyleSet as _, assert_display,
+        StyleSet as _, assert_display,
         color::{BasicColor, ColorKind as _, IndexedColor, RGBColor, SimpleColor},
+        test_to_style_set_methods,
     };
 
     use super::*;
@@ -127,44 +128,10 @@ mod tests {
         );
     }
 
-    #[test]
-    fn effect() {
-        let color_in_a_plane = BasicColor::Red.in_fg();
-
-        assert_eq!(
-            color_in_a_plane.bold(),
-            Style::new().fg(BasicColor::Red).bold()
-        );
-        assert_eq!(
-            color_in_a_plane.effect(Effect::Bold),
-            Style::new().fg(BasicColor::Red).bold()
-        );
-        assert_eq!(
-            color_in_a_plane.add(Effect::Bold),
-            Style::new().fg(BasicColor::Red).bold()
-        );
-    }
-    #[test]
-    fn add_color() {
-        let color_in_a_plane = BasicColor::Red.in_fg();
-
-        assert_eq!(
-            color_in_a_plane.fg(BasicColor::Green),
-            Style::new().fg(BasicColor::Green)
-        );
-        assert_eq!(
-            color_in_a_plane.bg(BasicColor::Green),
-            Style::new().fg(BasicColor::Red).bg(BasicColor::Green)
-        );
-        assert_eq!(
-            color_in_a_plane.color(BasicColor::Green.in_bg()),
-            Style::new().fg(BasicColor::Red).bg(BasicColor::Green)
-        );
-        assert_eq!(
-            color_in_a_plane.add(BasicColor::Green.in_bg()),
-            Style::new().fg(BasicColor::Red).bg(BasicColor::Green)
-        );
-    }
+    test_to_style_set_methods!(red_fg; ColorInAPlane::new_in_fg(BasicColor::Red), Style::new().fg(BasicColor::Red));
+    test_to_style_set_methods!(red_bg; ColorInAPlane::new_in_fg(BasicColor::Red), Style::new().fg(BasicColor::Red));
+    test_to_style_set_methods!(green_fg; ColorInAPlane::new_in_fg(BasicColor::Green), Style::new().fg(BasicColor::Green));
+    test_to_style_set_methods!(green_bg; ColorInAPlane::new_in_fg(BasicColor::Green), Style::new().fg(BasicColor::Green));
 
     #[test]
     fn applied_to() {
