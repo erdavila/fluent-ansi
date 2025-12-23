@@ -52,12 +52,22 @@ impl WriteColorCodes for RGBColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        ColorInAPlane, Plane,
-        color::{Color, ColorKind as _},
-    };
+    use crate::test_color_kind_methods;
 
     use super::*;
+
+    test_color_kind_methods!(
+        RGBColor {
+            r: 0,
+            g: 128,
+            b: 255
+        },
+        Color::RGB(RGBColor {
+            r: 0,
+            g: 128,
+            b: 255
+        })
+    );
 
     #[test]
     fn rgb() {
@@ -76,35 +86,5 @@ mod tests {
         assert_eq!(color_2.b, 255u8);
 
         assert_eq!(color_1, color_2);
-    }
-
-    #[test]
-    fn in_fg() {
-        let color = RGBColor::new(0, 128, 255);
-
-        assert_eq!(color.in_fg(), ColorInAPlane::new(color, Plane::Foreground));
-        assert_eq!(
-            color.in_plane(Plane::Foreground),
-            ColorInAPlane::new(color, Plane::Foreground)
-        );
-    }
-
-    #[test]
-    fn in_bg() {
-        let color = RGBColor::new(0, 128, 255);
-
-        assert_eq!(color.in_bg(), ColorInAPlane::new(color, Plane::Background));
-        assert_eq!(
-            color.in_plane(Plane::Background),
-            ColorInAPlane::new(color, Plane::Background)
-        );
-    }
-
-    #[test]
-    fn to_color() {
-        assert_eq!(
-            RGBColor::new(0, 128, 255).to_color(),
-            Color::RGB(RGBColor::new(0, 128, 255))
-        );
     }
 }
