@@ -4,23 +4,23 @@ use crate::{CodeWriter, Plane, color::WriteColorCodes};
 
 /// An 8-bit color type representing colors in the 256-color ANSI palette.
 ///
-/// These colors are also available from the method [`Color::eight_bit()`](super::Color::eight_bit):
+/// These colors are also available from the method [`Color::indexed()`](super::Color::indexed):
 ///
 /// ```
-/// use fluent_ansi::{prelude::*, color::EightBitColor};
+/// use fluent_ansi::{prelude::*, color::IndexedColor};
 ///
-/// assert_eq!(Color::eight_bit(127), EightBitColor(127));
+/// assert_eq!(Color::indexed(127), IndexedColor(127));
 /// ```
 ///
 /// See Wikipedia's article on [8-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct EightBitColor(pub u8);
+pub struct IndexedColor(pub u8);
 
-impl EightBitColor {
+impl IndexedColor {
     /// Creates a new 8-bit color with the given color number (0-255).
     #[must_use]
     pub const fn new(number: u8) -> Self {
-        EightBitColor(number)
+        IndexedColor(number)
     }
 
     /// Returns the color number of this 8-bit color.
@@ -30,7 +30,7 @@ impl EightBitColor {
     }
 }
 
-impl WriteColorCodes for EightBitColor {
+impl WriteColorCodes for IndexedColor {
     fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
         let plane_code = match plane {
             Plane::Foreground => 38,
@@ -54,11 +54,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn eight_bit_color() {
-        let color_1 = EightBitColor(7);
+    fn indexed() {
+        let color_1 = IndexedColor(7);
         assert_eq!(color_1.get_number(), 7u8);
 
-        let color_2 = EightBitColor::new(7);
+        let color_2 = IndexedColor::new(7);
         assert_eq!(color_2.get_number(), 7u8);
 
         assert_eq!(color_1, color_2);
@@ -66,7 +66,7 @@ mod tests {
 
     #[test]
     fn in_fg() {
-        let color = EightBitColor(7);
+        let color = IndexedColor(7);
 
         assert_eq!(color.in_fg(), ColorInAPlane::new(color, Plane::Foreground));
         assert_eq!(
@@ -77,7 +77,7 @@ mod tests {
 
     #[test]
     fn in_bg() {
-        let color = EightBitColor(7);
+        let color = IndexedColor(7);
 
         assert_eq!(color.in_bg(), ColorInAPlane::new(color, Plane::Background));
         assert_eq!(
@@ -88,9 +88,6 @@ mod tests {
 
     #[test]
     fn to_color() {
-        assert_eq!(
-            EightBitColor(7).to_color(),
-            Color::EightBit(EightBitColor(7))
-        );
+        assert_eq!(IndexedColor(7).to_color(), Color::Indexed(IndexedColor(7)));
     }
 }
