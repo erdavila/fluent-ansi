@@ -161,7 +161,7 @@ mod tests {
         assert_display!(stl.blink(), "\x1b[5m");
         assert_display!(stl.reverse(), "\x1b[7m");
         assert_display!(stl.conceal(), "\x1b[8m");
-        assert_display!(stl.crossed_out(), "\x1b[9m");
+        assert_display!(stl.strikethrough(), "\x1b[9m");
         assert_display!(stl.double_underline(), "\x1b[21m");
         assert_display!(stl.overline(), "\x1b[53m");
 
