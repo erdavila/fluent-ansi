@@ -134,7 +134,7 @@ mod tests {
         assert_display!(stld.blink(), "\x1b[5mCONTENT\x1b[0m");
         assert_display!(stld.reverse(), "\x1b[7mCONTENT\x1b[0m");
         assert_display!(stld.conceal(), "\x1b[8mCONTENT\x1b[0m");
-        assert_display!(stld.crossed_out(), "\x1b[9mCONTENT\x1b[0m");
+        assert_display!(stld.strikethrough(), "\x1b[9mCONTENT\x1b[0m");
         assert_display!(stld.double_underline(), "\x1b[21mCONTENT\x1b[0m");
         assert_display!(stld.overline(), "\x1b[53mCONTENT\x1b[0m");
 

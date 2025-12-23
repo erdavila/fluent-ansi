@@ -21,8 +21,8 @@ pub enum Effect {
     Reverse,
     /// Conceal (hidden) styling.
     Conceal,
-    /// Crossed-out (strikethrough) styling.
-    CrossedOut,
+    /// Strikethrough styling.
+    Strikethrough,
     /// Double underline styling.
     DoubleUnderline,
     /// Overline styling.
@@ -40,7 +40,7 @@ impl Effect {
             Effect::Blink => 5,
             Effect::Reverse => 7,
             Effect::Conceal => 8,
-            Effect::CrossedOut => 9,
+            Effect::Strikethrough => 9,
             Effect::DoubleUnderline => 21,
             Effect::Overline => 53,
         }
@@ -162,7 +162,7 @@ mod tests {
         assert_display!(Effect::Blink, "\x1b[5m");
         assert_display!(Effect::Reverse, "\x1b[7m");
         assert_display!(Effect::Conceal, "\x1b[8m");
-        assert_display!(Effect::CrossedOut, "\x1b[9m");
+        assert_display!(Effect::Strikethrough, "\x1b[9m");
         assert_display!(Effect::DoubleUnderline, "\x1b[21m");
         assert_display!(Effect::Overline, "\x1b[53m");
     }
