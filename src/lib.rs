@@ -22,12 +22,12 @@
 //! ```
 //! use fluent_ansi::{prelude::*, ColorInAPlane, Style, Plane};
 //!
-//! let stl: Style = Style::new().set(Flag::Bold, true).set(Plane::Foreground, Some(Color::RED.to_color()));
-//! let stl: Style = Style::new().set_flag(Flag::Bold, true).set_color(Plane::Foreground, Some(Color::RED));
-//! let stl: Style = Style::new().add(Flag::Bold).add(ColorInAPlane::new(Color::RED, Plane::Foreground));
-//! let stl: Style = Style::new().flag(Flag::Bold).color(ColorInAPlane::new(Color::RED, Plane::Foreground));
+//! let stl: Style = Style::new().set(Effect::Bold, true).set(Plane::Foreground, Some(Color::RED.to_color()));
+//! let stl: Style = Style::new().set_effect(Effect::Bold, true).set_color(Plane::Foreground, Some(Color::RED));
+//! let stl: Style = Style::new().add(Effect::Bold).add(ColorInAPlane::new(Color::RED, Plane::Foreground));
+//! let stl: Style = Style::new().effect(Effect::Bold).color(ColorInAPlane::new(Color::RED, Plane::Foreground));
 //! let stl: Style = Style::new().bold().fg(Color::RED);
-//! let stl: Style = Flag::Bold.fg(Color::RED);
+//! let stl: Style = Effect::Bold.fg(Color::RED);
 //! let stl: Style = Color::RED.in_fg().bold();
 //! ```
 //!
@@ -49,7 +49,7 @@
 //! ```
 //! use fluent_ansi::{prelude::*, Styled};
 //!
-//! assert_eq!(format!("{}", Flag::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Color::RED.in_fg().applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Color::RED.in_fg().bold().applied_to("Some content")), "\x1b[1;31mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Styled::new("Some content").bold().fg(Color::RED)), "\x1b[1;31mSome content\x1b[0m");
@@ -57,7 +57,7 @@
 //!
 //! # Style elements
 //!
-//! Flags and colors are the style elements. They are combined into [`Style`] values, even if not explicitly.
+//! Effects and colors are the style elements. They are combined into [`Style`] values, even if not explicitly.
 //!
 //! Most of the methods are provided by traits that must be imported in order to make the methods available. The [`prelude`]
 //! includes those traits, and may be imported too:
@@ -66,16 +66,16 @@
 //! use fluent_ansi::prelude::*;
 //! ```
 //!
-//! ## Flags
+//! ## Effects
 //!
-//! Flags can be used on their own, combined with other style elements, or applied to some content:
+//! Effects can be used on their own, combined with other style elements, or applied to some content:
 //!
 //! ```
 //! use fluent_ansi::prelude::*;
 //!
-//! assert_eq!(format!("{}", Flag::Bold), "\x1b[1m");
-//! assert_eq!(format!("{}", Flag::Bold.fg(Color::RED)), "\x1b[1;31m");
-//! assert_eq!(format!("{}", Flag::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Effect::Bold), "\x1b[1m");
+//! assert_eq!(format!("{}", Effect::Bold.fg(Color::RED)), "\x1b[1;31m");
+//! assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 //! ```
 //!
 //! ## Colors
@@ -107,15 +107,15 @@
 //!
 //! ### Methods provided by the [`ToStyleSet`] trait
 //!
-//! The following methods _set_ or _add_ some styling, and are available in [`Flag`], [`ColorInAPlane`], [`Style`] and [`Styled<C>`] values.
+//! The following methods _set_ or _add_ some styling, and are available in [`Effect`], [`ColorInAPlane`], [`Style`] and [`Styled<C>`] values.
 //!
 //! | Method | To set what | Note |
 //! |--------|-------------|------|
-//! | [`bold()`](ToStyleSet::bold),<br/>[`italic()`](ToStyleSet::italic),<br/>etc.          | flag |
-//! | [`flag(Flag)`](ToStyleSet::flag)                                                      | flag |
+//! | [`bold()`](ToStyleSet::bold),<br/>[`italic()`](ToStyleSet::italic),<br/>etc.          | effect |
+//! | [`effect(Effect)`](ToStyleSet::effect)                                                | effect |
 //! | [`fg(impl Into<Color>)`](ToStyleSet::fg)<br/>[`bg(impl Into<Color>)`](ToStyleSet::bg) | color |
 //! | [`color(ColorInAPlane)`](ToStyleSet::color)                                           | color |
-//! | [`add(Flag)`](ToStyleSet::add)                                                        | flag | See note below. |
+//! | [`add(Effect)`](ToStyleSet::add)                                                      | effect | See note below. |
 //! | [`add(ColorInAPlane)`](ToStyleSet::add)                                               | color | See note below. |
 //!
 //! *Note*: there is in fact a single [`add()`](ToStyleSet::add) method that takes an <code>impl [StyleElement]</code> argument.
@@ -127,11 +127,11 @@
 //!
 //! | Method | To set what | Note |
 //! |--------|-------------|------|
-//! | [`set_flag(Flag, bool)`](StyleSet::set_flag)                        | flag |
+//! | [`set_effect(Effect, bool)`](StyleSet::set_effect)                  | effect |
 //! | [`set_color(Plane, Option<impl Into<Color>>)`](StyleSet::set_color) | color | See note \[1] below. |
-//! | [`set(Flag, bool)`](StyleSet::set)                                  | flag | See note \[2] below. |
+//! | [`set(Effect, bool)`](StyleSet::set)                                | effect | See note \[2] below. |
 //! | [`set(Plane, Option<Color>)`](StyleSet::set)                        | color | See note \[2] below. |
-//! | [`unset(Flag)`](StyleSet::unset)                                    | flag | See note \[3] below. |
+//! | [`unset(Effect)`](StyleSet::unset)                                  | effect | See note \[3] below. |
 //! | [`unset(Plane)`](StyleSet::unset)                                   | color | See note \[3] below. |
 //!
 //! *Note* \[1]: to clear a color with [`set_color()`](StyleSet::set_color), the color type must be specified in the `None` value:
@@ -154,10 +154,10 @@
 //!
 //! | Method | To get what | Note |
 //! |--------|-------------|------|
-//! | [`get_flag(Flag) -> bool`](StyleSet::get_flag)             | flag |
-//! | [`get_flags() -> GetFlags`](StyleSet::get_flag)            | flag | Returns an iterator on the flags that are currently set. |
+//! | [`get_effect(Effect) -> bool`](StyleSet::get_effect)       | effect |
+//! | [`get_effects() -> GetEffects`](StyleSet::get_effects)     | effect | Returns an iterator on the effects that are currently set. |
 //! | [`get_color(Plane) -> Option<Color>`](StyleSet::get_color) | color |
-//! | [`get(Flag) -> bool`](StyleSet::get)                       | flag | See note below. |
+//! | [`get(Effect) -> bool`](StyleSet::get)                     | effect | See note below. |
 //! | [`get(Plane) -> Option<Color>`](StyleSet::get)             | color | See note below. |
 //!
 //! *Note*: there is in fact a single [`get()`](StyleSet::get) method that is based on the [`StyleAttribute`] trait.
@@ -178,14 +178,14 @@
 //! ```
 
 pub use crate::{
-    applied_to::*, color_in_a_plane::*, flags::*, reset::*, style::*, style_set::*, styled::*,
+    applied_to::*, color_in_a_plane::*, effect::*, reset::*, style::*, style_set::*, styled::*,
     to_style::*, to_style_set::*,
 };
 
 mod applied_to;
 pub mod color;
 mod color_in_a_plane;
-mod flags;
+mod effect;
 mod reset;
 mod style;
 mod style_set;
@@ -196,7 +196,7 @@ mod to_style_set;
 /// Re-exports the minimal set of items to style some content.
 ///
 /// This module can be imported to have access to the minimal items to build a [`Styled<C>`] value from
-/// flags and colors.
+/// effects and colors.
 ///
 /// ```
 /// use fluent_ansi::prelude::*;
@@ -205,7 +205,7 @@ mod to_style_set;
 /// ```
 pub mod prelude {
     pub use crate::color::{Color, ColorKind};
-    pub use crate::{AppliedTo, Flag, StyleSet, ToStyleSet};
+    pub use crate::{AppliedTo, Effect, StyleSet, ToStyleSet};
 }
 
 #[cfg(test)]

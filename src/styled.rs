@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{GetFlags, Style, StyleElement, StyleSet, ToStyleSet};
+use crate::{GetEffects, Style, StyleElement, StyleSet, ToStyleSet};
 
 /// A value that associates some content with a specific style.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
@@ -64,8 +64,8 @@ impl<C: Display> ToStyleSet for Styled<C> {
     }
 }
 impl<C: Display> StyleSet for Styled<C> {
-    fn get_flags(&self) -> GetFlags<'_> {
-        self.style.get_flags()
+    fn get_effects(&self) -> GetEffects<'_> {
+        self.style.get_effects()
     }
 
     fn set<A: crate::StyleAttribute>(self, attr: A, value: A::Value) -> Self {
@@ -92,7 +92,7 @@ impl<C: Display> Display for Styled<C> {
 #[cfg(test)]
 mod tests {
     use crate::{
-        ColorInAPlane, Flag, Plane, assert_display,
+        ColorInAPlane, Effect, Plane, assert_display,
         color::{BasicColor, Color, ColorKind as _},
     };
 
@@ -123,7 +123,7 @@ mod tests {
     }
 
     #[test]
-    fn add_flag() {
+    fn add_effect() {
         let stld = Styled::new("CONTENT");
 
         assert_display!(stld, "CONTENT");
@@ -140,33 +140,36 @@ mod tests {
         assert_display!(stld.overline(), "\x1b[53mCONTENT\x1b[0m");
 
         let bold_stld = stld.bold();
-        assert_eq!(bold_stld.flag(Flag::Faint), stld.bold().faint());
-        assert_eq!(bold_stld.add(Flag::Faint), stld.bold().faint());
-        assert_eq!(bold_stld.set_flag(Flag::Bold, false), stld);
-        assert_eq!(bold_stld.set_flag(Flag::Bold, true), stld.bold());
-        assert_eq!(bold_stld.set_flag(Flag::Faint, false), stld.bold());
-        assert_eq!(bold_stld.set_flag(Flag::Faint, true), stld.bold().faint());
-        assert_eq!(bold_stld.get_flag(Flag::Bold), true);
-        assert_eq!(bold_stld.get_flag(Flag::Faint), false);
-        assert_eq!(bold_stld.set(Flag::Bold, false), stld);
-        assert_eq!(bold_stld.set(Flag::Bold, true), stld.bold());
-        assert_eq!(bold_stld.set(Flag::Faint, false), stld.bold());
-        assert_eq!(bold_stld.set(Flag::Faint, true), stld.bold().faint());
-        assert_eq!(bold_stld.get(Flag::Bold), true);
-        assert_eq!(bold_stld.get(Flag::Faint), false);
-        assert_eq!(bold_stld.unset(Flag::Bold), stld);
-        assert_eq!(bold_stld.unset(Flag::Faint), stld.bold());
+        assert_eq!(bold_stld.effect(Effect::Faint), stld.bold().faint());
+        assert_eq!(bold_stld.add(Effect::Faint), stld.bold().faint());
+        assert_eq!(bold_stld.set_effect(Effect::Bold, false), stld);
+        assert_eq!(bold_stld.set_effect(Effect::Bold, true), stld.bold());
+        assert_eq!(bold_stld.set_effect(Effect::Faint, false), stld.bold());
+        assert_eq!(
+            bold_stld.set_effect(Effect::Faint, true),
+            stld.bold().faint()
+        );
+        assert_eq!(bold_stld.get_effect(Effect::Bold), true);
+        assert_eq!(bold_stld.get_effect(Effect::Faint), false);
+        assert_eq!(bold_stld.set(Effect::Bold, false), stld);
+        assert_eq!(bold_stld.set(Effect::Bold, true), stld.bold());
+        assert_eq!(bold_stld.set(Effect::Faint, false), stld.bold());
+        assert_eq!(bold_stld.set(Effect::Faint, true), stld.bold().faint());
+        assert_eq!(bold_stld.get(Effect::Bold), true);
+        assert_eq!(bold_stld.get(Effect::Faint), false);
+        assert_eq!(bold_stld.unset(Effect::Bold), stld);
+        assert_eq!(bold_stld.unset(Effect::Faint), stld.bold());
     }
 
     #[test]
-    fn get_flags() {
+    fn get_effects() {
         let style = Style::new().bold().italic().underline();
-        let mut flags = style.get_flags();
+        let mut effects = style.get_effects();
 
-        assert_eq!(flags.next(), Some(Flag::Bold));
-        assert_eq!(flags.next(), Some(Flag::Italic));
-        assert_eq!(flags.next(), Some(Flag::Underline));
-        assert_eq!(flags.next(), None);
+        assert_eq!(effects.next(), Some(Effect::Bold));
+        assert_eq!(effects.next(), Some(Effect::Italic));
+        assert_eq!(effects.next(), Some(Effect::Underline));
+        assert_eq!(effects.next(), None);
     }
 
     #[test]
@@ -293,7 +296,9 @@ mod tests {
         );
         assert_display!(stld, "\x1b[1;4;31;42mCONTENT\x1b[0m");
         assert_eq!(
-            stld.unset(Flag::Bold).unset(Plane::Background).get_style(),
+            stld.unset(Effect::Bold)
+                .unset(Plane::Background)
+                .get_style(),
             Style::new().underline().fg(BasicColor::Red)
         )
     }

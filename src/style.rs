@@ -1,15 +1,15 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, ColorInAPlane, Flag, GetFlags, Plane, Reset, StyleAttribute, StyleElement, StyleSet,
-    Styled, ToStyle, ToStyleSet,
+    AppliedTo, ColorInAPlane, Effect, GetEffects, Plane, Reset, StyleAttribute, StyleElement,
+    StyleSet, Styled, ToStyle, ToStyleSet,
     color::{Color, WriteColorCodes as _},
 };
 
-/// A structure representing text styling with flags and colors.
+/// A structure representing text styling with effects and colors.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Style {
-    pub(crate) flags: u16,
+    pub(crate) effects: u16,
     pub(crate) fg: Option<Color>,
     pub(crate) bg: Option<Color>,
 }
@@ -19,7 +19,7 @@ impl Style {
     #[must_use]
     pub const fn new() -> Self {
         Style {
-            flags: 0,
+            effects: 0,
             fg: None,
             bg: None,
         }
@@ -51,8 +51,8 @@ impl AppliedTo for Style {
 }
 
 impl StyleSet for Style {
-    fn get_flags(&self) -> GetFlags<'_> {
-        GetFlags {
+    fn get_effects(&self) -> GetEffects<'_> {
+        GetEffects {
             inner: enum_iterator::all(),
             style: self,
         }
@@ -77,9 +77,9 @@ impl Display for Style {
                 fn fmt(&self, f: &mut Formatter<'_>) -> Result {
                     let mut code_writer = CodeWriter { f, any: false };
 
-                    for flag in enum_iterator::all::<Flag>() {
-                        if self.0.get_flag(flag) {
-                            code_writer.write_code(flag.get_code())?;
+                    for effect in enum_iterator::all::<Effect>() {
+                        if self.0.get_effect(effect) {
+                            code_writer.write_code(effect.get_code())?;
                         }
                     }
                     if let Some(color) = self.0.fg {
@@ -96,9 +96,9 @@ impl Display for Style {
     }
 }
 
-impl From<Flag> for Style {
-    fn from(flag: Flag) -> Self {
-        Style::new().flag(flag)
+impl From<Effect> for Style {
+    fn from(effect: Effect) -> Self {
+        Style::new().effect(effect)
     }
 }
 
@@ -150,7 +150,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn flag() {
+    fn effect() {
         let stl = Style::new();
 
         assert_display!(stl, "\x1b[0m");
@@ -167,33 +167,36 @@ mod tests {
         assert_display!(stl.overline(), "\x1b[53m");
 
         let bold_style = stl.bold();
-        assert_eq!(bold_style.flag(Flag::Faint), stl.bold().faint());
-        assert_eq!(bold_style.add(Flag::Faint), stl.bold().faint());
-        assert_eq!(bold_style.set_flag(Flag::Bold, false), stl);
-        assert_eq!(bold_style.set_flag(Flag::Bold, true), stl.bold());
-        assert_eq!(bold_style.set_flag(Flag::Faint, false), stl.bold());
-        assert_eq!(bold_style.set_flag(Flag::Faint, true), stl.bold().faint());
-        assert_eq!(bold_style.get_flag(Flag::Bold), true);
-        assert_eq!(bold_style.get_flag(Flag::Faint), false);
-        assert_eq!(bold_style.set(Flag::Bold, false), stl);
-        assert_eq!(bold_style.set(Flag::Bold, true), stl.bold());
-        assert_eq!(bold_style.set(Flag::Faint, false), stl.bold());
-        assert_eq!(bold_style.set(Flag::Faint, true), stl.bold().faint());
-        assert_eq!(bold_style.get(Flag::Bold), true);
-        assert_eq!(bold_style.get(Flag::Faint), false);
-        assert_eq!(bold_style.unset(Flag::Bold), stl);
-        assert_eq!(bold_style.unset(Flag::Faint), stl.bold());
+        assert_eq!(bold_style.effect(Effect::Faint), stl.bold().faint());
+        assert_eq!(bold_style.add(Effect::Faint), stl.bold().faint());
+        assert_eq!(bold_style.set_effect(Effect::Bold, false), stl);
+        assert_eq!(bold_style.set_effect(Effect::Bold, true), stl.bold());
+        assert_eq!(bold_style.set_effect(Effect::Faint, false), stl.bold());
+        assert_eq!(
+            bold_style.set_effect(Effect::Faint, true),
+            stl.bold().faint()
+        );
+        assert_eq!(bold_style.get_effect(Effect::Bold), true);
+        assert_eq!(bold_style.get_effect(Effect::Faint), false);
+        assert_eq!(bold_style.set(Effect::Bold, false), stl);
+        assert_eq!(bold_style.set(Effect::Bold, true), stl.bold());
+        assert_eq!(bold_style.set(Effect::Faint, false), stl.bold());
+        assert_eq!(bold_style.set(Effect::Faint, true), stl.bold().faint());
+        assert_eq!(bold_style.get(Effect::Bold), true);
+        assert_eq!(bold_style.get(Effect::Faint), false);
+        assert_eq!(bold_style.unset(Effect::Bold), stl);
+        assert_eq!(bold_style.unset(Effect::Faint), stl.bold());
     }
 
     #[test]
-    fn get_flags() {
+    fn get_effects() {
         let style = Style::new().bold().italic().underline();
-        let mut flags = style.get_flags();
+        let mut effects = style.get_effects();
 
-        assert_eq!(flags.next(), Some(Flag::Bold));
-        assert_eq!(flags.next(), Some(Flag::Italic));
-        assert_eq!(flags.next(), Some(Flag::Underline));
-        assert_eq!(flags.next(), None);
+        assert_eq!(effects.next(), Some(Effect::Bold));
+        assert_eq!(effects.next(), Some(Effect::Italic));
+        assert_eq!(effects.next(), Some(Effect::Underline));
+        assert_eq!(effects.next(), None);
     }
 
     #[test]
@@ -312,7 +315,7 @@ mod tests {
             .bg(BasicColor::Green);
         assert_display!(stl, "\x1b[1;4;31;42m");
         assert_eq!(
-            stl.unset(Flag::Bold).unset(Plane::Background),
+            stl.unset(Effect::Bold).unset(Plane::Background),
             Style::new().underline().fg(BasicColor::Red)
         )
     }
@@ -343,8 +346,8 @@ mod tests {
     }
 
     #[test]
-    fn from_flag() {
-        assert_eq!(Style::from(Flag::Bold), Style::new().bold());
+    fn from_effect() {
+        assert_eq!(Style::from(Effect::Bold), Style::new().bold());
     }
 
     #[test]
