@@ -1,4 +1,4 @@
-use crate::{AppliedTo, ColorInAPlane, Effect, Style, StyleSet, color::Color};
+use crate::{AppliedTo, ColorInAPlane, Effect, Style, StyleSet, UnderlineStyle, color::Color};
 
 /// An element that can be added to a [`Style`].
 ///
@@ -36,10 +36,28 @@ pub trait ToStyleSet: Sized {
         self.effect(Effect::Italic)
     }
 
-    /// Sets the underline effect.
+    /// Sets the solid underline effect.
     #[must_use]
     fn underline(self) -> Self::StyleSet {
         self.effect(Effect::Underline)
+    }
+
+    /// Sets the curly underline effect.
+    #[must_use]
+    fn curly_underline(self) -> Self::StyleSet {
+        self.effect(Effect::CurlyUnderline)
+    }
+
+    /// Sets the dotted underline effect.
+    #[must_use]
+    fn dotted_underline(self) -> Self::StyleSet {
+        self.effect(Effect::DottedUnderline)
+    }
+
+    /// Sets the dashed underline effect.
+    #[must_use]
+    fn dashed_underline(self) -> Self::StyleSet {
+        self.effect(Effect::DashedUnderline)
     }
 
     /// Sets the blink effect.
@@ -80,8 +98,14 @@ pub trait ToStyleSet: Sized {
 
     /// Sets the given effect.
     #[must_use]
-    fn effect(self, effect: Effect) -> Self::StyleSet {
-        self.add(effect)
+    fn effect(self, effect: impl Into<Effect>) -> Self::StyleSet {
+        self.add(effect.into())
+    }
+
+    /// Sets the underline style.
+    #[must_use]
+    fn underline_style(self, underline_style: UnderlineStyle) -> Self::StyleSet {
+        self.add(underline_style)
     }
 
     /// Sets the foreground color.
@@ -169,6 +193,45 @@ mod tests {
                     assert_effect_method!(Effect::Strikethrough, strikethrough);
                     assert_effect_method!(Effect::DoubleUnderline, double_underline);
                     assert_effect_method!(Effect::Overline, overline);
+                }
+
+                #[test]
+                fn underline_styles() {
+                    let value = $value;
+
+                    macro_rules! assert_effect_method {
+                        ($underline_style:expr, $method:ident) => {{
+                            let expected_style = $style_set.$method();
+
+                            assert_eq!(
+                                value.underline_style($underline_style),
+                                expected_style,
+                                "{}.effect({})",
+                                stringify!($value),
+                                stringify!($effect)
+                            );
+                            assert_eq!(
+                                value.effect($underline_style),
+                                expected_style,
+                                "{}.effect({})",
+                                stringify!($value),
+                                stringify!($effect)
+                            );
+                            assert_eq!(
+                                value.add($underline_style),
+                                expected_style,
+                                "{}.add({})",
+                                stringify!($value),
+                                stringify!($effect)
+                            );
+                        }};
+                    }
+
+                    assert_effect_method!(UnderlineStyle::Solid, underline);
+                    assert_effect_method!(UnderlineStyle::Curly, curly_underline);
+                    assert_effect_method!(UnderlineStyle::Dotted, dotted_underline);
+                    assert_effect_method!(UnderlineStyle::Dashed, dashed_underline);
+                    assert_effect_method!(UnderlineStyle::Double, double_underline);
                 }
 
                 #[test]

@@ -1,4 +1,6 @@
-use crate::{Effect, Plane, Style, ToStyleSet, color::Color};
+use crate::{
+    Effect, GetEffects, Plane, Style, ToStyleSet, Underline, UnderlineStyle, color::Color,
+};
 
 /// A trait to represent an attribute that can be set or retrieved from a [`Style`].
 pub trait StyleAttribute {
@@ -21,19 +23,31 @@ pub trait StyleAttribute {
 pub trait StyleSet: ToStyleSet<StyleSet = Self> {
     /// Sets the given effect to the specified value.
     #[must_use]
-    fn set_effect(self, effect: Effect, value: bool) -> Self {
-        self.set(effect, value)
+    fn set_effect(self, effect: impl Into<Effect>, value: bool) -> Self {
+        self.set(effect.into(), value)
     }
 
     /// Gets whether the given effect is set.
     #[must_use]
-    fn get_effect(&self, effect: Effect) -> bool {
-        self.get(effect)
+    fn get_effect(&self, effect: impl Into<Effect>) -> bool {
+        self.get(effect.into())
     }
 
     /// Returns an iterator over the effects that are currently set.
     #[must_use]
-    fn get_effects(&self) -> GetEffects<'_>;
+    fn get_effects(&self) -> GetEffects;
+
+    /// Sets the underline style.
+    #[must_use]
+    fn set_underline_style(self, underline_style: Option<UnderlineStyle>) -> Self {
+        self.set(Underline, underline_style)
+    }
+
+    /// Gets the underline style.
+    #[must_use]
+    fn get_underline_style(&self) -> Option<UnderlineStyle> {
+        UnderlineStyle::all().find(|&underline_style| self.get_effect(underline_style.to_effect()))
+    }
 
     /// Sets the color for the given plane (foreground or background).
     #[must_use]
@@ -60,21 +74,6 @@ pub trait StyleSet: ToStyleSet<StyleSet = Self> {
     #[must_use]
     fn unset<A: StyleAttribute>(self, attr: A) -> Self {
         self.set(attr, A::Value::default())
-    }
-}
-
-/// An iterator over the effects that are currently set in a [`Style`] or [`Styled<C>`](crate::Styled).
-pub struct GetEffects<'a> {
-    pub(crate) inner: enum_iterator::All<Effect>,
-    pub(crate) style: &'a Style,
-}
-impl Iterator for GetEffects<'_> {
-    type Item = Effect;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.inner
-            .by_ref()
-            .find(|&effect| self.style.get_effect(effect))
     }
 }
 
@@ -131,6 +130,81 @@ mod tests {
                     assert_eq!(effects.next(), Some(Effect::Italic));
                     assert_eq!(effects.next(), Some(Effect::Underline));
                     assert_eq!(effects.next(), None);
+                }
+
+                #[test]
+                fn underline_styles() {
+                    let style_set = $empty_style_set;
+                    assert_eq!(style_set.get_underline_style(), None);
+                    assert_eq!(style_set.get(Underline), None);
+
+                    {
+                        let style_set =
+                            $empty_style_set.set_underline_style(Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set, $empty_style_set.underline());
+                        assert_eq!(style_set.get_underline_style(), Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set.get(Underline), Some(UnderlineStyle::Solid));
+
+                        let style_set = style_set.set_underline_style(None);
+                        assert_eq!(style_set, $empty_style_set);
+                        assert_eq!(style_set.get_underline_style(), None);
+                        assert_eq!(style_set.get(Underline), None);
+                    }
+
+                    {
+                        let style_set =
+                            $empty_style_set.set(Underline, Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set, $empty_style_set.underline());
+                        assert_eq!(style_set.get_underline_style(), Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set.get(Underline), Some(UnderlineStyle::Solid));
+
+                        let style_set = style_set.unset(Underline);
+                        assert_eq!(style_set, $empty_style_set);
+                        assert_eq!(style_set.get_underline_style(), None);
+                        assert_eq!(style_set.get(Underline), None);
+                    }
+
+                    {
+                        let style_set = $empty_style_set.set(UnderlineStyle::Solid, true);
+                        assert_eq!(style_set, $empty_style_set.underline());
+                        assert_eq!(style_set.get_underline_style(), Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set.get(Underline), Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set.get(UnderlineStyle::Solid), true);
+
+                        let style_set = style_set.unset(UnderlineStyle::Solid);
+                        assert_eq!(style_set, $empty_style_set);
+                        assert_eq!(style_set.get_underline_style(), None);
+                        assert_eq!(style_set.get(Underline), None);
+                        assert_eq!(style_set.get(UnderlineStyle::Solid), false);
+                    }
+
+                    {
+                        let style_set = $empty_style_set.set(UnderlineStyle::Solid, true);
+                        assert_eq!(style_set, $empty_style_set.underline());
+                        assert_eq!(style_set.get_underline_style(), Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set.get(Underline), Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set.get(UnderlineStyle::Solid), true);
+
+                        let style_set = style_set.set(UnderlineStyle::Solid, false);
+                        assert_eq!(style_set, $empty_style_set);
+                        assert_eq!(style_set.get_underline_style(), None);
+                        assert_eq!(style_set.get(Underline), None);
+                        assert_eq!(style_set.get(UnderlineStyle::Solid), false);
+                    }
+
+                    {
+                        let style_set = $empty_style_set.set_effect(UnderlineStyle::Solid, true);
+                        assert_eq!(style_set, $empty_style_set.underline());
+                        assert_eq!(style_set.get_underline_style(), Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set.get(Underline), Some(UnderlineStyle::Solid));
+                        assert_eq!(style_set.get_effect(UnderlineStyle::Solid), true);
+
+                        let style_set = style_set.set_effect(UnderlineStyle::Solid, false);
+                        assert_eq!(style_set, $empty_style_set);
+                        assert_eq!(style_set.get_underline_style(), None);
+                        assert_eq!(style_set.get(Underline), None);
+                        assert_eq!(style_set.get_effect(UnderlineStyle::Solid), false);
+                    }
                 }
 
                 #[test]

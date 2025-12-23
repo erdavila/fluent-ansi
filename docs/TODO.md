@@ -1,5 +1,4 @@
 - `Color::none() -> Option<Color>`
-- Add underline effects
 - underline color
 - `Foreground` is default
   - update docs

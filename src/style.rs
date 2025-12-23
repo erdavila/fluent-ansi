@@ -1,15 +1,20 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, ColorInAPlane, Effect, GetEffects, Plane, Reset, StyleAttribute, StyleElement,
-    StyleSet, Styled, ToStyle, ToStyleSet,
+    AppliedTo, ColorInAPlane, Effect, Plane, Reset, StyleAttribute, StyleElement, StyleSet, Styled,
+    ToStyle, ToStyleSet, UnderlineStyle,
     color::{Color, WriteColorCodes as _},
+    style::encoded_effects::EncodedEffects,
 };
+
+pub use encoded_effects::*;
+
+mod encoded_effects;
 
 /// A structure representing text styling with effects and colors.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Style {
-    pub(crate) effects: u16,
+    pub(crate) encoded_effects: EncodedEffects,
     pub(crate) fg: Option<Color>,
     pub(crate) bg: Option<Color>,
 }
@@ -19,7 +24,7 @@ impl Style {
     #[must_use]
     pub const fn new() -> Self {
         Style {
-            effects: 0,
+            encoded_effects: EncodedEffects::new(),
             fg: None,
             bg: None,
         }
@@ -51,11 +56,8 @@ impl AppliedTo for Style {
 }
 
 impl StyleSet for Style {
-    fn get_effects(&self) -> GetEffects<'_> {
-        GetEffects {
-            inner: enum_iterator::all(),
-            style: self,
-        }
+    fn get_effects(&self) -> GetEffects {
+        self.encoded_effects.get_effects()
     }
 
     fn set<A: StyleAttribute>(self, attr: A, value: A::Value) -> Self {
@@ -77,9 +79,9 @@ impl Display for Style {
                 fn fmt(&self, f: &mut Formatter<'_>) -> Result {
                     let mut code_writer = CodeWriter { f, any: false };
 
-                    for effect in enum_iterator::all::<Effect>() {
+                    for effect in Effect::all() {
                         if self.0.get_effect(effect) {
-                            code_writer.write_code(effect.get_code())?;
+                            effect.write_codes(&mut code_writer)?;
                         }
                     }
                     if let Some(color) = self.0.fg {
@@ -99,6 +101,12 @@ impl Display for Style {
 impl From<Effect> for Style {
     fn from(effect: Effect) -> Self {
         Style::new().effect(effect)
+    }
+}
+
+impl From<UnderlineStyle> for Style {
+    fn from(underline_style: UnderlineStyle) -> Self {
+        Style::new().underline_style(underline_style)
     }
 }
 
@@ -126,7 +134,7 @@ pub(crate) struct CodeWriter<'a, 'b> {
 }
 
 impl CodeWriter<'_, '_> {
-    pub(crate) fn write_code(&mut self, code: u8) -> Result {
+    pub(crate) fn write_code(&mut self, code: impl Display) -> Result {
         if self.any {
             self.f.write_char(';')?;
         }
@@ -162,6 +170,9 @@ mod tests {
         assert_display!(stl.faint(), "\x1b[2m");
         assert_display!(stl.italic(), "\x1b[3m");
         assert_display!(stl.underline(), "\x1b[4m");
+        assert_display!(stl.curly_underline(), "\x1b[4:3m");
+        assert_display!(stl.dotted_underline(), "\x1b[4:4m");
+        assert_display!(stl.dashed_underline(), "\x1b[4:5m");
         assert_display!(stl.blink(), "\x1b[5m");
         assert_display!(stl.reverse(), "\x1b[7m");
         assert_display!(stl.conceal(), "\x1b[8m");

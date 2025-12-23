@@ -67,6 +67,17 @@ assert_eq!(format!("{}", Effect::Bold), "\x1b[1m");
 assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 ```
 
+#### Underline Styles
+
+In addition to standard effects, specific underline styles are supported (and are mutually exclusive):
+
+```rust
+use fluent_ansi::prelude::*;
+
+assert_eq!(format!("{}", Effect::CurlyUnderline), "\x1b[4:3m");
+assert_eq!(format!("{}", Style::new().dashed_underline()), "\x1b[4:5m");
+```
+
 #### Colors
 
 The library supports Basic (3/4-bit), 8-bit (256 colors), and RGB (TrueColor) colors. Colors must be associated with a `Plane` (Foreground or Background), and

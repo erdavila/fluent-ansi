@@ -78,6 +78,28 @@
 //! assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 //! ```
 //!
+//!
+//! ### Underline effects
+//!
+//! A subset of effects correspond to underline styles. They are mutually exclusive, meaning that when
+//! of them is set, any previously set effect is cleared.
+//!
+//! ```
+//! use fluent_ansi::prelude::*;
+//!
+//! let style = Effect::Bold.add(Effect::DottedUnderline);
+//! assert!(style.get_effect(Effect::Bold));
+//! assert!(style.get_effect(Effect::DottedUnderline));
+//!
+//! let style = style.add(Effect::DashedUnderline);
+//! assert!(style.get_effect(Effect::Bold));
+//! assert!(!style.get_effect(Effect::DottedUnderline));
+//! assert!(style.get_effect(Effect::DashedUnderline));
+//! ```
+//!
+//! The [`UnderlineStyle`] enum variants represent the underline effects.
+//!
+//!
 //! ## Colors
 //!
 //! There is a handful of color types, which are described in the [`color`] module.
@@ -107,16 +129,18 @@
 //!
 //! ### Methods provided by the [`ToStyleSet`] trait
 //!
-//! The following methods _set_ or _add_ some styling, and are available in [`Effect`], [`ColorInAPlane`], [`Style`] and [`Styled<C>`] values.
+//! The following methods _set_ or _add_ some styling, and are available in [`Effect`], [`UnderlineStyle`], [`ColorInAPlane`], [`Style`] and [`Styled<C>`] values.
 //!
 //! | Method | To set what | Note |
 //! |--------|-------------|------|
-//! | [`bold()`](ToStyleSet::bold),<br/>[`italic()`](ToStyleSet::italic),<br/>etc.          | effect |
-//! | [`effect(Effect)`](ToStyleSet::effect)                                                | effect |
-//! | [`fg(impl Into<Color>)`](ToStyleSet::fg)<br/>[`bg(impl Into<Color>)`](ToStyleSet::bg) | color |
-//! | [`color(ColorInAPlane)`](ToStyleSet::color)                                           | color |
-//! | [`add(Effect)`](ToStyleSet::add)                                                      | effect | See note below. |
-//! | [`add(ColorInAPlane)`](ToStyleSet::add)                                               | color | See note below. |
+//! | [`bold()`](ToStyleSet::bold),<br/>[`italic()`](ToStyleSet::italic),<br/>[`underline()`](ToStyleSet::underline),<br/>etc. | effect |
+//! | [`effect(impl Into<Effect>)`](ToStyleSet::effect)                                                                        | effect<br/>(including underline styles) |
+//! | [`underline_style(UnderlineStyle)`](ToStyleSet::underline_style)                                                         | underline style |
+//! | [`fg(impl Into<Color>)`](ToStyleSet::fg)<br/>[`bg(impl Into<Color>)`](ToStyleSet::bg)                                    | color |
+//! | [`color(ColorInAPlane)`](ToStyleSet::color)                                                                              | color |
+//! | [`add(Effect)`](ToStyleSet::add)                                                                                         | effect | See note below. |
+//! | [`add(UnderlineStyle)`](ToStyleSet::add)                                                                                 | underline style | See note below. |
+//! | [`add(ColorInAPlane)`](ToStyleSet::add)                                                                                  | color | See note below. |
 //!
 //! *Note*: there is in fact a single [`add()`](ToStyleSet::add) method that takes an <code>impl [StyleElement]</code> argument.
 //!
@@ -127,12 +151,17 @@
 //!
 //! | Method | To set what | Note |
 //! |--------|-------------|------|
-//! | [`set_effect(Effect, bool)`](StyleSet::set_effect)                  | effect |
-//! | [`set_color(Plane, Option<impl Into<Color>>)`](StyleSet::set_color) | color | See note \[1] below. |
-//! | [`set(Effect, bool)`](StyleSet::set)                                | effect | See note \[2] below. |
-//! | [`set(Plane, Option<Color>)`](StyleSet::set)                        | color | See note \[2] below. |
-//! | [`unset(Effect)`](StyleSet::unset)                                  | effect | See note \[3] below. |
-//! | [`unset(Plane)`](StyleSet::unset)                                   | color | See note \[3] below. |
+//! | [`set_effect(impl Into<Effect>, bool)`](StyleSet::set_effect)                  | effect (including underline styles) |
+//! | [`set_underline_style(Option<UnderlineStyle>)`](StyleSet::set_underline_style) | underline style |
+//! | [`set_color(Plane, Option<impl Into<Color>>)`](StyleSet::set_color)            | color | See note \[1] below. |
+//! | [`set(Effect, bool)`](StyleSet::set)                                           | effect | See note \[2] below. |
+//! | [`set(UnderlineStyle, bool)`](StyleSet::set)                                   | underline style | See note \[2] below. |
+//! | [`set(Underline, Option<UnderlineStyle>)`](StyleSet::set)                      | underline style | See note \[2] below. |
+//! | [`set(Plane, Option<Color>)`](StyleSet::set)                                   | color | See note \[2] below. |
+//! | [`unset(Effect)`](StyleSet::unset)                                             | effect | See note \[3] below. |
+//! | [`unset(UnderlineStyle)`](StyleSet::unset)                                     | underline style | See note \[3] below. |
+//! | [`unset(Underline)`](StyleSet::unset)                                          | underline style | See note \[3] below. |
+//! | [`unset(Plane)`](StyleSet::unset)                                              | color | See note \[3] below. |
 //!
 //! *Note* \[1]: to clear a color with [`set_color()`](StyleSet::set_color), the color type must be specified in the `None` value:
 //!
@@ -154,11 +183,14 @@
 //!
 //! | Method | To get what | Note |
 //! |--------|-------------|------|
-//! | [`get_effect(Effect) -> bool`](StyleSet::get_effect)       | effect |
-//! | [`get_effects() -> GetEffects`](StyleSet::get_effects)     | effect | Returns an iterator on the effects that are currently set. |
-//! | [`get_color(Plane) -> Option<Color>`](StyleSet::get_color) | color |
-//! | [`get(Effect) -> bool`](StyleSet::get)                     | effect | See note below. |
-//! | [`get(Plane) -> Option<Color>`](StyleSet::get)             | color | See note below. |
+//! | [`get_effect(impl Into<Effect>) -> bool`](StyleSet::get_effect)                    | effect (including underline styles) |
+//! | [`get_underline_style() -> Option<UnderlineStyle>`](StyleSet::get_underline_style) | underline style |
+//! | [`get_effects() -> GetEffects`](StyleSet::get_effects)                             | effect | Returns an iterator on the effects that are currently set. |
+//! | [`get_color(Plane) -> Option<Color>`](StyleSet::get_color)                         | color |
+//! | [`get(Effect) -> bool`](StyleSet::get)                                             | effect | See note below. |
+//! | [`get(UnderlineStyle) -> bool`](StyleSet::get)                                     | underline style | See note below. |
+//! | [`get(Underline) -> Option<UnderlineStyle>`](StyleSet::get)                        | underline style | See note below. |
+//! | [`get(Plane) -> Option<Color>`](StyleSet::get)                                     | color | See note below. |
 //!
 //! *Note*: there is in fact a single [`get()`](StyleSet::get) method that is based on the [`StyleAttribute`] trait.
 //!
@@ -204,6 +236,7 @@ mod to_style_set;
 /// let styled = Color::RED.in_fg().bold().applied_to("Some content");
 /// ```
 pub mod prelude {
+    pub use crate::UnderlineStyle;
     pub use crate::color::{Color, ColorKind};
     pub use crate::{AppliedTo, Effect, StyleSet, ToStyleSet};
 }

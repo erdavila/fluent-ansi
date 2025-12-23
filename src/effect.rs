@@ -2,7 +2,14 @@ use core::fmt::{Display, Formatter, Result};
 
 use enum_iterator::Sequence;
 
-use crate::{AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet};
+use crate::{
+    AppliedTo, CodeWriter, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+};
+pub use underline::*;
+
+mod underline;
+
+pub(crate) type AllEffects = enum_iterator::All<Effect>;
 
 /// An enumeration of all supported text styling effects.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Sequence)]
@@ -13,8 +20,14 @@ pub enum Effect {
     Faint,
     /// Italic styling.
     Italic,
-    /// Underline styling.
+    /// Solid underline styling.
     Underline,
+    /// Curly underline styling.
+    CurlyUnderline,
+    /// Dotted underline styling.
+    DottedUnderline,
+    /// Dashed underline styling.
+    DashedUnderline,
     /// Blink styling.
     Blink,
     /// Reverse video styling.
@@ -31,25 +44,27 @@ pub enum Effect {
 
 impl Effect {
     #[must_use]
-    pub(crate) const fn get_code(self) -> u8 {
-        match self {
-            Effect::Bold => 1,
-            Effect::Faint => 2,
-            Effect::Italic => 3,
-            Effect::Underline => 4,
-            Effect::Blink => 5,
-            Effect::Reverse => 7,
-            Effect::Conceal => 8,
-            Effect::Strikethrough => 9,
-            Effect::DoubleUnderline => 21,
-            Effect::Overline => 53,
-        }
+    pub(crate) fn all() -> AllEffects {
+        enum_iterator::all()
     }
 
-    #[must_use]
-    const fn bit_mask(self) -> u16 {
-        let bit_index = self as u16;
-        1 << bit_index
+    pub(crate) fn write_codes(self, code_writer: &mut CodeWriter) -> Result {
+        let codes = match self {
+            Effect::Bold => "1",
+            Effect::Faint => "2",
+            Effect::Italic => "3",
+            Effect::Underline => "4",
+            Effect::CurlyUnderline => "4:3",
+            Effect::DottedUnderline => "4:4",
+            Effect::DashedUnderline => "4:5",
+            Effect::Blink => "5",
+            Effect::Reverse => "7",
+            Effect::Conceal => "8",
+            Effect::Strikethrough => "9",
+            Effect::DoubleUnderline => "21",
+            Effect::Overline => "53",
+        };
+        code_writer.write_code(codes)
     }
 }
 
@@ -63,16 +78,15 @@ impl StyleAttribute for Effect {
     type Value = bool;
 
     fn set_in_style(self, style: Style, value: Self::Value) -> Style {
-        let effects = if value {
-            style.effects | self.bit_mask()
-        } else {
-            style.effects & !self.bit_mask()
-        };
-        Style { effects, ..style }
+        let encoded_effects = style.encoded_effects.set(self, value);
+        Style {
+            encoded_effects,
+            ..style
+        }
     }
 
     fn get_from_style(self, style: &Style) -> Self::Value {
-        style.effects & self.bit_mask() != 0
+        style.encoded_effects.get(self)
     }
 }
 
@@ -95,6 +109,18 @@ impl AppliedTo for Effect {}
 impl Display for Effect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         self.to_style().fmt(f)
+    }
+}
+
+impl From<UnderlineStyle> for Effect {
+    fn from(value: UnderlineStyle) -> Self {
+        match value {
+            UnderlineStyle::Solid => Effect::Underline,
+            UnderlineStyle::Curly => Effect::CurlyUnderline,
+            UnderlineStyle::Dotted => Effect::DottedUnderline,
+            UnderlineStyle::Dashed => Effect::DashedUnderline,
+            UnderlineStyle::Double => Effect::DoubleUnderline,
+        }
     }
 }
 
@@ -126,6 +152,9 @@ mod tests {
         assert_display!(Effect::Faint, "\x1b[2m");
         assert_display!(Effect::Italic, "\x1b[3m");
         assert_display!(Effect::Underline, "\x1b[4m");
+        assert_display!(Effect::CurlyUnderline, "\x1b[4:3m");
+        assert_display!(Effect::DottedUnderline, "\x1b[4:4m");
+        assert_display!(Effect::DashedUnderline, "\x1b[4:5m");
         assert_display!(Effect::Blink, "\x1b[5m");
         assert_display!(Effect::Reverse, "\x1b[7m");
         assert_display!(Effect::Conceal, "\x1b[8m");

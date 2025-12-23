@@ -64,7 +64,7 @@ impl<C: Display> ToStyleSet for Styled<C> {
     }
 }
 impl<C: Display> StyleSet for Styled<C> {
-    fn get_effects(&self) -> GetEffects<'_> {
+    fn get_effects(&self) -> GetEffects {
         self.style.get_effects()
     }
 
@@ -127,6 +127,9 @@ mod tests {
         assert_display!(stld.faint(), "\x1b[2mCONTENT\x1b[0m");
         assert_display!(stld.italic(), "\x1b[3mCONTENT\x1b[0m");
         assert_display!(stld.underline(), "\x1b[4mCONTENT\x1b[0m");
+        assert_display!(stld.curly_underline(), "\x1b[4:3mCONTENT\x1b[0m");
+        assert_display!(stld.dotted_underline(), "\x1b[4:4mCONTENT\x1b[0m");
+        assert_display!(stld.dashed_underline(), "\x1b[4:5mCONTENT\x1b[0m");
         assert_display!(stld.blink(), "\x1b[5mCONTENT\x1b[0m");
         assert_display!(stld.reverse(), "\x1b[7mCONTENT\x1b[0m");
         assert_display!(stld.conceal(), "\x1b[8mCONTENT\x1b[0m");

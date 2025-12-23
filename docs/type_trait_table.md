@@ -7,7 +7,9 @@ It includes blanket implementations.
 | `Styled` | X | X | | | | | |
 | `Style` | X | X | X | X | | | |
 | `Effect` | | X | X | X | | X | X |
+| `UnderlineStyle` | | X | X | X | | X | X |
 | `ColorInAPlane` | | X | X | X | | X | |
 | `BasicColor`<br/>`SimpleColor`<br/>`IndexedColor`<br/>`RGBColor`<br/>`Color` | | | | | X | | |
 | `Reset` | | | X | | | | |
 | `Plane` | | | | | | | X |
+| `Underline` | | | | | | | X |
