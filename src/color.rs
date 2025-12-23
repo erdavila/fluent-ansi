@@ -3,40 +3,40 @@
 //! There are 4 color types:
 //! - [`BasicColor`]: 3-bit colors with 8 variants.
 //! - [`SimpleColor`]: Adds bright variants to the [`BasicColor`]s, totalling 16 colors.
-//! - [`EightBitColor`]: 8-bit colors (256 colors).
+//! - [`IndexedColor`]: 8-bit colors (256 colors).
 //! - [`RGBColor`]: RGB colors (24-bit/true color).
 //!
 //! The enum [`Color`] unifies all the color types in a single type and have members to access or create colors of all types:
 //!
 //! ```
-//! use fluent_ansi::{prelude::*, color::{BasicColor, EightBitColor, RGBColor, SimpleColor}};
+//! use fluent_ansi::{prelude::*, color::{BasicColor, IndexedColor, RGBColor, SimpleColor}};
 //!
 //! assert_eq!(Color::RED, BasicColor::Red);
 //! assert_eq!(Color::RED.bright(), SimpleColor::new_bright(BasicColor::Red));
-//! assert_eq!(Color::eight_bit(127), EightBitColor(127));
+//! assert_eq!(Color::indexed(127), IndexedColor(127));
 //! assert_eq!(Color::rgb(0, 128, 255), RGBColor::new(0, 128, 255));
 //! ```
 //!
 //! All color types are convertible to [`Color`] and can be used where an `impl Into<Color>` value is expected:
 //!
 //! ```
-//! use fluent_ansi::{prelude::*, color::{BasicColor, EightBitColor, RGBColor, SimpleColor}, Style, Plane};
+//! use fluent_ansi::{prelude::*, color::{BasicColor, IndexedColor, RGBColor, SimpleColor}, Style, Plane};
 //!
 //! let style = Style::new();
 //!
 //! let _ = style.fg(BasicColor::Red);
 //! let _ = style.fg(SimpleColor::new_bright(BasicColor::Red));
-//! let _ = style.fg(EightBitColor::new(128));
+//! let _ = style.fg(IndexedColor::new(128));
 //! let _ = style.fg(RGBColor::new(0, 128, 255));
 //!
 //! let _ = style.bg(BasicColor::Red);
 //! let _ = style.bg(SimpleColor::new_bright(BasicColor::Red));
-//! let _ = style.bg(EightBitColor::new(128));
+//! let _ = style.bg(IndexedColor::new(128));
 //! let _ = style.bg(RGBColor::new(0, 128, 255));
 //!
 //! let _ = style.set_color(Plane::Foreground, Some(BasicColor::Red));
 //! let _ = style.set_color(Plane::Background, Some(SimpleColor::new_bright(BasicColor::Red)));
-//! let _ = style.set_color(Plane::Foreground, Some(EightBitColor::new(128)));
+//! let _ = style.set_color(Plane::Foreground, Some(IndexedColor::new(128)));
 //! let _ = style.set_color(Plane::Background, Some(RGBColor::new(0, 128, 255)));
 //! ```
 //!
@@ -46,11 +46,11 @@
 use core::fmt::Result;
 
 use crate::{CodeWriter, ColorInAPlane, Plane};
-pub use eight_bit::*;
+pub use indexed::*;
 pub use rgb::*;
 pub use simple::*;
 
-mod eight_bit;
+mod indexed;
 mod rgb;
 mod simple;
 
@@ -93,7 +93,7 @@ pub enum Color {
     /// A simple color (16 colors).
     Simple(SimpleColor),
     /// An 8-bit color (256 colors).
-    EightBit(EightBitColor),
+    Indexed(IndexedColor),
     /// An RGB color (24-bit/true color).
     RGB(RGBColor),
 }
@@ -118,8 +118,8 @@ impl Color {
 
     /// Create an 8-bit color from the given value.
     #[must_use]
-    pub const fn eight_bit(value: u8) -> EightBitColor {
-        EightBitColor::new(value)
+    pub const fn indexed(value: u8) -> IndexedColor {
+        IndexedColor::new(value)
     }
 
     /// Create an RGB color from the given red, green, and blue components.
@@ -133,7 +133,7 @@ impl WriteColorCodes for Color {
     fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
         match self {
             Color::Simple(simple) => simple.write_color_codes(plane, writer),
-            Color::EightBit(eight_bit) => eight_bit.write_color_codes(plane, writer),
+            Color::Indexed(indexed) => indexed.write_color_codes(plane, writer),
             Color::RGB(rgb) => rgb.write_color_codes(plane, writer),
         }
     }
@@ -151,9 +151,9 @@ impl From<SimpleColor> for Color {
     }
 }
 
-impl From<EightBitColor> for Color {
-    fn from(eight_bit: EightBitColor) -> Self {
-        Color::EightBit(eight_bit)
+impl From<IndexedColor> for Color {
+    fn from(indexed: IndexedColor) -> Self {
+        Color::Indexed(indexed)
     }
 }
 
@@ -181,7 +181,7 @@ macro_rules! impl_reflexive_partial_eq {
 
 impl_reflexive_partial_eq!(BasicColor::to_color() -> Color);
 impl_reflexive_partial_eq!(SimpleColor::to_color() -> Color);
-impl_reflexive_partial_eq!(EightBitColor::to_color() -> Color);
+impl_reflexive_partial_eq!(IndexedColor::to_color() -> Color);
 impl_reflexive_partial_eq!(RGBColor::to_color() -> Color);
 impl_reflexive_partial_eq!(BasicColor::to_simple_color() -> SimpleColor);
 
@@ -200,7 +200,7 @@ mod tests {
         assert_eq!(Color::CYAN, BasicColor::Cyan);
         assert_eq!(Color::WHITE, BasicColor::White);
 
-        assert_eq!(Color::eight_bit(127), EightBitColor(127));
+        assert_eq!(Color::indexed(127), IndexedColor(127));
 
         assert_eq!(Color::rgb(0, 128, 255), RGBColor::new(0, 128, 255));
     }
@@ -242,10 +242,10 @@ mod tests {
     }
 
     #[test]
-    fn from_eight_bit_color() {
+    fn from_indexed_color() {
         assert_eq!(
-            Color::from(EightBitColor(7)),
-            Color::EightBit(EightBitColor(7))
+            Color::from(IndexedColor(7)),
+            Color::Indexed(IndexedColor(7))
         );
     }
 
@@ -304,12 +304,12 @@ mod tests {
 
         let basic_color = BasicColor::Red;
         let simple_color = BasicColor::Red.to_simple_color();
-        let eight_bit_color = EightBitColor::new(128);
+        let indexed_color = IndexedColor::new(128);
         let rgb_color = RGBColor::new(0, 128, 255);
 
         let other_basic_color = BasicColor::Green;
         let other_simple_color = BasicColor::Green.to_simple_color();
-        let other_eight_bit_color = EightBitColor::new(33);
+        let other_indexed_color = IndexedColor::new(33);
         let other_rgb_color = RGBColor::new(33, 133, 235);
 
         assert_colors_eq!(Color, BasicColor;
@@ -321,7 +321,7 @@ mod tests {
             basic_color,
         );
         assert_colors_ne!(Color, BasicColor;
-            eight_bit_color.to_color(),
+            indexed_color.to_color(),
             basic_color,
         );
 
@@ -334,21 +334,21 @@ mod tests {
             simple_color,
         );
         assert_colors_ne!(Color, SimpleColor;
-            eight_bit_color.to_color(),
+            indexed_color.to_color(),
             simple_color,
         );
 
-        assert_colors_eq!(Color, EightBitColor;
-            eight_bit_color.to_color(),
-            eight_bit_color,
+        assert_colors_eq!(Color, IndexedColor;
+            indexed_color.to_color(),
+            indexed_color,
         );
-        assert_colors_ne!(Color, EightBitColor;
-            other_eight_bit_color.to_color(),
-            eight_bit_color,
+        assert_colors_ne!(Color, IndexedColor;
+            other_indexed_color.to_color(),
+            indexed_color,
         );
-        assert_colors_ne!(Color, EightBitColor;
+        assert_colors_ne!(Color, IndexedColor;
             rgb_color.to_color(),
-            eight_bit_color,
+            indexed_color,
         );
 
         assert_colors_eq!(Color, RGBColor;

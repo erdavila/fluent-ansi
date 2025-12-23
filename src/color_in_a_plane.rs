@@ -106,7 +106,7 @@ impl StyleAttribute for Plane {
 mod tests {
     use crate::{
         Effect, StyleSet as _, assert_display,
-        color::{BasicColor, ColorKind as _, EightBitColor, RGBColor, SimpleColor},
+        color::{BasicColor, ColorKind as _, IndexedColor, RGBColor, SimpleColor},
     };
 
     use super::*;
@@ -237,13 +237,13 @@ mod tests {
             "\x1b[107m"
         );
 
-        assert_display!(EightBitColor(0).in_fg(), "\x1b[38;5;0m");
-        assert_display!(EightBitColor(7).in_fg(), "\x1b[38;5;7m");
-        assert_display!(EightBitColor(255).in_fg(), "\x1b[38;5;255m");
+        assert_display!(IndexedColor(0).in_fg(), "\x1b[38;5;0m");
+        assert_display!(IndexedColor(7).in_fg(), "\x1b[38;5;7m");
+        assert_display!(IndexedColor(255).in_fg(), "\x1b[38;5;255m");
 
-        assert_display!(EightBitColor(0).in_bg(), "\x1b[48;5;0m");
-        assert_display!(EightBitColor(7).in_bg(), "\x1b[48;5;7m");
-        assert_display!(EightBitColor(255).in_bg(), "\x1b[48;5;255m");
+        assert_display!(IndexedColor(0).in_bg(), "\x1b[48;5;0m");
+        assert_display!(IndexedColor(7).in_bg(), "\x1b[48;5;7m");
+        assert_display!(IndexedColor(255).in_bg(), "\x1b[48;5;255m");
 
         assert_display!(RGBColor::new(0, 128, 255).in_fg(), "\x1b[38;2;0;128;255m");
         assert_display!(RGBColor::new(128, 255, 0).in_fg(), "\x1b[38;2;128;255;0m");

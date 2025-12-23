@@ -1,5 +1,3 @@
-- Rename
-  - EightBitColor -> IndexedColor
 - Keep only one Blink effect
 - Rename CrossedOut -> Strikethrough
 - Extract trait methods tests to macros
