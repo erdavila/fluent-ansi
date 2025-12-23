@@ -6,7 +6,7 @@ It includes blanket implementations.
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `Styled` | X | X | | | | | |
 | `Style` | X | X | X | X | | | |
-| `Flag` | | X | X | X | | X | X |
+| `Effect` | | X | X | X | | X | X |
 | `ColorInAPlane` | | X | X | X | | X | |
 | `BasicColor`<br/>`SimpleColor`<br/>`EightBitColor`<br/>`RGBColor`<br/>`Color` | | | | | X | | |
 | `Reset` | | | X | | | | |

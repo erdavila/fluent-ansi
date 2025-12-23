@@ -1,5 +1,4 @@
 - Rename
-  - Flag -> Effect
   - EightBitColor -> IndexedColor
 - Keep only one Blink effect
 - Rename CrossedOut -> Strikethrough

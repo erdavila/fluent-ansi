@@ -1,9 +1,9 @@
-use crate::{AppliedTo, ColorInAPlane, Flag, Style, StyleSet, color::Color};
+use crate::{AppliedTo, ColorInAPlane, Effect, Style, StyleSet, color::Color};
 
 /// An element that can be added to a [`Style`].
 ///
 /// This trait is used to define elements that can be added to a `Style`. Such elements
-/// include flags ([`Flag`]) and colors (like [`ColorInAPlane`]).
+/// include effects ([`Effect`]) and colors (like [`ColorInAPlane`]).
 pub trait StyleElement: AppliedTo {
     /// Adds this element to the given `Style`, returning the updated `Style`.
     #[must_use]
@@ -13,81 +13,81 @@ pub trait StyleElement: AppliedTo {
 /// A trait to set styling options on a type.
 ///
 /// This trait is implemented by types that can be styled, such as [`Style`] and [`Styled`](crate::Styled).
-/// It provides methods to set flags and colors, returning a type that implements [`StyleSet`].
+/// It provides methods to set effects and colors, returning a type that implements [`StyleSet`].
 pub trait ToStyleSet: Sized {
     /// The type that is returned by the styling methods.
     type StyleSet: StyleSet;
 
-    /// Sets the bold flag.
+    /// Sets the bold effect.
     #[must_use]
     fn bold(self) -> Self::StyleSet {
-        self.flag(Flag::Bold)
+        self.effect(Effect::Bold)
     }
 
-    /// Sets the faint flag.
+    /// Sets the faint effect.
     #[must_use]
     fn faint(self) -> Self::StyleSet {
-        self.flag(Flag::Faint)
+        self.effect(Effect::Faint)
     }
 
-    /// Sets the italic flag.
+    /// Sets the italic effect.
     #[must_use]
     fn italic(self) -> Self::StyleSet {
-        self.flag(Flag::Italic)
+        self.effect(Effect::Italic)
     }
 
-    /// Sets the underline flag.
+    /// Sets the underline effect.
     #[must_use]
     fn underline(self) -> Self::StyleSet {
-        self.flag(Flag::Underline)
+        self.effect(Effect::Underline)
     }
 
-    /// Sets the slow blink flag.
+    /// Sets the slow blink effect.
     #[must_use]
     fn slow_blink(self) -> Self::StyleSet {
-        self.flag(Flag::SlowBlink)
+        self.effect(Effect::SlowBlink)
     }
 
-    /// Sets the rapid blink flag.
+    /// Sets the rapid blink effect.
     #[must_use]
     fn rapid_blink(self) -> Self::StyleSet {
-        self.flag(Flag::RapidBlink)
+        self.effect(Effect::RapidBlink)
     }
 
-    /// Sets the reverse flag.
+    /// Sets the reverse effect.
     #[must_use]
     fn reverse(self) -> Self::StyleSet {
-        self.flag(Flag::Reverse)
+        self.effect(Effect::Reverse)
     }
 
-    /// Sets the conceal flag.
+    /// Sets the conceal effect.
     #[must_use]
     fn conceal(self) -> Self::StyleSet {
-        self.flag(Flag::Conceal)
+        self.effect(Effect::Conceal)
     }
 
-    /// Sets the crossed out flag.
+    /// Sets the crossed out effect.
     #[must_use]
     fn crossed_out(self) -> Self::StyleSet {
-        self.flag(Flag::CrossedOut)
+        self.effect(Effect::CrossedOut)
     }
 
-    /// Sets the double underline flag.
+    /// Sets the double underline effect.
     #[must_use]
     fn double_underline(self) -> Self::StyleSet {
-        self.flag(Flag::DoubleUnderline)
+        self.effect(Effect::DoubleUnderline)
     }
 
-    /// Sets the overline flag.
+    /// Sets the overline effect.
     #[must_use]
     fn overline(self) -> Self::StyleSet {
-        self.flag(Flag::Overline)
+        self.effect(Effect::Overline)
     }
 
-    /// Sets the given flag.
+    /// Sets the given effect.
     #[must_use]
-    fn flag(self, flag: Flag) -> Self::StyleSet {
-        self.add(flag)
+    fn effect(self, effect: Effect) -> Self::StyleSet {
+        self.add(effect)
     }
 
     /// Sets the foreground color.

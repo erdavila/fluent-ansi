@@ -1,6 +1,6 @@
 # fluent-ansi
 
-`fluent-ansi` is a Rust library designed to handle ANSI escape sequences for the terminal. It provides a modular, composable, and fluent API for styling text with colors and flags (like bold, italic).
+`fluent-ansi` is a Rust library designed to handle ANSI escape sequences for the terminal. It provides a modular, composable, and fluent API for styling text with colors and effects (like bold, italic).
 
 ## Key Features
 
@@ -19,7 +19,7 @@ fluent-ansi = "0.2.1"
 
 ## Usage
 
-The primary way to use `fluent-ansi` is through its fluent API. You can combine colors and flags to create a `Style`, and then apply it to any type that implements `Display`.
+The primary way to use `fluent-ansi` is through its fluent API. You can combine colors and effecs to create a `Style`, and then apply it to any type that implements `Display`.
 
 ```rust
 use fluent_ansi::{prelude::*, Style, Styled};
@@ -45,26 +45,26 @@ There are several ways to reach the same result, depending on your preference:
 ```rust
 use fluent_ansi::{prelude::*, ColorInAPlane, Style, Plane};
 
-let stl: Style = Style::new().set(Flag::Bold, true).set(Plane::Foreground, Some(Color::RED.to_color()));
-let stl: Style = Style::new().set_flag(Flag::Bold, true).set_color(Plane::Foreground, Some(Color::RED));
-let stl: Style = Style::new().add(Flag::Bold).add(ColorInAPlane::new(Color::RED, Plane::Foreground));
-let stl: Style = Style::new().flag(Flag::Bold).color(ColorInAPlane::new(Color::RED, Plane::Foreground));
+let stl: Style = Style::new().set(Effect::Bold, true).set(Plane::Foreground, Some(Color::RED.to_color()));
+let stl: Style = Style::new().set_effect(Effect::Bold, true).set_color(Plane::Foreground, Some(Color::RED));
+let stl: Style = Style::new().add(Effect::Bold).add(ColorInAPlane::new(Color::RED, Plane::Foreground));
+let stl: Style = Style::new().effect(Effect::Bold).color(ColorInAPlane::new(Color::RED, Plane::Foreground));
 let stl: Style = Style::new().bold().fg(Color::RED);
-let stl: Style = Flag::Bold.fg(Color::RED);
+let stl: Style = Effect::Bold.fg(Color::RED);
 let stl: Style = Color::RED.in_fg().bold();
 ```
 
 ### Styling Elements
 
-#### Flags
+#### Effects
 
-Flags can be used on their own, combined with other elements, or applied to content:
+Effects can be used on their own, combined with other elements, or applied to content:
 
 ```rust
 use fluent_ansi::prelude::*;
 
-assert_eq!(format!("{}", Flag::Bold), "\x1b[1m");
-assert_eq!(format!("{}", Flag::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
+assert_eq!(format!("{}", Effect::Bold), "\x1b[1m");
+assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 ```
 
 #### Colors

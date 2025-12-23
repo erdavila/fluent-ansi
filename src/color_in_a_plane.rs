@@ -105,7 +105,7 @@ impl StyleAttribute for Plane {
 #[cfg(test)]
 mod tests {
     use crate::{
-        Flag, StyleSet as _, assert_display,
+        Effect, StyleSet as _, assert_display,
         color::{BasicColor, ColorKind as _, EightBitColor, RGBColor, SimpleColor},
     };
 
@@ -128,7 +128,7 @@ mod tests {
     }
 
     #[test]
-    fn flag() {
+    fn effect() {
         let color_in_a_plane = BasicColor::Red.in_fg();
 
         assert_eq!(
@@ -136,11 +136,11 @@ mod tests {
             Style::new().fg(BasicColor::Red).bold()
         );
         assert_eq!(
-            color_in_a_plane.flag(Flag::Bold),
+            color_in_a_plane.effect(Effect::Bold),
             Style::new().fg(BasicColor::Red).bold()
         );
         assert_eq!(
-            color_in_a_plane.add(Flag::Bold),
+            color_in_a_plane.add(Effect::Bold),
             Style::new().fg(BasicColor::Red).bold()
         );
     }
