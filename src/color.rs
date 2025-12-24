@@ -46,10 +46,12 @@
 use core::fmt::Result;
 
 use crate::{CodeWriter, ColorInAPlane, Plane};
+pub use basic::*;
 pub use indexed::*;
 pub use rgb::*;
 pub use simple::*;
 
+mod basic;
 mod indexed;
 mod rgb;
 mod simple;
