@@ -145,7 +145,7 @@ mod tests {
         );
     }
     #[test]
-    fn color_in_a_plane_add_color() {
+    fn add_color() {
         let color_in_a_plane = BasicColor::Red.in_fg();
 
         assert_eq!(
@@ -167,7 +167,7 @@ mod tests {
     }
 
     #[test]
-    fn color_in_a_plane_applied_to() {
+    fn applied_to() {
         let stld = BasicColor::Red.in_fg().applied_to("CONTENT");
 
         assert_eq!(stld.get_content(), &"CONTENT");
@@ -175,7 +175,7 @@ mod tests {
     }
 
     #[test]
-    fn color_in_a_plane_to_style() {
+    fn to_style() {
         assert_eq!(
             BasicColor::Red.in_fg().to_style(),
             Style::new().fg(BasicColor::Red)
@@ -187,7 +187,7 @@ mod tests {
     }
 
     #[test]
-    fn color_in_a_plane_display() {
+    fn display() {
         assert_display!(BasicColor::Black.in_fg(), "\x1b[30m");
         assert_display!(BasicColor::Red.in_fg(), "\x1b[31m");
         assert_display!(BasicColor::Green.in_fg(), "\x1b[32m");
