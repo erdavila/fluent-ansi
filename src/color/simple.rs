@@ -1,6 +1,9 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, Plane, color::WriteColorCodes};
+use crate::{
+    CodeWriter, Plane,
+    color::{BasicColor, WriteColorCodes},
+};
 
 /// A simple color type representing the 16 basic terminal colors (8 basic colors + bright variants).
 ///
@@ -81,69 +84,14 @@ impl From<BasicColor> for SimpleColor {
     }
 }
 
-/// The 8 basic non-bright terminal colors.
-///
-/// These colors are also available as associated constants in the [`Color`](super::Color) enum:
-///
-/// ```
-/// use fluent_ansi::{prelude::*, color::BasicColor};
-///
-/// assert_eq!(Color::RED, BasicColor::Red);
-/// assert_eq!(Color::GREEN, BasicColor::Green);
-/// assert_eq!(Color::BLUE, BasicColor::Blue);
-/// // etc.
-/// ```
-///
-/// See Wikipedia's article on [3-bit and 4-bit colors ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum BasicColor {
-    /// The black color.
-    Black,
-    /// The red color.
-    Red,
-    /// The green color.
-    Green,
-    /// The yellow color.
-    Yellow,
-    /// The blue color.
-    Blue,
-    /// The magenta color.
-    Magenta,
-    /// The cyan color.
-    Cyan,
-    /// The white color.
-    White,
-}
-impl BasicColor {
-    /// Convert this basic color into a [`SimpleColor`].
-    #[must_use]
-    pub fn to_simple_color(self) -> SimpleColor {
-        self.into()
-    }
-
-    /// Returns a bright variant of this basic color.
-    #[must_use]
-    pub fn bright(self) -> SimpleColor {
-        SimpleColor::new_bright(self)
-    }
-
-    #[must_use]
-    fn code_offset(self) -> u8 {
-        self as u8
-    }
-}
-
 #[cfg(test)]
 mod tests {
-    use crate::{
-        ColorInAPlane, Plane,
-        color::{Color, ColorKind as _},
-    };
+    use crate::color::{Color, ColorKind as _};
 
     use super::*;
 
     #[test]
-    fn simple_new() {
+    fn new() {
         let color = SimpleColor::new(BasicColor::Red);
 
         assert_eq!(
@@ -158,7 +106,7 @@ mod tests {
     }
 
     #[test]
-    fn simple_new_bright() {
+    fn new_bright() {
         let color = SimpleColor::new_bright(BasicColor::Red);
 
         assert_eq!(
@@ -173,7 +121,7 @@ mod tests {
     }
 
     #[test]
-    fn simple_bright() {
+    fn bright() {
         let simple_regular_color = SimpleColor::new(BasicColor::Red);
         let simple_bright_color = SimpleColor::new_bright(BasicColor::Red);
 
@@ -182,7 +130,7 @@ mod tests {
     }
 
     #[test]
-    fn simple_to_color() {
+    fn to_color() {
         let simple_color = SimpleColor::new(BasicColor::Red);
         assert_eq!(
             simple_color.to_color(),
@@ -191,70 +139,13 @@ mod tests {
     }
 
     #[test]
-    fn simple_from_basic() {
+    fn from_basic() {
         assert_eq!(
             SimpleColor::from(BasicColor::Red),
             SimpleColor {
                 basic_color: BasicColor::Red,
                 bright: false
             }
-        );
-    }
-
-    #[test]
-    fn basic_bright() {
-        assert_eq!(
-            BasicColor::Red.bright(),
-            SimpleColor {
-                basic_color: BasicColor::Red,
-                bright: true
-            }
-        );
-    }
-
-    #[test]
-    fn basic_in_fg() {
-        assert_eq!(
-            BasicColor::Red.in_fg(),
-            ColorInAPlane::new(BasicColor::Red, Plane::Foreground)
-        );
-        assert_eq!(
-            BasicColor::Red.in_plane(Plane::Foreground),
-            ColorInAPlane::new(BasicColor::Red, Plane::Foreground)
-        );
-    }
-
-    #[test]
-    fn basic_in_bg() {
-        assert_eq!(
-            BasicColor::Red.in_bg(),
-            ColorInAPlane::new(BasicColor::Red, Plane::Background)
-        );
-        assert_eq!(
-            BasicColor::Red.in_plane(Plane::Background),
-            ColorInAPlane::new(BasicColor::Red, Plane::Background)
-        );
-    }
-
-    #[test]
-    fn basic_to_simple_color() {
-        assert_eq!(
-            BasicColor::Red.to_simple_color(),
-            SimpleColor {
-                basic_color: BasicColor::Red,
-                bright: false
-            }
-        );
-    }
-
-    #[test]
-    fn basic_to_color() {
-        assert_eq!(
-            BasicColor::Red.to_color(),
-            Color::Simple(SimpleColor {
-                basic_color: BasicColor::Red,
-                bright: false
-            })
         );
     }
 }
