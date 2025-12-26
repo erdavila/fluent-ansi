@@ -163,13 +163,16 @@
 //! | [`unset(Underline)`](StyleSet::unset)                                          | underline style | See note \[3] below. |
 //! | [`unset(ColorTarget)`](StyleSet::unset)                                        | color | See note \[3] below. |
 //!
-//! *Note* \[1]: to clear a color with [`set_color()`](StyleSet::set_color), the color type must be specified in the `None` value:
+//! *Note* \[1]: to clear a color with [`set_color()`](StyleSet::set_color), the color type must be specified in the `None` value.
+//! To help with that, the [`Color::none()`](color::Color::none) method can be used:
 //!
 //! ```
 //! # use fluent_ansi::{prelude::*, ColorTarget, Style, color::Color};
 //! # let style = Style::new();
 //! # let color_target = ColorTarget::Foreground;
 //! style.set_color(color_target, None::<Color>);
+//! // or
+//! style.set_color(color_target, Color::none());
 //! ```
 //!
 //! *Note* \[2]: there is in fact a single [`set()`](StyleSet::set) method that is based on the [`StyleAttribute`] trait.

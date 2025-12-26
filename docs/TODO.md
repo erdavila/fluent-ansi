@@ -1,4 +1,3 @@
-- `Color::none() -> Option<Color>`
 - `Foreground` is default
   - update docs
 - const everywhere - allow defining styles at compile time

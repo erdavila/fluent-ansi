@@ -50,6 +50,14 @@ pub trait StyleSet: ToStyleSet<StyleSet = Self> {
     }
 
     /// Sets the color for the given color target.
+    ///
+    /// Use [`Color::none()`] to clear the color for some color target:
+    ///
+    /// ```
+    /// # use fluent_ansi::{prelude::*, ColorTarget, Style};
+    /// # let style_set = Style::new();
+    /// style_set.set_color(ColorTarget::Foreground, Color::none());
+    /// ```
     #[must_use]
     fn set_color(self, target: ColorTarget, color: Option<impl Into<Color>>) -> Self {
         let color: Option<Color> = color.map(Into::into);

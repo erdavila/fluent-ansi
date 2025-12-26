@@ -98,6 +98,14 @@ impl Color {
     pub const fn rgb(r: u8, g: u8, b: u8) -> RGBColor {
         RGBColor::new(r, g, b)
     }
+
+    /// Helper method to return a [`None`] value.
+    ///
+    /// Use it to clear the color for some target with the [`StyleSet::set_color()`](crate::StyleSet::set_color) method.
+    #[must_use]
+    pub const fn none() -> Option<Color> {
+        None
+    }
 }
 
 impl WriteColorCodes for Color {
