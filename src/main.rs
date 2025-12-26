@@ -44,6 +44,19 @@ fn effects() {
     for (effect, name) in effects {
         println!("{} {name}", effect.applied_to("Sample"));
     }
+
+    println!();
+    print_subtitle("Underline Styles");
+    let styles = [
+        (UnderlineStyle::Solid, "Solid"),
+        (UnderlineStyle::Curly, "Curly"),
+        (UnderlineStyle::Dotted, "Dotted"),
+        (UnderlineStyle::Dashed, "Dashed"),
+        (UnderlineStyle::Double, "Double"),
+    ];
+    for (style, name) in styles {
+        println!("{} {name}", style.applied_to("Sample"));
+    }
 }
 
 fn simple_colors() {
@@ -186,6 +199,10 @@ fn rgb() {
 
 fn print_title(title: &str) {
     println!("{}", Styled::new(format!("=== {title} ===")).bold());
+}
+
+fn print_subtitle(subtitle: &str) {
+    println!("{}", Styled::new(format!("--- {subtitle} ---")).bold());
 }
 
 fn calculate_rgb_color_for_indexed_color(indexed_color: IndexedColor) -> RGBColor {
