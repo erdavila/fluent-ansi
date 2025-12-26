@@ -1,5 +1,4 @@
 - `Color::none() -> Option<Color>`
-- underline color
 - `Foreground` is default
   - update docs
 - const everywhere - allow defining styles at compile time

@@ -39,6 +39,7 @@ impl WriteColorCodes for RGBColor {
         let target_code = match target {
             ColorTarget::Foreground => 38,
             ColorTarget::Background => 48,
+            ColorTarget::Underline => 58,
         };
 
         writer.write_code(target_code)?;

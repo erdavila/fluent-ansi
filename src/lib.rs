@@ -133,14 +133,14 @@
 //!
 //! | Method | To set what | Note |
 //! |--------|-------------|------|
-//! | [`bold()`](ToStyleSet::bold),<br/>[`italic()`](ToStyleSet::italic),<br/>[`underline()`](ToStyleSet::underline),<br/>etc. | effect |
-//! | [`effect(impl Into<Effect>)`](ToStyleSet::effect)                                                                        | effect<br/>(including underline styles) |
-//! | [`underline_style(UnderlineStyle)`](ToStyleSet::underline_style)                                                         | underline style |
-//! | [`fg(impl Into<Color>)`](ToStyleSet::fg)<br/>[`bg(impl Into<Color>)`](ToStyleSet::bg)                                    | color |
-//! | [`color(TargetedColor)`](ToStyleSet::color)                                                                              | color |
-//! | [`add(Effect)`](ToStyleSet::add)                                                                                         | effect | See note below. |
-//! | [`add(UnderlineStyle)`](ToStyleSet::add)                                                                                 | underline style | See note below. |
-//! | [`add(TargetedColor)`](ToStyleSet::add)                                                                                  | color | See note below. |
+//! | [`bold()`](ToStyleSet::bold),<br/>[`italic()`](ToStyleSet::italic),<br/>[`underline()`](ToStyleSet::underline),<br/>etc.                                     | effect |
+//! | [`effect(impl Into<Effect>)`](ToStyleSet::effect)                                                                                                            | effect<br/>(including underline styles) |
+//! | [`underline_style(UnderlineStyle)`](ToStyleSet::underline_style)                                                                                             | underline style |
+//! | [`fg(impl Into<Color>)`](ToStyleSet::fg)<br/>[`bg(impl Into<Color>)`](ToStyleSet::bg)<br/>[`underline_color(impl Into<Color>)`](ToStyleSet::underline_color) | color |
+//! | [`color(TargetedColor)`](ToStyleSet::color)                                                                                                                  | color |
+//! | [`add(Effect)`](ToStyleSet::add)                                                                                                                             | effect | See note below. |
+//! | [`add(UnderlineStyle)`](ToStyleSet::add)                                                                                                                     | underline style | See note below. |
+//! | [`add(TargetedColor)`](ToStyleSet::add)                                                                                                                      | color | See note below. |
 //!
 //! *Note*: there is in fact a single [`add()`](ToStyleSet::add) method that takes an <code>impl [StyleElement]</code> argument.
 //!

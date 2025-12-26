@@ -16,6 +16,12 @@ pub trait ColorKind: Into<Color> {
         self.for_target(ColorTarget::Background)
     }
 
+    /// Associate this color with the underline effect.
+    #[must_use]
+    fn for_underline(self) -> TargetedColor {
+        self.for_target(ColorTarget::Underline)
+    }
+
     /// Associate this color with the specified color target.
     #[must_use]
     fn for_target(self, target: ColorTarget) -> TargetedColor {
@@ -70,6 +76,18 @@ mod tests {
                     assert_eq!(
                         $color.for_target(ColorTarget::Background),
                         TargetedColor::new($color, ColorTarget::Background)
+                    );
+                }
+
+                #[test]
+                fn for_underline() {
+                    assert_eq!(
+                        $color.for_underline(),
+                        TargetedColor::new($color, ColorTarget::Underline)
+                    );
+                    assert_eq!(
+                        $color.for_target(ColorTarget::Underline),
+                        TargetedColor::new($color, ColorTarget::Underline)
                     );
                 }
 

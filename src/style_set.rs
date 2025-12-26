@@ -207,71 +207,68 @@ mod tests {
                     }
                 }
 
+                macro_rules! assert_targeted_color {
+                    ($color_target:expr, $method:ident) => {
+                        let empty_style_set = $empty_style_set;
+                        assert_eq!(empty_style_set.get_color($color_target), None);
+                        assert_eq!(empty_style_set.get($color_target), None);
+
+                        let style_set =
+                            $empty_style_set.set_color($color_target, Some(BasicColor::Red));
+                        assert_eq!(style_set, $empty_style_set.$method(BasicColor::Red));
+                        assert_eq!(
+                            style_set.get_color($color_target),
+                            Some(BasicColor::Red.to_color())
+                        );
+                        assert_eq!(
+                            style_set.get($color_target),
+                            Some(BasicColor::Red.to_color())
+                        );
+
+                        let style_set =
+                            $empty_style_set.set($color_target, Some(BasicColor::Red.to_color()));
+                        assert_eq!(style_set, $empty_style_set.$method(BasicColor::Red));
+                        assert_eq!(
+                            style_set.get_color($color_target),
+                            Some(BasicColor::Red.to_color())
+                        );
+                        assert_eq!(
+                            style_set.get($color_target),
+                            Some(BasicColor::Red.to_color())
+                        );
+
+                        let style_set =
+                            $empty_style_set.set_color($color_target, Some(BasicColor::Red));
+
+                        {
+                            let empty_style_set = style_set.set_color($color_target, None::<Color>);
+                            assert_eq!(empty_style_set, $empty_style_set);
+                            assert_eq!(empty_style_set.get_color($color_target), None);
+                            assert_eq!(empty_style_set.get($color_target), None);
+                        }
+
+                        {
+                            let empty_style_set = style_set.unset($color_target);
+                            assert_eq!(empty_style_set, $empty_style_set);
+                            assert_eq!(empty_style_set.get_color($color_target), None);
+                            assert_eq!(empty_style_set.get($color_target), None);
+                        }
+                    };
+                }
+
                 #[test]
-                fn colors() {
-                    let style_set = $empty_style_set;
-                    assert_eq!(style_set.get_color(ColorTarget::Foreground), None);
-                    assert_eq!(style_set.get_color(ColorTarget::Background), None);
-                    assert_eq!(style_set.get(ColorTarget::Foreground), None);
-                    assert_eq!(style_set.get(ColorTarget::Background), None);
+                fn foreground_color() {
+                    assert_targeted_color!(ColorTarget::Foreground, fg);
+                }
 
-                    {
-                        let style_set = $empty_style_set
-                            .set_color(ColorTarget::Foreground, Some(BasicColor::Red))
-                            .set_color(ColorTarget::Background, Some(BasicColor::Green));
-                        assert_eq!(
-                            style_set,
-                            $empty_style_set.fg(BasicColor::Red).bg(BasicColor::Green)
-                        );
-                        assert_eq!(
-                            style_set.get_color(ColorTarget::Foreground),
-                            Some(BasicColor::Red.to_color())
-                        );
-                        assert_eq!(
-                            style_set.get(ColorTarget::Foreground),
-                            Some(BasicColor::Red.to_color())
-                        );
-                        assert_eq!(
-                            style_set.get_color(ColorTarget::Background),
-                            Some(BasicColor::Green.to_color())
-                        );
-                        assert_eq!(
-                            style_set.get(ColorTarget::Background),
-                            Some(BasicColor::Green.to_color())
-                        );
+                #[test]
+                fn background_color() {
+                    assert_targeted_color!(ColorTarget::Background, bg);
+                }
 
-                        let style_set = style_set
-                            .set_color(ColorTarget::Foreground, None::<Color>)
-                            .set_color(ColorTarget::Background, None::<Color>);
-                        assert_eq!(style_set, $empty_style_set);
-                        assert_eq!(style_set.get_color(ColorTarget::Foreground), None);
-                        assert_eq!(style_set.get_color(ColorTarget::Background), None);
-                    }
-
-                    {
-                        let style_set = $empty_style_set
-                            .set(ColorTarget::Foreground, Some(BasicColor::Red.to_color()))
-                            .set(ColorTarget::Background, Some(BasicColor::Green.to_color()));
-                        assert_eq!(
-                            style_set,
-                            $empty_style_set.fg(BasicColor::Red).bg(BasicColor::Green)
-                        );
-                        assert_eq!(
-                            style_set.get_color(ColorTarget::Foreground),
-                            Some(BasicColor::Red.to_color())
-                        );
-                        assert_eq!(
-                            style_set.get_color(ColorTarget::Background),
-                            Some(BasicColor::Green.to_color())
-                        );
-
-                        let style_set = style_set
-                            .unset(ColorTarget::Foreground)
-                            .unset(ColorTarget::Background);
-                        assert_eq!(style_set, $empty_style_set);
-                        assert_eq!(style_set.get_color(ColorTarget::Foreground), None);
-                        assert_eq!(style_set.get_color(ColorTarget::Background), None);
-                    }
+                #[test]
+                fn underline_color() {
+                    assert_targeted_color!(ColorTarget::Underline, underline_color);
                 }
             }
         };

@@ -120,6 +120,12 @@ pub trait ToStyleSet: Sized {
         self.color(TargetedColor::new_for_bg(color))
     }
 
+    /// Sets the underline color.
+    #[must_use]
+    fn underline_color(self, color: impl Into<Color>) -> Self::StyleSet {
+        self.color(TargetedColor::new_for_underline(color))
+    }
+
     /// Sets the given color in a target.
     #[must_use]
     fn color(self, targeted_color: TargetedColor) -> Self::StyleSet {
@@ -253,6 +259,8 @@ mod tests {
                     assert_color!(BasicColor::Green, fg, for_fg);
                     assert_color!(BasicColor::Red, bg, for_bg);
                     assert_color!(BasicColor::Green, bg, for_bg);
+                    assert_color!(BasicColor::Red, underline_color, for_underline);
+                    assert_color!(BasicColor::Green, underline_color, for_underline);
                 }
 
                 #[test]

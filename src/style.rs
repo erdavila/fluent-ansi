@@ -17,6 +17,7 @@ pub struct Style {
     pub(crate) encoded_effects: EncodedEffects,
     pub(crate) fg: Option<Color>,
     pub(crate) bg: Option<Color>,
+    pub(crate) underline_color: Option<Color>,
 }
 
 impl Style {
@@ -27,6 +28,7 @@ impl Style {
             encoded_effects: EncodedEffects::new(),
             fg: None,
             bg: None,
+            underline_color: None,
         }
     }
 }
@@ -89,6 +91,9 @@ impl Display for Style {
                     }
                     if let Some(color) = self.0.bg {
                         color.write_color_codes(ColorTarget::Background, &mut code_writer)?;
+                    }
+                    if let Some(color) = self.0.underline_color {
+                        color.write_color_codes(ColorTarget::Underline, &mut code_writer)?;
                     }
                     Ok(())
                 }
