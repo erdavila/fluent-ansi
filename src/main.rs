@@ -2,7 +2,7 @@
 
 use fluent_ansi::{
     Styled,
-    color::{EightBitColor, RGBColor},
+    color::{IndexedColor, RGBColor},
     prelude::*,
 };
 use terminal_size::{Height, Width, terminal_size};
@@ -14,33 +14,35 @@ mod interpolation;
 mod rgb_f64;
 
 fn main() {
-    flags();
+    effects();
     println!();
     simple_colors();
     println!();
-    eight_bit_colors();
+    indexed_colors();
     println!();
     rgb();
     println!();
 }
 
-fn flags() {
-    print_title("Flags");
-    let flags = [
-        (Flag::Bold, "Bold"),
-        (Flag::Faint, "Faint"),
-        (Flag::Italic, "Italic"),
-        (Flag::Underline, "Underline"),
-        (Flag::SlowBlink, "SlowBlink"),
-        (Flag::RapidBlink, "RapidBlink"),
-        (Flag::Reverse, "Reverse"),
-        (Flag::Conceal, "Conceal"),
-        (Flag::CrossedOut, "CrossedOut"),
-        (Flag::DoubleUnderline, "DoubleUnderline"),
-        (Flag::Overline, "Overline"),
+fn effects() {
+    print_title("Effects");
+    let effects = [
+        (Effect::Bold, "Bold"),
+        (Effect::Faint, "Faint"),
+        (Effect::Italic, "Italic"),
+        (Effect::Underline, "Underline"),
+        (Effect::CurlyUnderline, "CurlyUnderline"),
+        (Effect::DottedUnderline, "DottedUnderline"),
+        (Effect::DashedUnderline, "DashedUnderline"),
+        (Effect::Blink, "Blink"),
+        (Effect::Reverse, "Reverse"),
+        (Effect::Conceal, "Conceal"),
+        (Effect::Strikethrough, "Strikethrough"),
+        (Effect::DoubleUnderline, "DoubleUnderline"),
+        (Effect::Overline, "Overline"),
     ];
-    for (flag, name) in flags {
-        println!("{} {name}", flag.applied_to("Sample"));
+    for (effect, name) in effects {
+        println!("{} {name}", effect.applied_to("Sample"));
     }
 }
 
@@ -59,25 +61,25 @@ fn simple_colors() {
     for (color, name) in colors {
         println!(
             "{}│{}│{}│{}│ {name}",
-            color.in_fg().applied_to(" Normal "),
-            color.bright().in_fg().applied_to(" Bright "),
-            color.in_bg().applied_to(" Normal "),
-            color.bright().in_bg().applied_to(" Bright "),
+            color.for_fg().applied_to(" Normal "),
+            color.bright().for_fg().applied_to(" Bright "),
+            color.for_bg().applied_to(" Normal "),
+            color.bright().for_bg().applied_to(" Bright "),
         );
     }
 }
 
-fn eight_bit_colors() {
-    print_title("Eight Bit Colors");
+fn indexed_colors() {
+    print_title("Indexed Colors");
     for index in 0..=255u8 {
-        let color = EightBitColor(index);
+        let color = IndexedColor(index);
         let text_color =
-            RGBf64::from(calculate_rgb_color_for_eight_bit_color(color)).best_constrast_color();
+            RGBf64::from(calculate_rgb_color_for_indexed_color(color)).best_constrast_color();
 
         let content = format!(" {index:3} ");
         print!(
             "{}",
-            color.in_bg().add(text_color.in_fg()).applied_to(content)
+            color.for_bg().add(text_color.for_fg()).applied_to(content)
         );
         match index {
             7 | 15 | 51 | 87 | 123 | 159 | 195 | 231 | 255 => println!(),
@@ -95,7 +97,7 @@ fn rgb() {
         let hexcode = format!(" {:02x}{:02x}{:02x} ", color.r, color.g, color.b);
         print!(
             "{}",
-            color.in_bg().add(text_color.in_fg()).applied_to(hexcode)
+            color.for_bg().add(text_color.for_fg()).applied_to(hexcode)
         );
     }
 
@@ -186,8 +188,8 @@ fn print_title(title: &str) {
     println!("{}", Styled::new(format!("=== {title} ===")).bold());
 }
 
-fn calculate_rgb_color_for_eight_bit_color(eight_bit_color: EightBitColor) -> RGBColor {
-    let code = eight_bit_color.get_number();
+fn calculate_rgb_color_for_indexed_color(indexed_color: IndexedColor) -> RGBColor {
+    let code = indexed_color.get_number();
 
     // Algorithm from:
     // https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
