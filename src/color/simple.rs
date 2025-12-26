@@ -1,7 +1,7 @@
 use core::fmt::Result;
 
 use crate::{
-    CodeWriter, Plane,
+    CodeWriter, ColorTarget,
     color::{BasicColor, WriteColorCodes},
 };
 
@@ -63,12 +63,12 @@ impl SimpleColor {
 }
 
 impl WriteColorCodes for SimpleColor {
-    fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
-        let code_base = match (plane, self.bright) {
-            (Plane::Foreground, false) => 30,
-            (Plane::Background, false) => 40,
-            (Plane::Foreground, true) => 90,
-            (Plane::Background, true) => 100,
+    fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
+        let code_base = match (target, self.bright) {
+            (ColorTarget::Foreground, false) => 30,
+            (ColorTarget::Background, false) => 40,
+            (ColorTarget::Foreground, true) => 90,
+            (ColorTarget::Background, true) => 100,
         };
 
         writer.write_code(code_base + self.basic_color.code_offset())

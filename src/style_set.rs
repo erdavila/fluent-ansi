@@ -1,5 +1,5 @@
 use crate::{
-    Effect, GetEffects, Plane, Style, ToStyleSet, Underline, UnderlineStyle, color::Color,
+    ColorTarget, Effect, GetEffects, Style, ToStyleSet, Underline, UnderlineStyle, color::Color,
 };
 
 /// A trait to represent an attribute that can be set or retrieved from a [`Style`].
@@ -19,7 +19,7 @@ pub trait StyleAttribute {
 /// A trait to set and get styling options on a type.
 ///
 /// This trait extends [`ToStyleSet`] with methods to get the current state of styling options,
-/// such as checking if an effect is set or getting the color of a plane.
+/// such as checking if an effect is set or getting the color of a target.
 pub trait StyleSet: ToStyleSet<StyleSet = Self> {
     /// Sets the given effect to the specified value.
     #[must_use]
@@ -49,17 +49,17 @@ pub trait StyleSet: ToStyleSet<StyleSet = Self> {
         UnderlineStyle::all().find(|&underline_style| self.get_effect(underline_style.to_effect()))
     }
 
-    /// Sets the color for the given plane (foreground or background).
+    /// Sets the color for the given color target.
     #[must_use]
-    fn set_color(self, plane: Plane, color: Option<impl Into<Color>>) -> Self {
+    fn set_color(self, target: ColorTarget, color: Option<impl Into<Color>>) -> Self {
         let color: Option<Color> = color.map(Into::into);
-        self.set(plane, color)
+        self.set(target, color)
     }
 
-    /// Gets the color for the given plane (foreground or background).
+    /// Gets the color for the given color target.
     #[must_use]
-    fn get_color(&self, plane: Plane) -> Option<Color> {
-        self.get(plane)
+    fn get_color(&self, target: ColorTarget) -> Option<Color> {
+        self.get(target)
     }
 
     /// Sets the given attribute to the specified value.
@@ -210,65 +210,67 @@ mod tests {
                 #[test]
                 fn colors() {
                     let style_set = $empty_style_set;
-                    assert_eq!(style_set.get_color(Plane::Foreground), None);
-                    assert_eq!(style_set.get_color(Plane::Background), None);
-                    assert_eq!(style_set.get(Plane::Foreground), None);
-                    assert_eq!(style_set.get(Plane::Background), None);
+                    assert_eq!(style_set.get_color(ColorTarget::Foreground), None);
+                    assert_eq!(style_set.get_color(ColorTarget::Background), None);
+                    assert_eq!(style_set.get(ColorTarget::Foreground), None);
+                    assert_eq!(style_set.get(ColorTarget::Background), None);
 
                     {
                         let style_set = $empty_style_set
-                            .set_color(Plane::Foreground, Some(BasicColor::Red))
-                            .set_color(Plane::Background, Some(BasicColor::Green));
+                            .set_color(ColorTarget::Foreground, Some(BasicColor::Red))
+                            .set_color(ColorTarget::Background, Some(BasicColor::Green));
                         assert_eq!(
                             style_set,
                             $empty_style_set.fg(BasicColor::Red).bg(BasicColor::Green)
                         );
                         assert_eq!(
-                            style_set.get_color(Plane::Foreground),
+                            style_set.get_color(ColorTarget::Foreground),
                             Some(BasicColor::Red.to_color())
                         );
                         assert_eq!(
-                            style_set.get(Plane::Foreground),
+                            style_set.get(ColorTarget::Foreground),
                             Some(BasicColor::Red.to_color())
                         );
                         assert_eq!(
-                            style_set.get_color(Plane::Background),
+                            style_set.get_color(ColorTarget::Background),
                             Some(BasicColor::Green.to_color())
                         );
                         assert_eq!(
-                            style_set.get(Plane::Background),
+                            style_set.get(ColorTarget::Background),
                             Some(BasicColor::Green.to_color())
                         );
 
                         let style_set = style_set
-                            .set_color(Plane::Foreground, None::<Color>)
-                            .set_color(Plane::Background, None::<Color>);
+                            .set_color(ColorTarget::Foreground, None::<Color>)
+                            .set_color(ColorTarget::Background, None::<Color>);
                         assert_eq!(style_set, $empty_style_set);
-                        assert_eq!(style_set.get_color(Plane::Foreground), None);
-                        assert_eq!(style_set.get_color(Plane::Background), None);
+                        assert_eq!(style_set.get_color(ColorTarget::Foreground), None);
+                        assert_eq!(style_set.get_color(ColorTarget::Background), None);
                     }
 
                     {
                         let style_set = $empty_style_set
-                            .set(Plane::Foreground, Some(BasicColor::Red.to_color()))
-                            .set(Plane::Background, Some(BasicColor::Green.to_color()));
+                            .set(ColorTarget::Foreground, Some(BasicColor::Red.to_color()))
+                            .set(ColorTarget::Background, Some(BasicColor::Green.to_color()));
                         assert_eq!(
                             style_set,
                             $empty_style_set.fg(BasicColor::Red).bg(BasicColor::Green)
                         );
                         assert_eq!(
-                            style_set.get_color(Plane::Foreground),
+                            style_set.get_color(ColorTarget::Foreground),
                             Some(BasicColor::Red.to_color())
                         );
                         assert_eq!(
-                            style_set.get_color(Plane::Background),
+                            style_set.get_color(ColorTarget::Background),
                             Some(BasicColor::Green.to_color())
                         );
 
-                        let style_set = style_set.unset(Plane::Foreground).unset(Plane::Background);
+                        let style_set = style_set
+                            .unset(ColorTarget::Foreground)
+                            .unset(ColorTarget::Background);
                         assert_eq!(style_set, $empty_style_set);
-                        assert_eq!(style_set.get_color(Plane::Foreground), None);
-                        assert_eq!(style_set.get_color(Plane::Background), None);
+                        assert_eq!(style_set.get_color(ColorTarget::Foreground), None);
+                        assert_eq!(style_set.get_color(ColorTarget::Background), None);
                     }
                 }
             }

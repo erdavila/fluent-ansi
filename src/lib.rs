@@ -7,7 +7,7 @@
 //! ```
 //! use fluent_ansi::{prelude::*, Style, Styled};
 //!
-//! let style: Style = Color::RED.in_fg().bold();
+//! let style: Style = Color::RED.for_fg().bold();
 //! let styled: Styled<&str> = style.applied_to("Some content");
 //!
 //! println!("{}", styled);
@@ -20,15 +20,15 @@
 //! reach the same result. For instance, all the lines below result in the same [`Style`] value:
 //!
 //! ```
-//! use fluent_ansi::{prelude::*, ColorInAPlane, Style, Plane};
+//! use fluent_ansi::{prelude::*, ColorTarget, Style, TargetedColor};
 //!
-//! let stl: Style = Style::new().set(Effect::Bold, true).set(Plane::Foreground, Some(Color::RED.to_color()));
-//! let stl: Style = Style::new().set_effect(Effect::Bold, true).set_color(Plane::Foreground, Some(Color::RED));
-//! let stl: Style = Style::new().add(Effect::Bold).add(ColorInAPlane::new(Color::RED, Plane::Foreground));
-//! let stl: Style = Style::new().effect(Effect::Bold).color(ColorInAPlane::new(Color::RED, Plane::Foreground));
+//! let stl: Style = Style::new().set(Effect::Bold, true).set(ColorTarget::Foreground, Some(Color::RED.to_color()));
+//! let stl: Style = Style::new().set_effect(Effect::Bold, true).set_color(ColorTarget::Foreground, Some(Color::RED));
+//! let stl: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RED, ColorTarget::Foreground));
+//! let stl: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
 //! let stl: Style = Style::new().bold().fg(Color::RED);
 //! let stl: Style = Effect::Bold.fg(Color::RED);
-//! let stl: Style = Color::RED.in_fg().bold();
+//! let stl: Style = Color::RED.for_fg().bold();
 //! ```
 //!
 //! All types are immutable and implement [`Copy`], except for [`Styled<C>`](Styled),
@@ -50,8 +50,8 @@
 //! use fluent_ansi::{prelude::*, Styled};
 //!
 //! assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
-//! assert_eq!(format!("{}", Color::RED.in_fg().applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
-//! assert_eq!(format!("{}", Color::RED.in_fg().bold().applied_to("Some content")), "\x1b[1;31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Color::RED.for_fg().applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Color::RED.for_fg().bold().applied_to("Some content")), "\x1b[1;31mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Styled::new("Some content").bold().fg(Color::RED)), "\x1b[1;31mSome content\x1b[0m");
 //! ```
 //!
@@ -104,21 +104,21 @@
 //!
 //! There is a handful of color types, which are described in the [`color`] module.
 //!
-//! Colors by themselves are not useful as styles. They must be associated to a [`Plane`], which is either foreground or
-//! background. The type [`ColorInAPlane`] associates a color with a [`Plane`].
+//! Colors by themselves are not useful as styles. They must be associated to a [`ColorTarget`].
+//! The type [`TargetedColor`] associates a color with a [`ColorTarget`].
 //!
 //! ```
-//! use fluent_ansi::{prelude::*, ColorInAPlane, Plane};
+//! use fluent_ansi::{prelude::*, ColorTarget, TargetedColor};
 //!
 //! // Both lines below are equivalent
-//! let red_in_foreground: ColorInAPlane = Color::RED.in_fg();
-//! let red_in_foreground: ColorInAPlane = Color::RED.in_plane(Plane::Foreground);
-//! assert_eq!(format!("{red_in_foreground}"), "\x1b[31m");
+//! let red_foreground: TargetedColor = Color::RED.for_fg();
+//! let red_foreground: TargetedColor = Color::RED.for_target(ColorTarget::Foreground);
+//! assert_eq!(format!("{red_foreground}"), "\x1b[31m");
 //!
 //! // Both lines below are equivalent
-//! let red_in_background: ColorInAPlane = Color::RED.in_bg();
-//! let red_in_background: ColorInAPlane = Color::RED.in_plane(Plane::Background);
-//! assert_eq!(format!("{red_in_background}"), "\x1b[41m");
+//! let red_background: TargetedColor = Color::RED.for_bg();
+//! let red_background: TargetedColor = Color::RED.for_target(ColorTarget::Background);
+//! assert_eq!(format!("{red_background}"), "\x1b[41m");
 //! ```
 //!
 //! ## Setting and clearing styles
@@ -129,7 +129,7 @@
 //!
 //! ### Methods provided by the [`ToStyleSet`] trait
 //!
-//! The following methods _set_ or _add_ some styling, and are available in [`Effect`], [`UnderlineStyle`], [`ColorInAPlane`], [`Style`] and [`Styled<C>`] values.
+//! The following methods _set_ or _add_ some styling, and are available in [`Effect`], [`UnderlineStyle`], [`TargetedColor`], [`Style`] and [`Styled<C>`] values.
 //!
 //! | Method | To set what | Note |
 //! |--------|-------------|------|
@@ -137,10 +137,10 @@
 //! | [`effect(impl Into<Effect>)`](ToStyleSet::effect)                                                                        | effect<br/>(including underline styles) |
 //! | [`underline_style(UnderlineStyle)`](ToStyleSet::underline_style)                                                         | underline style |
 //! | [`fg(impl Into<Color>)`](ToStyleSet::fg)<br/>[`bg(impl Into<Color>)`](ToStyleSet::bg)                                    | color |
-//! | [`color(ColorInAPlane)`](ToStyleSet::color)                                                                              | color |
+//! | [`color(TargetedColor)`](ToStyleSet::color)                                                                              | color |
 //! | [`add(Effect)`](ToStyleSet::add)                                                                                         | effect | See note below. |
 //! | [`add(UnderlineStyle)`](ToStyleSet::add)                                                                                 | underline style | See note below. |
-//! | [`add(ColorInAPlane)`](ToStyleSet::add)                                                                                  | color | See note below. |
+//! | [`add(TargetedColor)`](ToStyleSet::add)                                                                                  | color | See note below. |
 //!
 //! *Note*: there is in fact a single [`add()`](ToStyleSet::add) method that takes an <code>impl [StyleElement]</code> argument.
 //!
@@ -153,23 +153,23 @@
 //! |--------|-------------|------|
 //! | [`set_effect(impl Into<Effect>, bool)`](StyleSet::set_effect)                  | effect (including underline styles) |
 //! | [`set_underline_style(Option<UnderlineStyle>)`](StyleSet::set_underline_style) | underline style |
-//! | [`set_color(Plane, Option<impl Into<Color>>)`](StyleSet::set_color)            | color | See note \[1] below. |
+//! | [`set_color(ColorTarget, Option<impl Into<Color>>)`](StyleSet::set_color)      | color | See note \[1] below. |
 //! | [`set(Effect, bool)`](StyleSet::set)                                           | effect | See note \[2] below. |
 //! | [`set(UnderlineStyle, bool)`](StyleSet::set)                                   | underline style | See note \[2] below. |
 //! | [`set(Underline, Option<UnderlineStyle>)`](StyleSet::set)                      | underline style | See note \[2] below. |
-//! | [`set(Plane, Option<Color>)`](StyleSet::set)                                   | color | See note \[2] below. |
+//! | [`set(ColorTarget, Option<Color>)`](StyleSet::set)                             | color | See note \[2] below. |
 //! | [`unset(Effect)`](StyleSet::unset)                                             | effect | See note \[3] below. |
 //! | [`unset(UnderlineStyle)`](StyleSet::unset)                                     | underline style | See note \[3] below. |
 //! | [`unset(Underline)`](StyleSet::unset)                                          | underline style | See note \[3] below. |
-//! | [`unset(Plane)`](StyleSet::unset)                                              | color | See note \[3] below. |
+//! | [`unset(ColorTarget)`](StyleSet::unset)                                        | color | See note \[3] below. |
 //!
 //! *Note* \[1]: to clear a color with [`set_color()`](StyleSet::set_color), the color type must be specified in the `None` value:
 //!
 //! ```
-//! # use fluent_ansi::{prelude::*, Style, Plane, color::Color};
+//! # use fluent_ansi::{prelude::*, ColorTarget, Style, color::Color};
 //! # let style = Style::new();
-//! # let plane = Plane::Foreground;
-//! style.set_color(plane, None::<Color>);
+//! # let color_target = ColorTarget::Foreground;
+//! style.set_color(color_target, None::<Color>);
 //! ```
 //!
 //! *Note* \[2]: there is in fact a single [`set()`](StyleSet::set) method that is based on the [`StyleAttribute`] trait.
@@ -186,11 +186,11 @@
 //! | [`get_effect(impl Into<Effect>) -> bool`](StyleSet::get_effect)                    | effect (including underline styles) |
 //! | [`get_underline_style() -> Option<UnderlineStyle>`](StyleSet::get_underline_style) | underline style |
 //! | [`get_effects() -> GetEffects`](StyleSet::get_effects)                             | effect | Returns an iterator on the effects that are currently set. |
-//! | [`get_color(Plane) -> Option<Color>`](StyleSet::get_color)                         | color |
+//! | [`get_color(ColorTarget) -> Option<Color>`](StyleSet::get_color)                   | color |
 //! | [`get(Effect) -> bool`](StyleSet::get)                                             | effect | See note below. |
 //! | [`get(UnderlineStyle) -> bool`](StyleSet::get)                                     | underline style | See note below. |
 //! | [`get(Underline) -> Option<UnderlineStyle>`](StyleSet::get)                        | underline style | See note below. |
-//! | [`get(Plane) -> Option<Color>`](StyleSet::get)                                     | color | See note below. |
+//! | [`get(ColorTarget) -> Option<Color>`](StyleSet::get)                               | color | See note below. |
 //!
 //! *Note*: there is in fact a single [`get()`](StyleSet::get) method that is based on the [`StyleAttribute`] trait.
 //!
@@ -203,25 +203,25 @@
 //! ```
 //! use fluent_ansi::{prelude::*, Reset};
 //!
-//! let style = Color::RED.in_fg().bold();
+//! let style = Color::RED.for_fg().bold();
 //! let output = format!("{style}Some content{Reset}");
 //!
 //! assert_eq!(output, "\x1b[1;31mSome content\x1b[0m");
 //! ```
 
 pub use crate::{
-    applied_to::*, color_in_a_plane::*, effect::*, reset::*, style::*, style_set::*, styled::*,
+    applied_to::*, effect::*, reset::*, style::*, style_set::*, styled::*, targeted_color::*,
     to_style::*, to_style_set::*,
 };
 
 mod applied_to;
 pub mod color;
-mod color_in_a_plane;
 mod effect;
 mod reset;
 mod style;
 mod style_set;
 mod styled;
+mod targeted_color;
 mod to_style;
 mod to_style_set;
 
@@ -233,7 +233,7 @@ mod to_style_set;
 /// ```
 /// use fluent_ansi::prelude::*;
 ///
-/// let styled = Color::RED.in_fg().bold().applied_to("Some content");
+/// let styled = Color::RED.for_fg().bold().applied_to("Some content");
 /// ```
 pub mod prelude {
     pub use crate::UnderlineStyle;

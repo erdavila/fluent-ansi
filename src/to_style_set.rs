@@ -1,9 +1,9 @@
-use crate::{AppliedTo, ColorInAPlane, Effect, Style, StyleSet, UnderlineStyle, color::Color};
+use crate::{AppliedTo, Effect, Style, StyleSet, TargetedColor, UnderlineStyle, color::Color};
 
 /// An element that can be added to a [`Style`].
 ///
 /// This trait is used to define elements that can be added to a `Style`. Such elements
-/// include effects ([`Effect`]) and colors (like [`ColorInAPlane`]).
+/// include effects ([`Effect`]) and colors (like [`TargetedColor`]).
 pub trait StyleElement: AppliedTo {
     /// Adds this element to the given `Style`, returning the updated `Style`.
     #[must_use]
@@ -111,19 +111,19 @@ pub trait ToStyleSet: Sized {
     /// Sets the foreground color.
     #[must_use]
     fn fg(self, color: impl Into<Color>) -> Self::StyleSet {
-        self.color(ColorInAPlane::new_in_fg(color))
+        self.color(TargetedColor::new_for_fg(color))
     }
 
     /// Sets the background color.
     #[must_use]
     fn bg(self, color: impl Into<Color>) -> Self::StyleSet {
-        self.color(ColorInAPlane::new_in_bg(color))
+        self.color(TargetedColor::new_for_bg(color))
     }
 
-    /// Sets the given color in a plane.
+    /// Sets the given color in a target.
     #[must_use]
-    fn color(self, color_in_a_plane: ColorInAPlane) -> Self::StyleSet {
-        self.add(color_in_a_plane)
+    fn color(self, targeted_color: TargetedColor) -> Self::StyleSet {
+        self.add(targeted_color)
     }
 
     /// Adds the given element to the style.
@@ -240,19 +240,19 @@ mod tests {
 
                     macro_rules! assert_color {
                         ($color:expr, $method:ident, $color_kind_method:ident) => {{
-                            let color_in_a_plane = $color.$color_kind_method();
+                            let targeted_color = $color.$color_kind_method();
                             let expected_style = $style_set.$method($color);
 
                             assert_eq!(value.$method($color), expected_style);
-                            assert_eq!(value.color(color_in_a_plane), expected_style);
-                            assert_eq!(value.add(color_in_a_plane), expected_style);
+                            assert_eq!(value.color(targeted_color), expected_style);
+                            assert_eq!(value.add(targeted_color), expected_style);
                         }};
                     }
 
-                    assert_color!(BasicColor::Red, fg, in_fg);
-                    assert_color!(BasicColor::Green, fg, in_fg);
-                    assert_color!(BasicColor::Red, bg, in_bg);
-                    assert_color!(BasicColor::Green, bg, in_bg);
+                    assert_color!(BasicColor::Red, fg, for_fg);
+                    assert_color!(BasicColor::Green, fg, for_fg);
+                    assert_color!(BasicColor::Red, bg, for_bg);
+                    assert_color!(BasicColor::Green, bg, for_bg);
                 }
 
                 #[test]
