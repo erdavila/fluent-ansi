@@ -7,7 +7,7 @@
 //! ```
 //! use fluent_ansi::{prelude::*, Style, Styled};
 //!
-//! let style: Style = Color::RED.for_fg().bold();
+//! let style: Style = Color::RED.bold();
 //! let styled: Styled<&str> = style.applied_to("Some content");
 //!
 //! println!("{}", styled);
@@ -50,8 +50,8 @@
 //! use fluent_ansi::{prelude::*, Styled};
 //!
 //! assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
-//! assert_eq!(format!("{}", Color::RED.for_fg().applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
-//! assert_eq!(format!("{}", Color::RED.for_fg().bold().applied_to("Some content")), "\x1b[1;31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Color::RED.applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Color::RED.bold().applied_to("Some content")), "\x1b[1;31mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Styled::new("Some content").bold().fg(Color::RED)), "\x1b[1;31mSome content\x1b[0m");
 //! ```
 //!
@@ -104,22 +104,50 @@
 //!
 //! There is a handful of color types, which are described in the [`color`] module.
 //!
-//! Colors by themselves are not useful as styles. They must be associated to a [`ColorTarget`].
-//! The type [`TargetedColor`] associates a color with a [`ColorTarget`].
+//! A color is rendered in a [`ColorTarget`], which is [`Foreground`](ColorTarget::Foreground),
+//! [`Background`](ColorTarget::Background) or [`Underline`](ColorTarget::Underline).
+//!
+//! The type [`TargetedColor`] associates a color with a [`ColorTarget`]:
 //!
 //! ```
-//! use fluent_ansi::{prelude::*, ColorTarget, TargetedColor};
+//! use fluent_ansi::{prelude::*, TargetedColor};
 //!
-//! // Both lines below are equivalent
 //! let red_foreground: TargetedColor = Color::RED.for_fg();
-//! let red_foreground: TargetedColor = Color::RED.for_target(ColorTarget::Foreground);
-//! assert_eq!(format!("{red_foreground}"), "\x1b[31m");
+//! assert_eq!(format!("{}", red_foreground.applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
 //!
-//! // Both lines below are equivalent
 //! let red_background: TargetedColor = Color::RED.for_bg();
-//! let red_background: TargetedColor = Color::RED.for_target(ColorTarget::Background);
-//! assert_eq!(format!("{red_background}"), "\x1b[41m");
+//! assert_eq!(format!("{}", red_background.applied_to("Some content")), "\x1b[41mSome content\x1b[0m");
+//!
+//! let red_underline: TargetedColor = Color::RED.for_underline();
+//! assert_eq!(format!("{}", red_underline.applied_to("Some content")), "\x1b[58;5;1mSome content\x1b[0m");
 //! ```
+//!
+//! A bunch of methods can be used to compose stylings with colors:
+//!
+//! ```
+//! use fluent_ansi::prelude::*;
+//!
+//! let style_1 = Effect::Bold.fg(Color::RED);
+//! let style_2 = Effect::Bold.color(Color::RED.for_fg());
+//! let style_3 = Effect::Bold.add(Color::RED.for_fg());
+//! let style_4 = Color::RED.for_fg().add(Effect::Bold);
+//!
+//! assert_eq!(style_1, style_2);
+//! assert_eq!(style_1, style_3);
+//! assert_eq!(style_1, style_4);
+//! ```
+//!
+//! By default, colors are rendered in the foreground:
+//!
+//! ```
+//! use fluent_ansi::prelude::*;
+//!
+//! let rendered_1 = format!("{}", Color::RED.applied_to("Some content"));
+//! let rendered_2 = format!("{}", Color::RED.for_fg().applied_to("Some content"));
+//! assert_eq!(rendered_1, rendered_2);
+//! assert_eq!(rendered_1, "\x1b[31mSome content\x1b[0m");
+//! ```
+//!
 //!
 //! ## Setting and clearing styles
 //!
@@ -138,11 +166,15 @@
 //! | [`underline_style(UnderlineStyle)`](ToStyleSet::underline_style)                                                                                             | underline style |
 //! | [`fg(impl Into<Color>)`](ToStyleSet::fg)<br/>[`bg(impl Into<Color>)`](ToStyleSet::bg)<br/>[`underline_color(impl Into<Color>)`](ToStyleSet::underline_color) | color |
 //! | [`color(TargetedColor)`](ToStyleSet::color)                                                                                                                  | color |
+//! | [`color(impl Into<Color>)`](ToStyleSet::color)                                                                                                               | foreground color | See note \[1] below. |
 //! | [`add(Effect)`](ToStyleSet::add)                                                                                                                             | effect | See note below. |
 //! | [`add(UnderlineStyle)`](ToStyleSet::add)                                                                                                                     | underline style | See note below. |
 //! | [`add(TargetedColor)`](ToStyleSet::add)                                                                                                                      | color | See note below. |
+//! | [`add(impl Into<Color>)`](ToStyleSet::add)                                                                                                                   | foreground color | See note \[2] below. |
 //!
-//! *Note*: there is in fact a single [`add()`](ToStyleSet::add) method that takes an <code>impl [StyleElement]</code> argument.
+//! *Note* \[1]: there is in fact a single [`color()`](ToStyleSet::color) method that takes an <code>impl Into\<[TargetedColor]></code> argument.
+//!
+//! *Note* \[2]: there is in fact a single [`add()`](ToStyleSet::add) method that takes an <code>impl [StyleElement]</code> argument.
 //!
 //!
 //! ### Methods provided by the [`StyleSet`] trait
@@ -206,7 +238,7 @@
 //! ```
 //! use fluent_ansi::{prelude::*, Reset};
 //!
-//! let style = Color::RED.for_fg().bold();
+//! let style = Color::RED.bold();
 //! let output = format!("{style}Some content{Reset}");
 //!
 //! assert_eq!(output, "\x1b[1;31mSome content\x1b[0m");
@@ -236,7 +268,7 @@ mod to_style_set;
 /// ```
 /// use fluent_ansi::prelude::*;
 ///
-/// let styled = Color::RED.for_fg().bold().applied_to("Some content");
+/// let styled = Color::RED.for_bg().bold().applied_to("Some content");
 /// ```
 pub mod prelude {
     pub use crate::UnderlineStyle;

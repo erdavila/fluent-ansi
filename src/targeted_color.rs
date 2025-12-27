@@ -79,6 +79,12 @@ impl Display for TargetedColor {
     }
 }
 
+impl<C: Into<Color>> From<C> for TargetedColor {
+    fn from(value: C) -> Self {
+        Self::new(value, ColorTarget::Foreground)
+    }
+}
+
 /// The target where a color is applied.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ColorTarget {

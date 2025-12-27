@@ -1,6 +1,9 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, ColorTarget, TargetedColor, color::Color};
+use crate::{
+    AppliedTo, CodeWriter, ColorTarget, Style, StyleElement, TargetedColor, ToStyle, ToStyleSet,
+    color::Color,
+};
 
 /// A trait for color kinds that can be converted into a [`Color`].
 pub trait ColorKind: Into<Color> {
@@ -40,6 +43,28 @@ pub(crate) trait WriteColorCodes: ColorKind {
 }
 
 impl<C: Into<Color>> ColorKind for C {}
+
+impl<CK: ColorKind> ToStyleSet for CK {
+    type StyleSet = Style;
+
+    fn to_style_set(self) -> Self::StyleSet {
+        TargetedColor::from(self).to_style_set()
+    }
+}
+
+impl<CK: ColorKind> ToStyle for CK {
+    fn to_style(self) -> Style {
+        TargetedColor::from(self).to_style()
+    }
+}
+
+impl<CK: ColorKind> AppliedTo for CK {}
+
+impl<CK: ColorKind> StyleElement for CK {
+    fn add_to_style(self, style: Style) -> Style {
+        TargetedColor::from(self).add_to_style(style)
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -96,6 +121,14 @@ mod tests {
                     assert_eq!($color.to_color(), $as_color);
                 }
             }
+        };
+    }
+
+    /// Includes tests for the [`ToStyleSet`] trait assuming the color target is foreground.
+    #[macro_export]
+    macro_rules! test_to_style_set_methods_with_foreground_assumed {
+        ($color:expr) => {
+            $crate::test_to_style_set_methods!($color, Style::new().fg($color));
         };
     }
 }

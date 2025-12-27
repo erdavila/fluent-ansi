@@ -47,11 +47,16 @@ impl WriteColorCodes for IndexedColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::test_color_kind_methods;
+    use crate::{
+        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _, test_color_kind_methods,
+        test_to_style_set_methods_with_foreground_assumed,
+    };
 
     use super::*;
 
     test_color_kind_methods!(IndexedColor(7), Color::Indexed(IndexedColor(7)));
+
+    test_to_style_set_methods_with_foreground_assumed!(IndexedColor(7));
 
     #[test]
     fn indexed() {
@@ -62,5 +67,21 @@ mod tests {
         assert_eq!(color_2.get_index(), 7u8);
 
         assert_eq!(color_1, color_2);
+    }
+
+    #[test]
+    fn applied_to() {
+        let stld = IndexedColor(42).applied_to("CONTENT");
+
+        assert_eq!(stld.get_content(), &"CONTENT");
+        assert_eq!(stld.get_style(), Style::new().fg(IndexedColor(42)));
+    }
+
+    #[test]
+    fn to_style() {
+        assert_eq!(
+            IndexedColor(42).to_style(),
+            Style::new().fg(IndexedColor(42))
+        );
     }
 }

@@ -55,7 +55,10 @@ impl BasicColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::{color::BasicColor, test_color_kind_methods};
+    use crate::{
+        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _, color::BasicColor,
+        test_color_kind_methods, test_to_style_set_methods_with_foreground_assumed,
+    };
 
     use super::*;
 
@@ -63,6 +66,8 @@ mod tests {
         BasicColor::Red,
         Color::Simple(SimpleColor::new(BasicColor::Red))
     );
+
+    test_to_style_set_methods_with_foreground_assumed!(BasicColor::Red);
 
     #[test]
     fn bright() {
@@ -73,10 +78,23 @@ mod tests {
     }
 
     #[test]
+    fn applied_to() {
+        let stld = BasicColor::Red.applied_to("CONTENT");
+
+        assert_eq!(stld.get_content(), &"CONTENT");
+        assert_eq!(stld.get_style(), Style::new().fg(BasicColor::Red));
+    }
+
+    #[test]
     fn to_simple_color() {
         assert_eq!(
             BasicColor::Red.to_simple_color(),
             SimpleColor::new(BasicColor::Red)
         );
+    }
+
+    #[test]
+    fn to_style() {
+        assert_eq!(BasicColor::Red.to_style(), Style::new().fg(BasicColor::Red));
     }
 }

@@ -1,5 +1,3 @@
-- `Foreground` is default
-  - update docs
 - const everywhere - allow defining styles at compile time
   - Eliminate traits? Use macros to add methods to types?
 - Style merge

@@ -5,7 +5,7 @@
 ## Key Features
 
 *   **`no_std` Compatible:** Designed to work without the standard library, relying on `core::fmt::Display`.
-*   **Fluent API:** Allows method chaining (e.g., `Color::RED.for_fg().bold().applied_to("text")`).
+*   **Fluent API:** Allows method chaining (e.g., `Color::RED.bold().applied_to("text")`).
 *   **Immutability:** All styling types are immutable and most implement `Copy`.
 
 ## Installation
@@ -25,7 +25,7 @@ The primary way to use `fluent-ansi` is through its fluent API. You can combine 
 use fluent_ansi::{prelude::*, Style, Styled};
 
 // Create a style
-let style: Style = Color::RED.for_fg().bold();
+let style: Style = Color::RED.bold();
 
 // Apply it to some content
 let styled: Styled<&str> = style.applied_to("Some content");
@@ -51,7 +51,7 @@ let stl: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RE
 let stl: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
 let stl: Style = Style::new().bold().fg(Color::RED);
 let stl: Style = Effect::Bold.fg(Color::RED);
-let stl: Style = Color::RED.for_fg().bold();
+let stl: Style = Color::RED.bold();
 ```
 
 ### Styling Elements

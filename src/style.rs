@@ -3,7 +3,7 @@ use core::fmt::{Display, Formatter, Result, Write};
 use crate::{
     AppliedTo, ColorTarget, Effect, Reset, StyleAttribute, StyleElement, StyleSet, Styled,
     TargetedColor, ToStyle, ToStyleSet, UnderlineStyle,
-    color::{Color, WriteColorCodes as _},
+    color::{Color, ColorKind, WriteColorCodes as _},
     style::encoded_effects::EncodedEffects,
 };
 
@@ -121,6 +121,12 @@ impl From<TargetedColor> for Style {
     }
 }
 
+impl<CK: ColorKind> From<CK> for Style {
+    fn from(color: CK) -> Self {
+        Style::new().fg(color)
+    }
+}
+
 impl From<Reset> for Style {
     fn from(_: Reset) -> Self {
         Style::new()
@@ -157,7 +163,7 @@ fn write_escape_sequence(f: &mut impl Write, codes: impl Display) -> Result {
 mod tests {
     use crate::{
         assert_display,
-        color::{BasicColor, ColorKind as _},
+        color::{BasicColor, IndexedColor, RGBColor, SimpleColor},
         test_style_set_methods, test_to_style_set_methods,
     };
 
@@ -233,6 +239,26 @@ mod tests {
         assert_eq!(
             Style::from(BasicColor::Red.for_fg()),
             Style::new().color(BasicColor::Red.for_fg())
+        );
+    }
+
+    #[test]
+    fn from_color() {
+        assert_eq!(
+            Style::from(BasicColor::Red),
+            Style::new().color(BasicColor::Red.for_fg())
+        );
+        assert_eq!(
+            Style::from(SimpleColor::new(BasicColor::Red)),
+            Style::new().color(SimpleColor::new(BasicColor::Red).for_fg())
+        );
+        assert_eq!(
+            Style::from(IndexedColor(42)),
+            Style::new().color(IndexedColor(42).for_fg())
+        );
+        assert_eq!(
+            Style::from(RGBColor::new(0, 128, 255)),
+            Style::new().color(RGBColor::new(0, 128, 255).for_fg())
         );
     }
 

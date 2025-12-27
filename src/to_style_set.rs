@@ -128,8 +128,8 @@ pub trait ToStyleSet: Sized {
 
     /// Sets the given color in a target.
     #[must_use]
-    fn color(self, targeted_color: TargetedColor) -> Self::StyleSet {
-        self.add(targeted_color)
+    fn color(self, targeted_color: impl Into<TargetedColor>) -> Self::StyleSet {
+        self.add(targeted_color.into())
     }
 
     /// Adds the given element to the style.
@@ -146,6 +146,11 @@ pub trait ToStyleSet: Sized {
 #[cfg(test)]
 mod tests {
     /// Includes tests for the [`ToStyleSet`] trait methods.
+    ///
+    /// # Arguments
+    ///
+    /// - `$value` is the value that is having its methods from [`ToStyleSet`] tested.
+    /// - `$style_set` is the [`StyleSet`] value that corresponds to the `$value`.
     #[macro_export]
     macro_rules! test_to_style_set_methods {
         ($mod:ident; $value:expr, $style_set:expr) => {
@@ -242,25 +247,50 @@ mod tests {
 
                 #[test]
                 fn colors() {
-                    let value = $value;
-
-                    macro_rules! assert_color {
-                        ($color:expr, $method:ident, $color_kind_method:ident) => {{
-                            let targeted_color = $color.$color_kind_method();
-                            let expected_style = $style_set.$method($color);
-
-                            assert_eq!(value.$method($color), expected_style);
-                            assert_eq!(value.color(targeted_color), expected_style);
-                            assert_eq!(value.add(targeted_color), expected_style);
+                    macro_rules! assert_method_for_color {
+                        ($method:ident) => {
+                            assert_method_for_color!($method, BasicColor::Red);
+                            assert_method_for_color!($method, BasicColor::Green);
+                        };
+                        ($method:ident, $color:expr) => {{
+                            let result = $value.$method($color);
+                            let expected = $style_set.$method($color);
+                            assert_eq!(result, expected);
                         }};
                     }
 
-                    assert_color!(BasicColor::Red, fg, for_fg);
-                    assert_color!(BasicColor::Green, fg, for_fg);
-                    assert_color!(BasicColor::Red, bg, for_bg);
-                    assert_color!(BasicColor::Green, bg, for_bg);
-                    assert_color!(BasicColor::Red, underline_color, for_underline);
-                    assert_color!(BasicColor::Green, underline_color, for_underline);
+                    macro_rules! assert_method_for_targeted_color {
+                        ($method:ident) => {
+                            assert_method_for_targeted_color!($method, BasicColor::Red);
+                            assert_method_for_targeted_color!($method, BasicColor::Green);
+                        };
+                        ($method:ident, $color:expr) => {
+                            // Foreground by default
+                            assert_method_for_targeted_color!($method, $color, fg, $color);
+
+                            // With explicit color target
+                            assert_method_for_targeted_color!($method, $color, fg, $color.for_fg());
+                            assert_method_for_targeted_color!($method, $color, bg, $color.for_bg());
+                            assert_method_for_targeted_color!(
+                                $method,
+                                $color,
+                                underline_color,
+                                $color.for_underline()
+                            );
+                        };
+                        ($method:ident, $color:expr, $target_method:ident, $arg:expr) => {{
+                            let result = $value.$method($arg);
+                            let expected = $style_set.$target_method($color);
+                            assert_eq!(result, expected);
+                        }};
+                    }
+
+                    assert_method_for_color!(fg);
+                    assert_method_for_color!(bg);
+                    assert_method_for_color!(underline_color);
+
+                    assert_method_for_targeted_color!(color);
+                    assert_method_for_targeted_color!(add);
                 }
 
                 #[test]

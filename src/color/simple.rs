@@ -92,7 +92,10 @@ impl From<BasicColor> for SimpleColor {
 
 #[cfg(test)]
 mod tests {
-    use crate::test_color_kind_methods;
+    use crate::{
+        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _, test_color_kind_methods,
+        test_to_style_set_methods_with_foreground_assumed,
+    };
 
     use super::*;
 
@@ -113,6 +116,8 @@ mod tests {
             bright: true
         })
     );
+
+    test_to_style_set_methods_with_foreground_assumed!(SimpleColor::new(BasicColor::Red));
 
     #[test]
     fn new() {
@@ -154,6 +159,17 @@ mod tests {
     }
 
     #[test]
+    fn applied_to() {
+        let stld = SimpleColor::new(BasicColor::Red).applied_to("CONTENT");
+
+        assert_eq!(stld.get_content(), &"CONTENT");
+        assert_eq!(
+            stld.get_style(),
+            Style::new().fg(SimpleColor::new(BasicColor::Red))
+        );
+    }
+
+    #[test]
     fn from_basic() {
         assert_eq!(
             SimpleColor::from(BasicColor::Red),
@@ -161,6 +177,14 @@ mod tests {
                 basic_color: BasicColor::Red,
                 bright: false
             }
+        );
+    }
+
+    #[test]
+    fn to_style() {
+        assert_eq!(
+            SimpleColor::new(BasicColor::Red).to_style(),
+            Style::new().fg(SimpleColor::new(BasicColor::Red))
         );
     }
 }
