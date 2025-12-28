@@ -1,9 +1,6 @@
 - const everywhere - allow defining styles at compile time
   - Eliminate traits? Use macros to add methods to types?
 - Style merge
-- doc: Recommendations
-  - which methods to use
-  - prefer fluent style
 - trait to apply methods in any content that implements `Display`
   - Example: `"Some content".bold().underline()`
   - with method `bright(BasicColor)`

@@ -148,6 +148,25 @@
 //! assert_eq!(rendered_1, "\x1b[31mSome content\x1b[0m");
 //! ```
 //!
+//! Prefer to skip mention the color target when using only the foreground color. But
+//! if another color target is being used, be explicit:
+//!
+//! ```
+//! use fluent_ansi::prelude::*;
+//!
+//! // Only the foreground is set
+//! let style = Effect::Bold.add(Color::RED);
+//! let rendered = format!("{}", style.applied_to("Some content"));
+//! assert_eq!(rendered, "\x1b[1;31mSome content\x1b[0m");
+//!
+//! // Both foreground and underline colors are set
+//! let style = Effect::Bold
+//!     .add(Color::RED.for_fg())
+//!     .add(Color::indexed(42).for_underline());
+//! let rendered = format!("{}", style.applied_to("Some content"));
+//! assert_eq!(rendered, "\x1b[1;31;58;5;42mSome content\x1b[0m");
+//! ```
+//!
 //!
 //! ## Setting and clearing styles
 //!
