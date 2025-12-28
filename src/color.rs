@@ -20,7 +20,7 @@
 //! All color types are convertible to [`Color`] and can be used where an `impl Into<Color>` value is expected:
 //!
 //! ```
-//! use fluent_ansi::{prelude::*, color::{BasicColor, IndexedColor, RGBColor, SimpleColor}, Style, Plane};
+//! use fluent_ansi::{prelude::*, color::{BasicColor, IndexedColor, RGBColor, SimpleColor}, ColorTarget, Style};
 //!
 //! let style = Style::new();
 //!
@@ -34,18 +34,18 @@
 //! let _ = style.bg(IndexedColor::new(128));
 //! let _ = style.bg(RGBColor::new(0, 128, 255));
 //!
-//! let _ = style.set_color(Plane::Foreground, Some(BasicColor::Red));
-//! let _ = style.set_color(Plane::Background, Some(SimpleColor::new_bright(BasicColor::Red)));
-//! let _ = style.set_color(Plane::Foreground, Some(IndexedColor::new(128)));
-//! let _ = style.set_color(Plane::Background, Some(RGBColor::new(0, 128, 255)));
+//! let _ = style.set_color(ColorTarget::Foreground, Some(BasicColor::Red));
+//! let _ = style.set_color(ColorTarget::Background, Some(SimpleColor::new_bright(BasicColor::Red)));
+//! let _ = style.set_color(ColorTarget::Foreground, Some(IndexedColor::new(128)));
+//! let _ = style.set_color(ColorTarget::Background, Some(RGBColor::new(0, 128, 255)));
 //! ```
 //!
 //! The trait [`ColorKind`] is implemented for all color types, and provides methods to associate a color
-//! to a [`Plane`] (foreground or background), returning a [`ColorInAPlane`](crate::ColorInAPlane) value.
+//! to a [`ColorTarget`] (foreground or background), returning a [`TargetedColor`](crate::TargetedColor) value.
 
 use core::fmt::Result;
 
-use crate::{CodeWriter, Plane};
+use crate::{CodeWriter, ColorTarget};
 pub use basic::*;
 pub use color_kind::*;
 pub use indexed::*;
@@ -101,11 +101,11 @@ impl Color {
 }
 
 impl WriteColorCodes for Color {
-    fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
+    fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
         match self {
-            Color::Simple(simple) => simple.write_color_codes(plane, writer),
-            Color::Indexed(indexed) => indexed.write_color_codes(plane, writer),
-            Color::RGB(rgb) => rgb.write_color_codes(plane, writer),
+            Color::Simple(simple) => simple.write_color_codes(target, writer),
+            Color::Indexed(indexed) => indexed.write_color_codes(target, writer),
+            Color::RGB(rgb) => rgb.write_color_codes(target, writer),
         }
     }
 }
@@ -158,7 +158,7 @@ impl_reflexive_partial_eq!(BasicColor::to_simple_color() -> SimpleColor);
 
 #[cfg(test)]
 mod tests {
-    use crate::ColorInAPlane;
+    use crate::TargetedColor;
 
     use super::*;
 
@@ -179,22 +179,28 @@ mod tests {
     }
 
     #[test]
-    fn in_fg() {
+    fn for_fg() {
         let color = BasicColor::Red.to_color();
-        assert_eq!(color.in_fg(), ColorInAPlane::new(color, Plane::Foreground));
         assert_eq!(
-            color.in_plane(Plane::Foreground),
-            ColorInAPlane::new(color, Plane::Foreground)
+            color.for_fg(),
+            TargetedColor::new(color, ColorTarget::Foreground)
+        );
+        assert_eq!(
+            color.for_target(ColorTarget::Foreground),
+            TargetedColor::new(color, ColorTarget::Foreground)
         );
     }
 
     #[test]
-    fn in_bg() {
+    fn for_bg() {
         let color = BasicColor::Red.to_color();
-        assert_eq!(color.in_bg(), ColorInAPlane::new(color, Plane::Background));
         assert_eq!(
-            color.in_plane(Plane::Background),
-            ColorInAPlane::new(color, Plane::Background)
+            color.for_bg(),
+            TargetedColor::new(color, ColorTarget::Background)
+        );
+        assert_eq!(
+            color.for_target(ColorTarget::Background),
+            TargetedColor::new(color, ColorTarget::Background)
         );
     }
 

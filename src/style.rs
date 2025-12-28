@@ -1,8 +1,8 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, ColorInAPlane, Effect, Plane, Reset, StyleAttribute, StyleElement, StyleSet, Styled,
-    ToStyle, ToStyleSet, UnderlineStyle,
+    AppliedTo, ColorTarget, Effect, Reset, StyleAttribute, StyleElement, StyleSet, Styled,
+    TargetedColor, ToStyle, ToStyleSet, UnderlineStyle,
     color::{Color, WriteColorCodes as _},
     style::encoded_effects::EncodedEffects,
 };
@@ -17,6 +17,7 @@ pub struct Style {
     pub(crate) encoded_effects: EncodedEffects,
     pub(crate) fg: Option<Color>,
     pub(crate) bg: Option<Color>,
+    pub(crate) underline_color: Option<Color>,
 }
 
 impl Style {
@@ -27,6 +28,7 @@ impl Style {
             encoded_effects: EncodedEffects::new(),
             fg: None,
             bg: None,
+            underline_color: None,
         }
     }
 }
@@ -85,10 +87,13 @@ impl Display for Style {
                         }
                     }
                     if let Some(color) = self.0.fg {
-                        color.write_color_codes(Plane::Foreground, &mut code_writer)?;
+                        color.write_color_codes(ColorTarget::Foreground, &mut code_writer)?;
                     }
                     if let Some(color) = self.0.bg {
-                        color.write_color_codes(Plane::Background, &mut code_writer)?;
+                        color.write_color_codes(ColorTarget::Background, &mut code_writer)?;
+                    }
+                    if let Some(color) = self.0.underline_color {
+                        color.write_color_codes(ColorTarget::Underline, &mut code_writer)?;
                     }
                     Ok(())
                 }
@@ -110,9 +115,9 @@ impl From<UnderlineStyle> for Style {
     }
 }
 
-impl From<ColorInAPlane> for Style {
-    fn from(color_in_a_plane: ColorInAPlane) -> Self {
-        Style::new().color(color_in_a_plane)
+impl From<TargetedColor> for Style {
+    fn from(targeted_color: TargetedColor) -> Self {
+        Style::new().color(targeted_color)
     }
 }
 
@@ -224,10 +229,10 @@ mod tests {
     }
 
     #[test]
-    fn from_color_in_a_plane() {
+    fn from_targeted_color() {
         assert_eq!(
-            Style::from(BasicColor::Red.in_fg()),
-            Style::new().color(BasicColor::Red.in_fg())
+            Style::from(BasicColor::Red.for_fg()),
+            Style::new().color(BasicColor::Red.for_fg())
         );
     }
 

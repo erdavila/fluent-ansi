@@ -1,8 +1,8 @@
 use core::fmt::Result;
 
 use crate::{
-    CodeWriter, Plane,
-    color::{BasicColor, WriteColorCodes},
+    CodeWriter, ColorTarget,
+    color::{BasicColor, IndexedColor, WriteColorCodes},
 };
 
 /// A simple color type representing the 16 basic terminal colors (8 basic colors + bright variants).
@@ -63,15 +63,21 @@ impl SimpleColor {
 }
 
 impl WriteColorCodes for SimpleColor {
-    fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
-        let code_base = match (plane, self.bright) {
-            (Plane::Foreground, false) => 30,
-            (Plane::Background, false) => 40,
-            (Plane::Foreground, true) => 90,
-            (Plane::Background, true) => 100,
-        };
+    fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
+        let offset = self.basic_color.code_offset();
 
-        writer.write_code(code_base + self.basic_color.code_offset())
+        match (target, self.bright) {
+            (ColorTarget::Foreground, false) => writer.write_code(30 + offset),
+            (ColorTarget::Background, false) => writer.write_code(40 + offset),
+            (ColorTarget::Foreground, true) => writer.write_code(90 + offset),
+            (ColorTarget::Background, true) => writer.write_code(100 + offset),
+            (ColorTarget::Underline, false) => {
+                IndexedColor(offset).write_color_codes(target, writer)
+            }
+            (ColorTarget::Underline, true) => {
+                IndexedColor(offset + 8).write_color_codes(target, writer)
+            }
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, Plane, color::WriteColorCodes};
+use crate::{CodeWriter, ColorTarget, color::WriteColorCodes};
 
 /// A type alias for [`RGBColor`].
 pub type RGB = RGBColor;
@@ -35,13 +35,14 @@ impl RGBColor {
 }
 
 impl WriteColorCodes for RGBColor {
-    fn write_color_codes(self, plane: crate::Plane, writer: &mut CodeWriter) -> Result {
-        let plane_code = match plane {
-            Plane::Foreground => 38,
-            Plane::Background => 48,
+    fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
+        let target_code = match target {
+            ColorTarget::Foreground => 38,
+            ColorTarget::Background => 48,
+            ColorTarget::Underline => 58,
         };
 
-        writer.write_code(plane_code)?;
+        writer.write_code(target_code)?;
         writer.write_code(2)?;
         writer.write_code(self.r)?;
         writer.write_code(self.g)?;

@@ -1,25 +1,31 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, ColorInAPlane, Plane, color::Color};
+use crate::{CodeWriter, ColorTarget, TargetedColor, color::Color};
 
 /// A trait for color kinds that can be converted into a [`Color`].
 pub trait ColorKind: Into<Color> {
     /// Associate this color with the foreground plane.
     #[must_use]
-    fn in_fg(self) -> ColorInAPlane {
-        self.in_plane(Plane::Foreground)
+    fn for_fg(self) -> TargetedColor {
+        self.for_target(ColorTarget::Foreground)
     }
 
     /// Associate this color with the background plane.
     #[must_use]
-    fn in_bg(self) -> ColorInAPlane {
-        self.in_plane(Plane::Background)
+    fn for_bg(self) -> TargetedColor {
+        self.for_target(ColorTarget::Background)
     }
 
-    /// Associate this color with the specified plane.
+    /// Associate this color with the underline effect.
     #[must_use]
-    fn in_plane(self, plane: Plane) -> ColorInAPlane {
-        ColorInAPlane::new(self, plane)
+    fn for_underline(self) -> TargetedColor {
+        self.for_target(ColorTarget::Underline)
+    }
+
+    /// Associate this color with the specified color target.
+    #[must_use]
+    fn for_target(self, target: ColorTarget) -> TargetedColor {
+        TargetedColor::new(self, target)
     }
 
     /// Convert this color kind into a [`Color`].
@@ -30,7 +36,7 @@ pub trait ColorKind: Into<Color> {
 }
 
 pub(crate) trait WriteColorCodes: ColorKind {
-    fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result;
+    fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result;
 }
 
 impl<C: Into<Color>> ColorKind for C {}
@@ -50,26 +56,38 @@ mod tests {
                 use crate::{color::*, *};
 
                 #[test]
-                fn in_fg() {
+                fn for_fg() {
                     assert_eq!(
-                        $color.in_fg(),
-                        ColorInAPlane::new($color, Plane::Foreground)
+                        $color.for_fg(),
+                        TargetedColor::new($color, ColorTarget::Foreground)
                     );
                     assert_eq!(
-                        $color.in_plane(Plane::Foreground),
-                        ColorInAPlane::new($color, Plane::Foreground)
+                        $color.for_target(ColorTarget::Foreground),
+                        TargetedColor::new($color, ColorTarget::Foreground)
                     );
                 }
 
                 #[test]
-                fn in_bg() {
+                fn for_bg() {
                     assert_eq!(
-                        $color.in_bg(),
-                        ColorInAPlane::new($color, Plane::Background)
+                        $color.for_bg(),
+                        TargetedColor::new($color, ColorTarget::Background)
                     );
                     assert_eq!(
-                        $color.in_plane(Plane::Background),
-                        ColorInAPlane::new($color, Plane::Background)
+                        $color.for_target(ColorTarget::Background),
+                        TargetedColor::new($color, ColorTarget::Background)
+                    );
+                }
+
+                #[test]
+                fn for_underline() {
+                    assert_eq!(
+                        $color.for_underline(),
+                        TargetedColor::new($color, ColorTarget::Underline)
+                    );
+                    assert_eq!(
+                        $color.for_target(ColorTarget::Underline),
+                        TargetedColor::new($color, ColorTarget::Underline)
                     );
                 }
 

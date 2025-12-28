@@ -5,7 +5,7 @@
 ## Key Features
 
 *   **`no_std` Compatible:** Designed to work without the standard library, relying on `core::fmt::Display`.
-*   **Fluent API:** Allows method chaining (e.g., `Color::RED.in_fg().bold().applied_to("text")`).
+*   **Fluent API:** Allows method chaining (e.g., `Color::RED.for_fg().bold().applied_to("text")`).
 *   **Immutability:** All styling types are immutable and most implement `Copy`.
 
 ## Installation
@@ -25,7 +25,7 @@ The primary way to use `fluent-ansi` is through its fluent API. You can combine 
 use fluent_ansi::{prelude::*, Style, Styled};
 
 // Create a style
-let style: Style = Color::RED.in_fg().bold();
+let style: Style = Color::RED.for_fg().bold();
 
 // Apply it to some content
 let styled: Styled<&str> = style.applied_to("Some content");
@@ -43,15 +43,15 @@ assert_eq!(content_with_escape_sequences, "\x1b[1;31mSome content\x1b[0m");
 There are several ways to reach the same result, depending on your preference:
 
 ```rust
-use fluent_ansi::{prelude::*, ColorInAPlane, Style, Plane};
+use fluent_ansi::{prelude::*, ColorTarget, Style, TargetedColor};
 
-let stl: Style = Style::new().set(Effect::Bold, true).set(Plane::Foreground, Some(Color::RED.to_color()));
-let stl: Style = Style::new().set_effect(Effect::Bold, true).set_color(Plane::Foreground, Some(Color::RED));
-let stl: Style = Style::new().add(Effect::Bold).add(ColorInAPlane::new(Color::RED, Plane::Foreground));
-let stl: Style = Style::new().effect(Effect::Bold).color(ColorInAPlane::new(Color::RED, Plane::Foreground));
+let stl: Style = Style::new().set(Effect::Bold, true).set(ColorTarget::Foreground, Some(Color::RED.to_color()));
+let stl: Style = Style::new().set_effect(Effect::Bold, true).set_color(ColorTarget::Foreground, Some(Color::RED));
+let stl: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RED, ColorTarget::Foreground));
+let stl: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
 let stl: Style = Style::new().bold().fg(Color::RED);
 let stl: Style = Effect::Bold.fg(Color::RED);
-let stl: Style = Color::RED.in_fg().bold();
+let stl: Style = Color::RED.for_fg().bold();
 ```
 
 ### Styling Elements
@@ -80,20 +80,20 @@ assert_eq!(format!("{}", Style::new().dashed_underline()), "\x1b[4:5m");
 
 #### Colors
 
-The library supports Basic (3/4-bit), 8-bit (256 colors), and RGB (TrueColor) colors. Colors must be associated with a `Plane` (Foreground or Background), and
+The library supports Basic (3/4-bit), 8-bit (256 colors), and RGB (TrueColor) colors. Colors must be associated with a `ColorTarget`, and
 can also be applied to some content.
 
 ```rust
 use fluent_ansi::prelude::*;
 
-let red_in_foreground = Color::RED.in_fg();
-assert_eq!(format!("{red_in_foreground}"), "\x1b[31m");
-assert_eq!(format!("{}", red_in_foreground.applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
+let red_foreground = Color::RED.for_fg();
+assert_eq!(format!("{red_foreground}"), "\x1b[31m");
+assert_eq!(format!("{}", red_foreground.applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
 
 
-let blue_in_background = Color::BLUE.in_bg();
-assert_eq!(format!("{blue_in_background}"), "\x1b[44m");
-assert_eq!(format!("{}", blue_in_background.applied_to("Some content")), "\x1b[44mSome content\x1b[0m");
+let blue_background = Color::BLUE.for_bg();
+assert_eq!(format!("{blue_background}"), "\x1b[44m");
+assert_eq!(format!("{}", blue_background.applied_to("Some content")), "\x1b[44mSome content\x1b[0m");
 ```
 
 ## License

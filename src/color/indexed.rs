@@ -1,6 +1,6 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, Plane, color::WriteColorCodes};
+use crate::{CodeWriter, ColorTarget, color::WriteColorCodes};
 
 /// An 8-bit color type representing colors in the 256-color ANSI palette.
 ///
@@ -31,13 +31,14 @@ impl IndexedColor {
 }
 
 impl WriteColorCodes for IndexedColor {
-    fn write_color_codes(self, plane: Plane, writer: &mut CodeWriter) -> Result {
-        let plane_code = match plane {
-            Plane::Foreground => 38,
-            Plane::Background => 48,
+    fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
+        let target_code = match target {
+            ColorTarget::Foreground => 38,
+            ColorTarget::Background => 48,
+            ColorTarget::Underline => 58,
         };
 
-        writer.write_code(plane_code)?;
+        writer.write_code(target_code)?;
         writer.write_code(5)?;
         writer.write_code(self.0)?;
         Ok(())
