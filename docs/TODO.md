@@ -4,8 +4,6 @@
 - doc: Recommendations
   - which methods to use
   - prefer fluent style
-- install command in README
-  - `cargo add fluent-ansi`
 - trait to apply methods in any content that implements `Display`
   - Example: `"Some content".bold().underline()`
   - with method `bright(BasicColor)`

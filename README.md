@@ -10,11 +10,10 @@
 
 ## Installation
 
-Add this to your `Cargo.toml`:
+Run this command in your project directory:
 
-```toml
-[dependencies]
-fluent-ansi = "0.2.1"
+```bash
+cargo add fluent-ansi
 ```
 
 ## Usage
