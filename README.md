@@ -95,6 +95,31 @@ assert_eq!(format!("{blue_background}"), "\x1b[44m");
 assert_eq!(format!("{}", blue_background.applied_to("Some content")), "\x1b[44mSome content\x1b[0m");
 ```
 
+## Changelog
+
+### v0.3.0
+
+* Use colors with `Foreground` as default target
+* Add underline effects and color
+* Extract trait methods tests into macros
+* Move some items to their own modules
+* Review `Effect` variants
+* Rename some types
+
+### v0.2.1
+
+* Fix version in the README file
+
+### v0.2.0
+
+* Define blanket implementation of `ColorKind` instead of implementing for each color type
+* Turn a few methods const
+* Rename Forma to Style
+
+### v0.1.0
+
+* Initial version
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
