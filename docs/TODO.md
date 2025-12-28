@@ -1,9 +1,17 @@
+- Move fluent-ansi-demo here
 - const everywhere - allow defining styles at compile time
   - Eliminate traits? Use macros to add methods to types?
+  - Complete implementation requires experimental feature (`const_trait_impl`) and nightly compiler
+    - Implement what is possible in `main`, and the remaining in a branch.
 - Style merge
+- Rename unset -> remove
+- Document views
+  - fluent methods
+  - StyleElement
+  - StyleAttributes
 - trait to apply methods in any content that implements `Display`
   - Example: `"Some content".bold().underline()`
-  - with method `bright(BasicColor)`
+  - with method `with_style(Style)`
 - Handle nesting. How?!
   - Ideas:
     - https://crates.io/crates/ansiconst
