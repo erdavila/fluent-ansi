@@ -77,3 +77,127 @@ impl Iterator for GetEffects<'_> {
             .find(|&effect| self.style.get_effect(effect))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    /// Includes tests for the [`StyleSet`](crate::StyleSet) trait methods.
+    #[macro_export]
+    macro_rules! test_style_set_methods {
+        ($empty_style_set:expr) => {
+            mod style_set {
+                use crate::{color::*, *};
+
+                #[test]
+                fn effects() {
+                    let style_set = $empty_style_set;
+                    assert_eq!(style_set.get_effect(Effect::Bold), false);
+                    assert_eq!(style_set.get(Effect::Bold), false);
+                    assert_eq!(style_set.get_effect(Effect::Italic), false);
+                    assert_eq!(style_set.get(Effect::Italic), false);
+
+                    {
+                        let style_set = $empty_style_set.set_effect(Effect::Bold, true);
+                        assert_eq!(style_set, $empty_style_set.bold());
+                        assert_eq!(style_set.get_effect(Effect::Bold), true);
+                        assert_eq!(style_set.get(Effect::Bold), true);
+                        assert_eq!(style_set.get_effect(Effect::Italic), false);
+                        assert_eq!(style_set.get(Effect::Italic), false);
+
+                        let style_set = style_set.set_effect(Effect::Bold, false);
+                        assert_eq!(style_set, $empty_style_set);
+                        assert_eq!(style_set.get_effect(Effect::Bold), false);
+                        assert_eq!(style_set.get(Effect::Bold), false);
+                    }
+
+                    {
+                        let style_set = $empty_style_set.set(Effect::Bold, true);
+                        assert_eq!(style_set, $empty_style_set.bold());
+                        assert_eq!(style_set.get_effect(Effect::Bold), true);
+                        assert_eq!(style_set.get(Effect::Bold), true);
+
+                        let style_set = style_set.unset(Effect::Bold);
+                        assert_eq!(style_set, $empty_style_set);
+                        assert_eq!(style_set.get_effect(Effect::Bold), false);
+                        assert_eq!(style_set.get(Effect::Bold), false);
+                    }
+                }
+
+                #[test]
+                fn get_effects() {
+                    let style_set = $empty_style_set.bold().italic().underline();
+                    let mut effects = style_set.get_effects();
+
+                    assert_eq!(effects.next(), Some(Effect::Bold));
+                    assert_eq!(effects.next(), Some(Effect::Italic));
+                    assert_eq!(effects.next(), Some(Effect::Underline));
+                    assert_eq!(effects.next(), None);
+                }
+
+                #[test]
+                fn colors() {
+                    let style_set = $empty_style_set;
+                    assert_eq!(style_set.get_color(Plane::Foreground), None);
+                    assert_eq!(style_set.get_color(Plane::Background), None);
+                    assert_eq!(style_set.get(Plane::Foreground), None);
+                    assert_eq!(style_set.get(Plane::Background), None);
+
+                    {
+                        let style_set = $empty_style_set
+                            .set_color(Plane::Foreground, Some(BasicColor::Red))
+                            .set_color(Plane::Background, Some(BasicColor::Green));
+                        assert_eq!(
+                            style_set,
+                            $empty_style_set.fg(BasicColor::Red).bg(BasicColor::Green)
+                        );
+                        assert_eq!(
+                            style_set.get_color(Plane::Foreground),
+                            Some(BasicColor::Red.to_color())
+                        );
+                        assert_eq!(
+                            style_set.get(Plane::Foreground),
+                            Some(BasicColor::Red.to_color())
+                        );
+                        assert_eq!(
+                            style_set.get_color(Plane::Background),
+                            Some(BasicColor::Green.to_color())
+                        );
+                        assert_eq!(
+                            style_set.get(Plane::Background),
+                            Some(BasicColor::Green.to_color())
+                        );
+
+                        let style_set = style_set
+                            .set_color(Plane::Foreground, None::<Color>)
+                            .set_color(Plane::Background, None::<Color>);
+                        assert_eq!(style_set, $empty_style_set);
+                        assert_eq!(style_set.get_color(Plane::Foreground), None);
+                        assert_eq!(style_set.get_color(Plane::Background), None);
+                    }
+
+                    {
+                        let style_set = $empty_style_set
+                            .set(Plane::Foreground, Some(BasicColor::Red.to_color()))
+                            .set(Plane::Background, Some(BasicColor::Green.to_color()));
+                        assert_eq!(
+                            style_set,
+                            $empty_style_set.fg(BasicColor::Red).bg(BasicColor::Green)
+                        );
+                        assert_eq!(
+                            style_set.get_color(Plane::Foreground),
+                            Some(BasicColor::Red.to_color())
+                        );
+                        assert_eq!(
+                            style_set.get_color(Plane::Background),
+                            Some(BasicColor::Green.to_color())
+                        );
+
+                        let style_set = style_set.unset(Plane::Foreground).unset(Plane::Background);
+                        assert_eq!(style_set, $empty_style_set);
+                        assert_eq!(style_set.get_color(Plane::Foreground), None);
+                        assert_eq!(style_set.get_color(Plane::Background), None);
+                    }
+                }
+            }
+        };
+    }
+}

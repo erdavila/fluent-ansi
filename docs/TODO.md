@@ -1,4 +1,3 @@
-- Extract trait methods tests to macros
 - `Color::none() -> Option<Color>`
 - Add underline effects
 - underline color

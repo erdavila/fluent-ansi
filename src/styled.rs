@@ -92,11 +92,13 @@ impl<C: Display> Display for Styled<C> {
 #[cfg(test)]
 mod tests {
     use crate::{
-        ColorInAPlane, Effect, Plane, assert_display,
-        color::{BasicColor, Color, ColorKind as _},
+        assert_display, color::BasicColor, test_style_set_methods, test_to_style_set_methods,
     };
 
     use super::*;
+
+    test_to_style_set_methods!(Styled::new("CONTENT"), Styled::new("CONTENT"));
+    test_style_set_methods!(Styled::new("CONTENT"));
 
     #[test]
     fn content_and_style() {
@@ -117,13 +119,7 @@ mod tests {
     }
 
     #[test]
-    fn display_no_style() {
-        let stld = Styled::new("CONTENT");
-        assert_display!(stld, "CONTENT");
-    }
-
-    #[test]
-    fn add_effect() {
+    fn effects_display() {
         let stld = Styled::new("CONTENT");
 
         assert_display!(stld, "CONTENT");
@@ -137,174 +133,23 @@ mod tests {
         assert_display!(stld.strikethrough(), "\x1b[9mCONTENT\x1b[0m");
         assert_display!(stld.double_underline(), "\x1b[21mCONTENT\x1b[0m");
         assert_display!(stld.overline(), "\x1b[53mCONTENT\x1b[0m");
-
-        let bold_stld = stld.bold();
-        assert_eq!(bold_stld.effect(Effect::Faint), stld.bold().faint());
-        assert_eq!(bold_stld.add(Effect::Faint), stld.bold().faint());
-        assert_eq!(bold_stld.set_effect(Effect::Bold, false), stld);
-        assert_eq!(bold_stld.set_effect(Effect::Bold, true), stld.bold());
-        assert_eq!(bold_stld.set_effect(Effect::Faint, false), stld.bold());
-        assert_eq!(
-            bold_stld.set_effect(Effect::Faint, true),
-            stld.bold().faint()
-        );
-        assert_eq!(bold_stld.get_effect(Effect::Bold), true);
-        assert_eq!(bold_stld.get_effect(Effect::Faint), false);
-        assert_eq!(bold_stld.set(Effect::Bold, false), stld);
-        assert_eq!(bold_stld.set(Effect::Bold, true), stld.bold());
-        assert_eq!(bold_stld.set(Effect::Faint, false), stld.bold());
-        assert_eq!(bold_stld.set(Effect::Faint, true), stld.bold().faint());
-        assert_eq!(bold_stld.get(Effect::Bold), true);
-        assert_eq!(bold_stld.get(Effect::Faint), false);
-        assert_eq!(bold_stld.unset(Effect::Bold), stld);
-        assert_eq!(bold_stld.unset(Effect::Faint), stld.bold());
     }
 
     #[test]
-    fn get_effects() {
-        let style = Style::new().bold().italic().underline();
-        let mut effects = style.get_effects();
-
-        assert_eq!(effects.next(), Some(Effect::Bold));
-        assert_eq!(effects.next(), Some(Effect::Italic));
-        assert_eq!(effects.next(), Some(Effect::Underline));
-        assert_eq!(effects.next(), None);
-    }
-
-    #[test]
-    fn fg() {
+    fn colors_display() {
         let stld = Styled::new("CONTENT");
-        assert_eq!(stld.get_color(Plane::Foreground), None);
 
-        let stld = stld.fg(BasicColor::Red);
-        assert_display!(stld, "\x1b[31mCONTENT\x1b[0m");
-        assert_eq!(
-            stld.get_color(Plane::Foreground),
-            Some(BasicColor::Red.to_color())
-        );
+        assert_display!(stld.fg(BasicColor::Red), "\x1b[31mCONTENT\x1b[0m");
+        assert_display!(stld.bg(BasicColor::Red), "\x1b[41mCONTENT\x1b[0m");
     }
 
     #[test]
-    fn bg() {
-        let stld = Styled::new("CONTENT");
-        assert_eq!(stld.get_color(Plane::Background), None);
-
-        let stld = stld.bg(BasicColor::Red);
-        assert_display!(stld, "\x1b[41mCONTENT\x1b[0m");
-        assert_eq!(
-            stld.get_color(Plane::Background),
-            Some(BasicColor::Red.to_color())
-        );
-    }
-
-    #[test]
-    fn add_color() {
-        let stld_base = Styled::new("CONTENT");
-        assert_eq!(stld_base.get_color(Plane::Foreground), None);
-        assert_eq!(stld_base.get_color(Plane::Background), None);
-
-        let stld = stld_base.fg(BasicColor::Red).bg(BasicColor::Green);
-        assert_eq!(
-            stld.get_color(Plane::Foreground),
-            Some(BasicColor::Red.to_color())
-        );
-        assert_eq!(
-            stld.get_color(Plane::Background),
-            Some(BasicColor::Green.to_color())
-        );
-
-        let stld = stld_base
-            .color(ColorInAPlane::new(BasicColor::Yellow, Plane::Foreground))
-            .color(ColorInAPlane::new(BasicColor::Blue, Plane::Background));
-        assert_eq!(
-            stld.get_color(Plane::Foreground),
-            Some(BasicColor::Yellow.to_color())
-        );
-        assert_eq!(
-            stld.get_color(Plane::Background),
-            Some(BasicColor::Blue.to_color())
-        );
-
-        let stld = stld_base
-            .add(ColorInAPlane::new(BasicColor::White, Plane::Foreground))
-            .add(ColorInAPlane::new(BasicColor::Black, Plane::Background));
-        assert_eq!(
-            stld.get_color(Plane::Foreground),
-            Some(BasicColor::White.to_color())
-        );
-        assert_eq!(
-            stld.get_color(Plane::Background),
-            Some(BasicColor::Black.to_color())
-        );
-
-        let stld = stld
-            .set_color(Plane::Foreground, Some(BasicColor::Magenta))
-            .set_color(Plane::Background, None::<Color>);
-        assert_eq!(
-            stld.get_color(Plane::Foreground),
-            Some(BasicColor::Magenta.to_color())
-        );
-        assert_eq!(stld.get_color(Plane::Background), None);
-
-        let stld = stld
-            .set_color(Plane::Foreground, None::<Color>)
-            .set_color(Plane::Background, Some(BasicColor::Cyan));
-        assert_eq!(stld.get_color(Plane::Foreground), None);
-        assert_eq!(
-            stld.get_color(Plane::Background),
-            Some(BasicColor::Cyan.to_color())
-        );
-
-        let stld = stld
-            .set(Plane::Foreground, Some(BasicColor::Magenta.to_color()))
-            .set(Plane::Background, None);
-        assert_eq!(
-            stld.get(Plane::Foreground),
-            Some(BasicColor::Magenta.to_color())
-        );
-        assert_eq!(stld.get(Plane::Background), None);
-
-        let stld = stld
-            .set(Plane::Foreground, None)
-            .set(Plane::Background, Some(BasicColor::Cyan.to_color()));
-        assert_eq!(stld.get(Plane::Foreground), None);
-        assert_eq!(
-            stld.get(Plane::Background),
-            Some(BasicColor::Cyan.to_color())
-        );
-
-        let stld = stld.unset(Plane::Background);
-        assert_eq!(stld.get(Plane::Foreground), None);
-        assert_eq!(stld.get(Plane::Background), None);
-    }
-
-    #[test]
-    fn combined() {
+    fn combined_display() {
         let stld = Styled::new("CONTENT")
             .bold()
             .fg(BasicColor::Red)
             .underline()
             .bg(BasicColor::Green);
-        assert_eq!(
-            stld.get_style(),
-            Style::new()
-                .bold()
-                .fg(BasicColor::Red)
-                .underline()
-                .bg(BasicColor::Green)
-        );
         assert_display!(stld, "\x1b[1;4;31;42mCONTENT\x1b[0m");
-        assert_eq!(
-            stld.unset(Effect::Bold)
-                .unset(Plane::Background)
-                .get_style(),
-            Style::new().underline().fg(BasicColor::Red)
-        )
-    }
-
-    #[test]
-    fn to_style_set() {
-        let stld = Styled::new("CONTENT").bold().fg(BasicColor::Red);
-        assert_eq!(stld.to_style_set(), stld);
     }
 }

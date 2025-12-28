@@ -34,3 +34,50 @@ pub(crate) trait WriteColorCodes: ColorKind {
 }
 
 impl<C: Into<Color>> ColorKind for C {}
+
+#[cfg(test)]
+mod tests {
+    /// Includes tests for the [`ColorKind`](crate::color::ColorKind) trait methods.
+    #[macro_export]
+    macro_rules! test_color_kind_methods {
+        ($mod:ident; $color:expr, $as_color:expr) => {
+            mod $mod {
+                $crate::test_color_kind_methods!($color, $as_color);
+            }
+        };
+        ($color:expr, $as_color:expr) => {
+            mod color_kind {
+                use crate::{color::*, *};
+
+                #[test]
+                fn in_fg() {
+                    assert_eq!(
+                        $color.in_fg(),
+                        ColorInAPlane::new($color, Plane::Foreground)
+                    );
+                    assert_eq!(
+                        $color.in_plane(Plane::Foreground),
+                        ColorInAPlane::new($color, Plane::Foreground)
+                    );
+                }
+
+                #[test]
+                fn in_bg() {
+                    assert_eq!(
+                        $color.in_bg(),
+                        ColorInAPlane::new($color, Plane::Background)
+                    );
+                    assert_eq!(
+                        $color.in_plane(Plane::Background),
+                        ColorInAPlane::new($color, Plane::Background)
+                    );
+                }
+
+                #[test]
+                fn to_color() {
+                    assert_eq!($color.to_color(), $as_color);
+                }
+            }
+        };
+    }
+}

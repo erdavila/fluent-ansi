@@ -100,40 +100,12 @@ impl Display for Effect {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        ToStyleSet as _, assert_display,
-        color::{BasicColor, ColorKind as _},
-    };
+    use crate::{ToStyleSet as _, assert_display, test_to_style_set_methods};
 
     use super::*;
 
-    #[test]
-    fn add_effect() {
-        let effect = Effect::Bold;
-
-        assert_eq!(effect.bold(), Style::new().bold());
-        assert_eq!(effect.italic(), Style::new().bold().italic());
-        assert_eq!(effect.effect(Effect::Italic), Style::new().bold().italic());
-        assert_eq!(effect.add(Effect::Italic), Style::new().bold().italic());
-    }
-
-    #[test]
-    fn add_color() {
-        let effect = Effect::Bold;
-
-        assert_eq!(
-            effect.fg(BasicColor::Green),
-            Style::new().bold().fg(BasicColor::Green)
-        );
-        assert_eq!(
-            effect.color(BasicColor::Green.in_bg()),
-            Style::new().bold().bg(BasicColor::Green)
-        );
-        assert_eq!(
-            effect.add(BasicColor::Green.in_bg()),
-            Style::new().bold().bg(BasicColor::Green)
-        );
-    }
+    test_to_style_set_methods!(bold; Effect::Bold, Style::new().bold());
+    test_to_style_set_methods!(italic; Effect::Italic, Style::new().italic());
 
     #[test]
     fn applied_to() {
@@ -146,11 +118,6 @@ mod tests {
     #[test]
     fn to_style() {
         assert_eq!(Effect::Bold.to_style(), Style::new().bold());
-    }
-
-    #[test]
-    fn to_style_set() {
-        assert_eq!(Effect::Bold.to_style_set(), Style::new().bold());
     }
 
     #[test]
