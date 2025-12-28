@@ -1,10 +1,10 @@
-use crate::{ColorInAPlane, Flag, Style, StyleSet, color::Color};
+use crate::{AppliedTo, ColorInAPlane, Flag, Style, StyleSet, color::Color};
 
 /// An element that can be added to a [`Style`].
 ///
 /// This trait is used to define elements that can be added to a `Style`. Such elements
 /// include flags ([`Flag`]) and colors (like [`ColorInAPlane`]).
-pub trait StyleElement {
+pub trait StyleElement: AppliedTo {
     /// Adds this element to the given `Style`, returning the updated `Style`.
     #[must_use]
     fn add_to_style(self, style: Style) -> Style;

@@ -1,0 +1,26 @@
+- Rename
+  - Flag -> Effect
+  - EightBitColor -> IndexedColor
+- Keep only one Blink effect
+- Rename CrossedOut -> Strikethrough
+- Extract trait methods tests to macros
+- `Color::none() -> Option<Color>`
+- Add underline effects
+- underline color
+- `Foreground` is default
+  - update docs
+- const everywhere - allow defining styles at compile time
+  - Eliminate traits? Use macros to add methods to types?
+- Style merge
+- doc: Recommendations
+  - which methods to use
+  - prefer fluent style
+- install command in README
+  - `cargo add fluent-ansi`
+- trait to apply methods in any content that implements `Display`
+  - Example: `"Some content".bold().underline()`
+  - with method `bright(BasicColor)`
+- Handle nesting. How?!
+  - Ideas:
+    - https://crates.io/crates/ansiconst
+    - https://doc.rust-lang.org/nightly/core/macro.format_args.html
