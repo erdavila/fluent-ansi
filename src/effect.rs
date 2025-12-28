@@ -15,16 +15,14 @@ pub enum Effect {
     Italic,
     /// Underline styling.
     Underline,
-    /// Slow blink styling.
-    SlowBlink,
-    /// Rapid blink styling.
-    RapidBlink,
+    /// Blink styling.
+    Blink,
     /// Reverse video styling.
     Reverse,
     /// Conceal (hidden) styling.
     Conceal,
-    /// Crossed-out (strikethrough) styling.
-    CrossedOut,
+    /// Strikethrough styling.
+    Strikethrough,
     /// Double underline styling.
     DoubleUnderline,
     /// Overline styling.
@@ -39,11 +37,10 @@ impl Effect {
             Effect::Faint => 2,
             Effect::Italic => 3,
             Effect::Underline => 4,
-            Effect::SlowBlink => 5,
-            Effect::RapidBlink => 6,
+            Effect::Blink => 5,
             Effect::Reverse => 7,
             Effect::Conceal => 8,
-            Effect::CrossedOut => 9,
+            Effect::Strikethrough => 9,
             Effect::DoubleUnderline => 21,
             Effect::Overline => 53,
         }
@@ -162,11 +159,10 @@ mod tests {
         assert_display!(Effect::Faint, "\x1b[2m");
         assert_display!(Effect::Italic, "\x1b[3m");
         assert_display!(Effect::Underline, "\x1b[4m");
-        assert_display!(Effect::SlowBlink, "\x1b[5m");
-        assert_display!(Effect::RapidBlink, "\x1b[6m");
+        assert_display!(Effect::Blink, "\x1b[5m");
         assert_display!(Effect::Reverse, "\x1b[7m");
         assert_display!(Effect::Conceal, "\x1b[8m");
-        assert_display!(Effect::CrossedOut, "\x1b[9m");
+        assert_display!(Effect::Strikethrough, "\x1b[9m");
         assert_display!(Effect::DoubleUnderline, "\x1b[21m");
         assert_display!(Effect::Overline, "\x1b[53m");
     }

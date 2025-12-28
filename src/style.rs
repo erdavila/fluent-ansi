@@ -158,11 +158,10 @@ mod tests {
         assert_display!(stl.faint(), "\x1b[2m");
         assert_display!(stl.italic(), "\x1b[3m");
         assert_display!(stl.underline(), "\x1b[4m");
-        assert_display!(stl.slow_blink(), "\x1b[5m");
-        assert_display!(stl.rapid_blink(), "\x1b[6m");
+        assert_display!(stl.blink(), "\x1b[5m");
         assert_display!(stl.reverse(), "\x1b[7m");
         assert_display!(stl.conceal(), "\x1b[8m");
-        assert_display!(stl.crossed_out(), "\x1b[9m");
+        assert_display!(stl.strikethrough(), "\x1b[9m");
         assert_display!(stl.double_underline(), "\x1b[21m");
         assert_display!(stl.overline(), "\x1b[53m");
 

@@ -42,16 +42,10 @@ pub trait ToStyleSet: Sized {
         self.effect(Effect::Underline)
     }
 
-    /// Sets the slow blink effect.
+    /// Sets the blink effect.
     #[must_use]
-    fn slow_blink(self) -> Self::StyleSet {
-        self.effect(Effect::SlowBlink)
-    }
-
-    /// Sets the rapid blink effect.
-    #[must_use]
-    fn rapid_blink(self) -> Self::StyleSet {
-        self.effect(Effect::RapidBlink)
+    fn blink(self) -> Self::StyleSet {
+        self.effect(Effect::Blink)
     }
 
     /// Sets the reverse effect.
@@ -66,10 +60,10 @@ pub trait ToStyleSet: Sized {
         self.effect(Effect::Conceal)
     }
 
-    /// Sets the crossed out effect.
+    /// Sets the strikethrough effect.
     #[must_use]
-    fn crossed_out(self) -> Self::StyleSet {
-        self.effect(Effect::CrossedOut)
+    fn strikethrough(self) -> Self::StyleSet {
+        self.effect(Effect::Strikethrough)
     }
 
     /// Sets the double underline effect.
