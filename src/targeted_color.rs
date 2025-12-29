@@ -1,8 +1,7 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet as _, ToStyle, ToStyleSet,
-    color::Color,
+    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet, color::Color,
 };
 
 /// A color in a specific color target.
@@ -52,8 +51,8 @@ impl TargetedColor {
 }
 
 impl StyleElement for TargetedColor {
-    fn add_to_style(self, style: Style) -> Style {
-        style.set_color(self.target, Some(self.color))
+    fn add_to<S: StyleSet>(self, style_set: S) -> S {
+        style_set.set_color(self.get_target(), Some(self.get_color()))
     }
 }
 
@@ -99,23 +98,12 @@ pub enum ColorTarget {
 impl StyleAttribute for ColorTarget {
     type Value = Option<Color>;
 
-    fn set_in_style(self, style: Style, value: Self::Value) -> Style {
-        match self {
-            ColorTarget::Foreground => Style { fg: value, ..style },
-            ColorTarget::Background => Style { bg: value, ..style },
-            ColorTarget::Underline => Style {
-                underline_color: value,
-                ..style
-            },
-        }
+    fn set_in<S: StyleSet>(self, style_set: S, value: Self::Value) -> S {
+        style_set.set_color(self, value)
     }
 
-    fn get_from_style(self, style: &Style) -> Self::Value {
-        match self {
-            ColorTarget::Foreground => style.fg,
-            ColorTarget::Background => style.bg,
-            ColorTarget::Underline => style.underline_color,
-        }
+    fn get_from<S: StyleSet>(self, style_set: &S) -> Self::Value {
+        style_set.get_color(self)
     }
 }
 

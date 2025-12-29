@@ -1,18 +1,18 @@
-use crate::{AppliedTo, Effect, Style, StyleSet, TargetedColor, UnderlineStyle, color::Color};
+use crate::{AppliedTo, Effect, StyleSet, TargetedColor, UnderlineStyle, color::Color};
 
-/// An element that can be added to a [`Style`].
+/// An element that can be added to a [`Style`](crate::Style).
 ///
 /// This trait is used to define elements that can be added to a `Style`. Such elements
 /// include effects ([`Effect`]) and colors (like [`TargetedColor`]).
 pub trait StyleElement: AppliedTo {
-    /// Adds this element to the given `Style`, returning the updated `Style`.
+    /// Adds this element to the given `StyleSet`, returning it updated.
     #[must_use]
-    fn add_to_style(self, style: Style) -> Style;
+    fn add_to<S: StyleSet>(self, style_set: S) -> S;
 }
 
 /// A trait to set styling options on a type.
 ///
-/// This trait is implemented by types that can be styled, such as [`Style`] and [`Styled`](crate::Styled).
+/// This trait is implemented by types that can be styled, such as [`Style`](crate::Style) and [`Styled`](crate::Styled).
 /// It provides methods to set effects and colors, returning a type that implements [`StyleSet`].
 pub trait ToStyleSet: Sized {
     /// The type that is returned by the styling methods.
@@ -99,13 +99,13 @@ pub trait ToStyleSet: Sized {
     /// Sets the given effect.
     #[must_use]
     fn effect(self, effect: impl Into<Effect>) -> Self::StyleSet {
-        self.add(effect.into())
+        self.to_style_set().set_effect(effect, true)
     }
 
     /// Sets the underline style.
     #[must_use]
     fn underline_style(self, underline_style: UnderlineStyle) -> Self::StyleSet {
-        self.add(underline_style)
+        self.effect(underline_style)
     }
 
     /// Sets the foreground color.
@@ -129,13 +129,18 @@ pub trait ToStyleSet: Sized {
     /// Sets the given color in a target.
     #[must_use]
     fn color(self, targeted_color: impl Into<TargetedColor>) -> Self::StyleSet {
-        self.add(targeted_color.into())
+        let targeted_color = targeted_color.into();
+        self.to_style_set().set_color(
+            targeted_color.get_target(),
+            Some(targeted_color.get_color()),
+        )
     }
 
     /// Adds the given element to the style.
     #[must_use]
     fn add(self, element: impl StyleElement) -> Self::StyleSet {
-        self.to_style_set().add(element)
+        let style_set = self.to_style_set();
+        element.add_to(style_set)
     }
 
     /// Converts this value to a style set.
