@@ -69,24 +69,20 @@ impl Effect {
 }
 
 impl StyleElement for Effect {
-    fn add_to_style(self, style: Style) -> Style {
-        style.set_effect(self, true)
+    fn add_to<S: StyleSet>(self, style_set: S) -> S {
+        style_set.set_effect(self, true)
     }
 }
 
 impl StyleAttribute for Effect {
     type Value = bool;
 
-    fn set_in_style(self, style: Style, value: Self::Value) -> Style {
-        let encoded_effects = style.encoded_effects.set(self, value);
-        Style {
-            encoded_effects,
-            ..style
-        }
+    fn set_in<S: StyleSet>(self, style_set: S, value: Self::Value) -> S {
+        style_set.set_effect(self, value)
     }
 
-    fn get_from_style(self, style: &Style) -> Self::Value {
-        style.encoded_effects.get(self)
+    fn get_from<S: StyleSet>(self, style_set: &S) -> Self::Value {
+        style_set.get_effect(self)
     }
 }
 

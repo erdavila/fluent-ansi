@@ -1,8 +1,8 @@
 use core::fmt::Result;
 
 use crate::{
-    AppliedTo, CodeWriter, ColorTarget, Style, StyleElement, TargetedColor, ToStyle, ToStyleSet,
-    color::Color,
+    AppliedTo, CodeWriter, ColorTarget, Style, StyleElement, StyleSet, TargetedColor, ToStyle,
+    ToStyleSet, color::Color,
 };
 
 /// A trait for color kinds that can be converted into a [`Color`].
@@ -61,8 +61,8 @@ impl<CK: ColorKind> ToStyle for CK {
 impl<CK: ColorKind> AppliedTo for CK {}
 
 impl<CK: ColorKind> StyleElement for CK {
-    fn add_to_style(self, style: Style) -> Style {
-        TargetedColor::from(self).add_to_style(style)
+    fn add_to<S: StyleSet>(self, style_set: S) -> S {
+        TargetedColor::from(self).add_to(style_set)
     }
 }
 

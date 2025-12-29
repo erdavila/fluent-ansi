@@ -1,13 +1,13 @@
-- const everywhere - allow defining styles at compile time
+- `const` everywhere - allow defining styles at compile time
   - Eliminate traits? Use macros to add methods to types?
   - Complete implementation requires experimental feature (`const_trait_impl`) and nightly compiler
     - Implement what is possible in `main`, and the remaining in a branch.
 - Style merge
-- Rename unset -> remove
+- Rename `unset` -> `remove`
 - Document views
   - fluent methods
-  - StyleElement
-  - StyleAttributes
+  - `StyleElement`
+  - `StyleAttributes`
 - trait to apply methods in any content that implements `Display`
   - Example: `"Some content".bold().underline()`
   - with method `with_style(Style)`

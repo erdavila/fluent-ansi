@@ -61,20 +61,20 @@ impl ToStyle for UnderlineStyle {
 }
 
 impl StyleElement for UnderlineStyle {
-    fn add_to_style(self, style: Style) -> Style {
-        style.set_underline_style(Some(self))
+    fn add_to<S: StyleSet>(self, style_set: S) -> S {
+        style_set.set_underline_style(Some(self))
     }
 }
 
 impl StyleAttribute for UnderlineStyle {
     type Value = bool;
 
-    fn set_in_style(self, style: Style, value: Self::Value) -> Style {
-        style.set_effect(self.to_effect(), value)
+    fn set_in<S: StyleSet>(self, style_set: S, value: Self::Value) -> S {
+        style_set.set_effect(self.to_effect(), value)
     }
 
-    fn get_from_style(self, style: &Style) -> Self::Value {
-        style.get_effect(self.to_effect())
+    fn get_from<S: StyleSet>(self, style_set: &S) -> Self::Value {
+        style_set.get_effect(self.to_effect())
     }
 }
 
@@ -87,17 +87,12 @@ pub struct Underline;
 impl StyleAttribute for Underline {
     type Value = Option<UnderlineStyle>;
 
-    fn set_in_style(self, style: Style, value: Self::Value) -> Style {
-        let encoded_effects = style.encoded_effects.set_underline(value);
-        Style {
-            encoded_effects,
-            ..style
-        }
+    fn set_in<S: StyleSet>(self, style_set: S, value: Self::Value) -> S {
+        style_set.set_underline_style(value)
     }
 
-    fn get_from_style(self, style: &Style) -> Self::Value {
-        UnderlineStyle::all()
-            .find(|&underline_style| style.encoded_effects.get(underline_style.to_effect()))
+    fn get_from<S: StyleSet>(self, style_set: &S) -> Self::Value {
+        style_set.get_underline_style()
     }
 }
 
