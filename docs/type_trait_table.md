@@ -1,8 +1,8 @@
-# Types and their trait implementations
+# Types and their implementations
 
 It includes blanket implementations.
 
-| Type \\ Trait | `StyleSet: ToStyleSet` | `ToStyleSet` | `ToStyle: Into<Style>` | `AppliedTo: ToStyle + ToStyleSet` | `ColorKind: Into<Color>` | `ToColor` | `StyleElement: AppliedTo` | `StyleAttribute` |
+| Type \\ Trait | `StyleSet: ToStyleSet` | `ToStyleSet` | `ToStyle: Into<Style>` | `AppliedTo: ToStyle + ToStyleSet` | Color methods | `ToColor` | `StyleElement: AppliedTo` | `StyleAttribute` |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `Styled` | X | X | | | | | | |
 | `Style` | X | X | X | X | | | | |

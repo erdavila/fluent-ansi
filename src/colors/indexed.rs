@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    colors::{ToColor, WriteColorCodes},
+    color::{ToColor, WriteColorCodes, color_methods},
 };
 
 use super::Color;
@@ -33,6 +33,8 @@ impl IndexedColor {
     pub const fn get_index(self) -> u8 {
         self.0
     }
+
+    color_methods!();
 }
 
 impl WriteColorCodes for IndexedColor {
@@ -60,14 +62,14 @@ impl ToColor for IndexedColor {
 mod tests {
     use crate::{
         AppliedTo as _, Style, ToStyle as _, ToStyleSet as _,
-        colors::color_kind::tests::{
-            test_color_kind_methods, test_to_style_set_methods_with_foreground_assumed,
+        colors::color_methods::tests::{
+            test_color_methods, test_to_style_set_methods_with_foreground_assumed,
         },
     };
 
     use super::*;
 
-    test_color_kind_methods!(IndexedColor(7), Color::Indexed(IndexedColor(7)));
+    test_color_methods!(IndexedColor(7), Color::Indexed(IndexedColor(7)));
 
     test_to_style_set_methods_with_foreground_assumed!(IndexedColor(7));
 

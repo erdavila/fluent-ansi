@@ -2,6 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
+    color::color_methods,
     colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, ToColor, WriteColorCodes},
 };
 
@@ -46,6 +47,8 @@ impl Color {
         RGBColor::new(r, g, b)
     }
 
+    color_methods!();
+
     /// Helper method to return a [`None`] value.
     ///
     /// Use it to clear the color for some target with the [`StyleSet::set_color()`](crate::StyleSet::set_color) method.
@@ -79,23 +82,23 @@ impl<C: ToColor> From<C> for Color {
 
 #[cfg(test)]
 mod tests {
-    use crate::colors::color_kind::tests::{
-        test_color_kind_methods, test_to_style_set_methods_with_foreground_assumed,
+    use crate::colors::color_methods::tests::{
+        test_color_methods, test_to_style_set_methods_with_foreground_assumed,
     };
 
     use super::*;
 
-    test_color_kind_methods!(
+    test_color_methods!(
         simple;
         Color::Simple(SimpleColor::new(BasicColor::Red)),
         Color::Simple(SimpleColor::new(BasicColor::Red))
     );
-    test_color_kind_methods!(
+    test_color_methods!(
         indexed;
         Color::Indexed(IndexedColor(42)),
         Color::Indexed(IndexedColor(42))
     );
-    test_color_kind_methods!(
+    test_color_methods!(
         rgb;
         Color::RGB(RGBColor::new(0, 128, 255)),
         Color::RGB(RGBColor::new(0, 128, 255))

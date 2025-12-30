@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet, colors::Color,
+    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet, color::Color,
 };
 
 /// A color in a specific color target.
@@ -111,7 +111,7 @@ impl StyleAttribute for ColorTarget {
 mod tests {
     use crate::{
         StyleSet as _,
-        colors::{BasicColor, ColorKind as _, IndexedColor, RGBColor, SimpleColor, ToColor as _},
+        colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, ToColor as _},
         tests::assert_display,
         to_style_set::tests::test_to_style_set_methods,
     };

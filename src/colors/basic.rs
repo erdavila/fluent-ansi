@@ -1,4 +1,7 @@
-use crate::colors::{Color, SimpleColor, ToColor};
+use crate::{
+    color::color_methods,
+    colors::{Color, SimpleColor, ToColor},
+};
 
 /// The 8 basic non-bright terminal colors.
 ///
@@ -35,12 +38,6 @@ pub enum BasicColor {
 }
 
 impl BasicColor {
-    /// Convert this basic color into a [`SimpleColor`].
-    #[must_use]
-    pub fn to_simple_color(self) -> SimpleColor {
-        SimpleColor::new(self)
-    }
-
     /// Returns a bright variant of this basic color.
     #[must_use]
     pub fn bright(self) -> SimpleColor {
@@ -50,6 +47,14 @@ impl BasicColor {
     #[must_use]
     pub(crate) fn code_offset(self) -> u8 {
         self as u8
+    }
+
+    color_methods!();
+
+    /// Convert this basic color into a [`SimpleColor`].
+    #[must_use]
+    pub fn to_simple_color(self) -> SimpleColor {
+        SimpleColor::new(self)
     }
 }
 
@@ -66,15 +71,15 @@ mod tests {
         AppliedTo as _, Style, ToStyle as _, ToStyleSet as _,
         colors::{
             BasicColor,
-            color_kind::tests::{
-                test_color_kind_methods, test_to_style_set_methods_with_foreground_assumed,
+            color_methods::tests::{
+                test_color_methods, test_to_style_set_methods_with_foreground_assumed,
             },
         },
     };
 
     use super::*;
 
-    test_color_kind_methods!(
+    test_color_methods!(
         BasicColor::Red,
         Color::Simple(SimpleColor::new(BasicColor::Red))
     );

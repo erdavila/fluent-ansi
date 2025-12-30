@@ -3,7 +3,7 @@ use core::fmt::{Display, Formatter, Result, Write};
 use crate::{
     AppliedTo, ColorTarget, Effect, Reset, StyleSet, Styled, TargetedColor, ToStyle, ToStyleSet,
     UnderlineStyle,
-    colors::{Color, ColorKind, WriteColorCodes as _},
+    colors::{Color, WriteColorCodes as _},
     style::encoded_effects::EncodedEffects,
 };
 
@@ -155,8 +155,8 @@ impl From<TargetedColor> for Style {
     }
 }
 
-impl<CK: ColorKind> From<CK> for Style {
-    fn from(color: CK) -> Self {
+impl<C: Into<Color>> From<C> for Style {
+    fn from(color: C) -> Self {
         color.to_style()
     }
 }

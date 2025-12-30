@@ -321,9 +321,6 @@ pub mod color {
     //! let _ = style.set_color(ColorTarget::Foreground, Some(IndexedColor::new(128)));
     //! let _ = style.set_color(ColorTarget::Background, Some(RGBColor::new(0, 128, 255)));
     //! ```
-    //!
-    //! The trait [`ColorKind`] is implemented for all color types, and provides methods to associate a color
-    //! to a [`ColorTarget`](crate::ColorTarget) (foreground or background), returning a [`TargetedColor`](crate::TargetedColor) value.
 
     pub use crate::colors::*;
 }
@@ -341,7 +338,7 @@ pub mod prelude {
     //! ```
 
     pub use crate::UnderlineStyle;
-    pub use crate::color::{Color, ColorKind, ToColor};
+    pub use crate::color::{Color, ToColor};
     pub use crate::{AppliedTo, Effect, StyleSet, ToStyleSet};
 }
 
