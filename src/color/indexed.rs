@@ -48,8 +48,10 @@ impl WriteColorCodes for IndexedColor {
 #[cfg(test)]
 mod tests {
     use crate::{
-        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _, test_color_kind_methods,
-        test_to_style_set_methods_with_foreground_assumed,
+        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _,
+        color::color_kind::tests::{
+            test_color_kind_methods, test_to_style_set_methods_with_foreground_assumed,
+        },
     };
 
     use super::*;

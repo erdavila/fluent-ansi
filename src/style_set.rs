@@ -86,9 +86,8 @@ pub trait StyleSet: ToStyleSet<StyleSet = Self> {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     /// Includes tests for the [`StyleSet`](crate::StyleSet) trait methods.
-    #[macro_export]
     macro_rules! test_style_set_methods {
         ($empty_style_set:expr) => {
             mod style_set {
@@ -281,4 +280,5 @@ mod tests {
             }
         };
     }
+    pub(crate) use test_style_set_methods;
 }

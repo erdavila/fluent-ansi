@@ -67,13 +67,12 @@ impl<CK: ColorKind> StyleElement for CK {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     /// Includes tests for the [`ColorKind`](crate::color::ColorKind) trait methods.
-    #[macro_export]
     macro_rules! test_color_kind_methods {
         ($mod:ident; $color:expr, $as_color:expr) => {
             mod $mod {
-                $crate::test_color_kind_methods!($color, $as_color);
+                $crate::color::color_kind::tests::test_color_kind_methods!($color, $as_color);
             }
         };
         ($color:expr, $as_color:expr) => {
@@ -123,12 +122,16 @@ mod tests {
             }
         };
     }
+    pub(crate) use test_color_kind_methods;
 
     /// Includes tests for the [`ToStyleSet`] trait assuming the color target is foreground.
-    #[macro_export]
     macro_rules! test_to_style_set_methods_with_foreground_assumed {
         ($color:expr) => {
-            $crate::test_to_style_set_methods!($color, Style::new().fg($color));
+            $crate::to_style_set::tests::test_to_style_set_methods!(
+                $color,
+                Style::new().fg($color)
+            );
         };
     }
+    pub(crate) use test_to_style_set_methods_with_foreground_assumed;
 }

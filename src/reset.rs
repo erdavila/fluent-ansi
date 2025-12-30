@@ -32,7 +32,7 @@ impl ToStyle for Reset {
 
 #[cfg(test)]
 mod tests {
-    use crate::{ToStyleSet as _, assert_display};
+    use crate::{ToStyleSet as _, tests::assert_display};
 
     use super::*;
 

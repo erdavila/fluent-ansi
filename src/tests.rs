@@ -1,5 +1,4 @@
 /// A macro to assert that a type implementing `Display` produces the expected output.
-#[macro_export]
 macro_rules! assert_display {
     ($display:expr, $expected:literal) => {{
         use core::fmt::Write as _;
@@ -10,3 +9,4 @@ macro_rules! assert_display {
         assert_eq!(s.as_str(), $expected);
     }};
 }
+pub(crate) use assert_display;

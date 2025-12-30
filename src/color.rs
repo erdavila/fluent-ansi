@@ -166,7 +166,9 @@ impl_reflexive_partial_eq!(BasicColor::to_simple_color() -> SimpleColor);
 
 #[cfg(test)]
 mod tests {
-    use crate::{TargetedColor, test_to_style_set_methods_with_foreground_assumed};
+    use crate::{
+        TargetedColor, color::color_kind::tests::test_to_style_set_methods_with_foreground_assumed,
+    };
 
     use super::*;
 

@@ -126,7 +126,9 @@ impl From<UnderlineStyle> for Effect {
 
 #[cfg(test)]
 mod tests {
-    use crate::{ToStyleSet as _, assert_display, test_to_style_set_methods};
+    use crate::{
+        ToStyleSet as _, tests::assert_display, to_style_set::tests::test_to_style_set_methods,
+    };
 
     use super::*;
 

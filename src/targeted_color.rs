@@ -122,9 +122,10 @@ impl StyleAttribute for ColorTarget {
 #[cfg(test)]
 mod tests {
     use crate::{
-        StyleSet as _, assert_display,
+        StyleSet as _,
         color::{BasicColor, ColorKind as _, IndexedColor, RGBColor, SimpleColor},
-        test_to_style_set_methods,
+        tests::assert_display,
+        to_style_set::tests::test_to_style_set_methods,
     };
 
     use super::*;

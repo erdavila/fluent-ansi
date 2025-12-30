@@ -144,18 +144,17 @@ pub trait ToStyleSet: Sized {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     /// Includes tests for the [`ToStyleSet`] trait methods.
     ///
     /// # Arguments
     ///
     /// - `$value` is the value that is having its methods from [`ToStyleSet`] tested.
     /// - `$style_set` is the [`StyleSet`] value that corresponds to the `$value`.
-    #[macro_export]
     macro_rules! test_to_style_set_methods {
         ($mod:ident; $value:expr, $style_set:expr) => {
             mod $mod {
-                $crate::test_to_style_set_methods!($value, $style_set);
+                $crate::to_style_set::tests::test_to_style_set_methods!($value, $style_set);
             }
         };
         ($value:expr, $style_set:expr) => {
@@ -305,4 +304,5 @@ mod tests {
             }
         };
     }
+    pub(crate) use test_to_style_set_methods;
 }
