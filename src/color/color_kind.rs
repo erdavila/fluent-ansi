@@ -30,12 +30,6 @@ pub trait ColorKind: Into<Color> {
     fn for_target(self, target: ColorTarget) -> TargetedColor {
         TargetedColor::new(self, target)
     }
-
-    /// Convert this color kind into a [`Color`].
-    #[must_use]
-    fn to_color(self) -> Color {
-        self.into()
-    }
 }
 
 pub(crate) trait WriteColorCodes: ColorKind {

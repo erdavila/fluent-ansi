@@ -1,6 +1,9 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, ColorTarget, color::WriteColorCodes};
+use crate::{
+    CodeWriter, ColorTarget,
+    color::{Color, ToColor, WriteColorCodes},
+};
 
 /// A type alias for [`RGBColor`].
 pub type RGB = RGBColor;
@@ -48,6 +51,12 @@ impl WriteColorCodes for RGBColor {
         writer.write_code(self.g)?;
         writer.write_code(self.b)?;
         Ok(())
+    }
+}
+
+impl ToColor for RGBColor {
+    fn to_color(self) -> Color {
+        Color::RGB(self)
     }
 }
 

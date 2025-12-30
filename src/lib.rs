@@ -291,7 +291,7 @@ mod to_style_set;
 /// ```
 pub mod prelude {
     pub use crate::UnderlineStyle;
-    pub use crate::color::{Color, ColorKind};
+    pub use crate::color::{Color, ColorKind, ToColor};
     pub use crate::{AppliedTo, Effect, StyleSet, ToStyleSet};
 }
 

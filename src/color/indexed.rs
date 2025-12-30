@@ -1,6 +1,11 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, ColorTarget, color::WriteColorCodes};
+use crate::{
+    CodeWriter, ColorTarget,
+    color::{ToColor, WriteColorCodes},
+};
+
+use super::Color;
 
 /// An 8-bit color type representing colors in the 256-color ANSI palette.
 ///
@@ -42,6 +47,12 @@ impl WriteColorCodes for IndexedColor {
         writer.write_code(5)?;
         writer.write_code(self.0)?;
         Ok(())
+    }
+}
+
+impl ToColor for IndexedColor {
+    fn to_color(self) -> Color {
+        Color::Indexed(self)
     }
 }
 

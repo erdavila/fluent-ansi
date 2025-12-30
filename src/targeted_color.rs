@@ -66,7 +66,7 @@ impl ToStyleSet for TargetedColor {
 
 impl ToStyle for TargetedColor {
     fn to_style(self) -> Style {
-        self.into()
+        Style::new().color(self)
     }
 }
 
@@ -111,7 +111,7 @@ impl StyleAttribute for ColorTarget {
 mod tests {
     use crate::{
         StyleSet as _,
-        color::{BasicColor, ColorKind as _, IndexedColor, RGBColor, SimpleColor},
+        color::{BasicColor, ColorKind as _, IndexedColor, RGBColor, SimpleColor, ToColor as _},
         tests::assert_display,
         to_style_set::tests::test_to_style_set_methods,
     };

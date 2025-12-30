@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{BasicColor, IndexedColor, WriteColorCodes},
+    color::{BasicColor, Color, IndexedColor, ToColor, WriteColorCodes},
 };
 
 /// A simple color type representing the 16 basic terminal colors (8 basic colors + bright variants).
@@ -81,12 +81,15 @@ impl WriteColorCodes for SimpleColor {
     }
 }
 
+impl ToColor for SimpleColor {
+    fn to_color(self) -> Color {
+        Color::Simple(self)
+    }
+}
+
 impl From<BasicColor> for SimpleColor {
     fn from(basic_color: BasicColor) -> Self {
-        SimpleColor {
-            basic_color,
-            bright: false,
-        }
+        basic_color.to_simple_color()
     }
 }
 

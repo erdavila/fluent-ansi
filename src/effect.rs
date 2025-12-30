@@ -96,7 +96,7 @@ impl ToStyleSet for Effect {
 
 impl ToStyle for Effect {
     fn to_style(self) -> Style {
-        self.into()
+        Style::new().effect(self)
     }
 }
 
@@ -110,13 +110,7 @@ impl Display for Effect {
 
 impl From<UnderlineStyle> for Effect {
     fn from(value: UnderlineStyle) -> Self {
-        match value {
-            UnderlineStyle::Solid => Effect::Underline,
-            UnderlineStyle::Curly => Effect::CurlyUnderline,
-            UnderlineStyle::Dotted => Effect::DottedUnderline,
-            UnderlineStyle::Dashed => Effect::DashedUnderline,
-            UnderlineStyle::Double => Effect::DoubleUnderline,
-        }
+        value.to_effect()
     }
 }
 
