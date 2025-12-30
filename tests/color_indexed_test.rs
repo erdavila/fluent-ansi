@@ -4,7 +4,7 @@ use common::*;
 
 mod common;
 
-test_color_methods!(
+test_color_type!(
     IndexedColor(7),
     Color::Indexed(IndexedColor(7)),
     Style::new().fg(IndexedColor(7))

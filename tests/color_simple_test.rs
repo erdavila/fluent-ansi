@@ -4,7 +4,7 @@ use common::*;
 
 mod common;
 
-test_color_methods![
+test_color_type![
     non_bright {
         SimpleColor::new(Color::RED),
         Color::Simple(SimpleColor::new(BasicColor::Red)),

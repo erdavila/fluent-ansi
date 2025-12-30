@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    colors::{ToColor, WriteColorCodes},
+    color::{ToColor, WriteColorCodes, impl_color_type},
 };
 
 use super::Color;
@@ -34,6 +34,8 @@ impl IndexedColor {
         self.0
     }
 }
+
+impl_color_type!(IndexedColor);
 
 impl WriteColorCodes for IndexedColor {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {

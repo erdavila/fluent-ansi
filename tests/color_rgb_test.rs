@@ -4,7 +4,7 @@ use common::*;
 
 mod common;
 
-test_color_methods!(
+test_color_type!(
     RGBColor::new(0, 128, 255),
     Color::RGB(RGBColor::new(0, 128, 255)),
     Style::new().fg(RGBColor::new(0, 128, 255))

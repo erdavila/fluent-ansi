@@ -3,19 +3,19 @@ use core::fmt::Result;
 use crate::{CodeWriter, ColorTarget};
 pub use basic::*;
 pub use color::*;
-pub use color_kind::*;
+pub(crate) use impl_color_type::*;
 pub use indexed::*;
 pub use rgb::*;
 pub use simple::*;
 
 mod basic;
 mod color;
-mod color_kind;
+mod impl_color_type;
 mod indexed;
 mod rgb;
 mod simple;
 
-pub(crate) trait WriteColorCodes: ColorKind {
+pub(crate) trait WriteColorCodes {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result;
 }
 

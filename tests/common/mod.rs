@@ -1,10 +1,10 @@
 #![allow(unused)]
 
-mod color_methods;
+mod color_type;
 mod style_set;
 mod to_style_set;
 
-pub(crate) use color_methods::*;
+pub(crate) use color_type::*;
 pub(crate) use style_set::*;
 pub(crate) use to_style_set::*;
 

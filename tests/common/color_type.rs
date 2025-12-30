@@ -1,9 +1,9 @@
-macro_rules! test_color_methods {
+macro_rules! test_color_type {
     ( $( $mod:ident { $( $tt:tt )+ } ),+ $(,)? ) => {
         mod color_type {
             $(
                 mod $mod {
-                    $crate::common::test_color_methods!(NO_MOD: $( $tt )+ );
+                    $crate::common::test_color_type!(NO_MOD: $( $tt )+ );
                 }
             )+
         }
@@ -11,7 +11,7 @@ macro_rules! test_color_methods {
 
     ($color:expr, $as_color:expr, $as_style:expr) => {
         mod color_type {
-            $crate::common::test_color_methods!(NO_MOD: $color, $as_color, $as_style);
+            $crate::common::test_color_type!(NO_MOD: $color, $as_color, $as_style);
         }
     };
 
@@ -61,7 +61,7 @@ macro_rules! test_color_methods {
         }
     };
 }
-pub(crate) use test_color_methods;
+pub(crate) use test_color_type;
 
 macro_rules! test_to_style_set_with_fg_assumed {
     ( $( $mod:ident { $color:expr } ),+ $(,)? ) => {

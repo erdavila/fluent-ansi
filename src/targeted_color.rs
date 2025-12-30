@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet, colors::Color,
+    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet, color::Color,
 };
 
 /// A color in a specific color target.
