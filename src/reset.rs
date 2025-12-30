@@ -26,7 +26,7 @@ impl PartialEq<Style> for Reset {
 
 impl ToStyle for Reset {
     fn to_style(self) -> Style {
-        self.into()
+        Style::new()
     }
 }
 

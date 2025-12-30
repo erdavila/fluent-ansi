@@ -1,4 +1,4 @@
-use crate::color::SimpleColor;
+use crate::color::{Color, SimpleColor, ToColor};
 
 /// The 8 basic non-bright terminal colors.
 ///
@@ -38,7 +38,7 @@ impl BasicColor {
     /// Convert this basic color into a [`SimpleColor`].
     #[must_use]
     pub fn to_simple_color(self) -> SimpleColor {
-        self.into()
+        SimpleColor::new(self)
     }
 
     /// Returns a bright variant of this basic color.
@@ -50,6 +50,13 @@ impl BasicColor {
     #[must_use]
     pub(crate) fn code_offset(self) -> u8 {
         self as u8
+    }
+}
+
+impl ToColor for BasicColor {
+    /// Convert this basic color into a [`Color`].
+    fn to_color(self) -> Color {
+        self.to_simple_color().to_color()
     }
 }
 

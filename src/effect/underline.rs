@@ -34,7 +34,13 @@ impl UnderlineStyle {
 
     #[must_use]
     pub(crate) fn to_effect(self) -> Effect {
-        self.into()
+        match self {
+            UnderlineStyle::Solid => Effect::Underline,
+            UnderlineStyle::Curly => Effect::CurlyUnderline,
+            UnderlineStyle::Dotted => Effect::DottedUnderline,
+            UnderlineStyle::Dashed => Effect::DashedUnderline,
+            UnderlineStyle::Double => Effect::DoubleUnderline,
+        }
     }
 }
 
@@ -56,7 +62,7 @@ impl ToStyleSet for UnderlineStyle {
 
 impl ToStyle for UnderlineStyle {
     fn to_style(self) -> Style {
-        self.into()
+        Style::new().underline_style(self)
     }
 }
 

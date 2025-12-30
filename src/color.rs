@@ -118,27 +118,9 @@ impl WriteColorCodes for Color {
     }
 }
 
-impl From<BasicColor> for Color {
-    fn from(basic: BasicColor) -> Self {
-        Color::Simple(basic.to_simple_color())
-    }
-}
-
-impl From<SimpleColor> for Color {
-    fn from(simple: SimpleColor) -> Self {
-        Color::Simple(simple)
-    }
-}
-
-impl From<IndexedColor> for Color {
-    fn from(indexed: IndexedColor) -> Self {
-        Color::Indexed(indexed)
-    }
-}
-
-impl From<RGBColor> for Color {
-    fn from(rgb: RGBColor) -> Self {
-        Color::RGB(rgb)
+impl<C: ToColor> From<C> for Color {
+    fn from(value: C) -> Self {
+        value.to_color()
     }
 }
 
@@ -163,6 +145,12 @@ impl_reflexive_partial_eq!(SimpleColor::to_color() -> Color);
 impl_reflexive_partial_eq!(IndexedColor::to_color() -> Color);
 impl_reflexive_partial_eq!(RGBColor::to_color() -> Color);
 impl_reflexive_partial_eq!(BasicColor::to_simple_color() -> SimpleColor);
+
+/// A trait to convert a type into a [`Color`].
+pub trait ToColor: Into<Color> {
+    /// Convert this type into a [`Color`].
+    fn to_color(self) -> Color;
+}
 
 #[cfg(test)]
 mod tests {

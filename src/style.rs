@@ -139,31 +139,31 @@ impl Display for Style {
 
 impl From<Effect> for Style {
     fn from(effect: Effect) -> Self {
-        Style::new().effect(effect)
+        effect.to_style()
     }
 }
 
 impl From<UnderlineStyle> for Style {
     fn from(underline_style: UnderlineStyle) -> Self {
-        Style::new().underline_style(underline_style)
+        underline_style.to_style()
     }
 }
 
 impl From<TargetedColor> for Style {
     fn from(targeted_color: TargetedColor) -> Self {
-        Style::new().color(targeted_color)
+        targeted_color.to_style()
     }
 }
 
 impl<CK: ColorKind> From<CK> for Style {
     fn from(color: CK) -> Self {
-        Style::new().fg(color)
+        color.to_style()
     }
 }
 
 impl From<Reset> for Style {
-    fn from(_: Reset) -> Self {
-        Style::new()
+    fn from(reset: Reset) -> Self {
+        reset.to_style()
     }
 }
 
