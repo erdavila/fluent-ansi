@@ -10,19 +10,3 @@ macro_rules! applied_to_method {
     };
 }
 pub(crate) use applied_to_method;
-
-#[cfg(test)]
-pub(crate) mod tests {
-    macro_rules! test_applied_to_method {
-        ($value:expr, $expected_style:expr) => {
-            #[test]
-            fn applied_to() {
-                let styled = $value.applied_to("CONTENT");
-
-                assert_eq!(styled.get_content(), &"CONTENT");
-                assert_eq!(styled.get_style(), $expected_style);
-            }
-        };
-    }
-    pub(crate) use test_applied_to_method;
-}

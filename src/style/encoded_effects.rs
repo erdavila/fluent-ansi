@@ -147,7 +147,7 @@ mod tests {
     }
 
     #[test]
-    fn set_underline_true() {
+    fn set_underline_effect_true() {
         for initial_effect in underline_effects() {
             // Add some effect
             let encoded_effects = EncodedEffects::default().set(initial_effect, true);

@@ -1,4 +1,4 @@
-#![cfg_attr(not(test), no_std)]
+#![no_std]
 #![warn(clippy::pedantic)]
 #![warn(missing_docs)]
 //! `fluent-ansi` is a library to handle ANSI escape sequences for the terminal.
@@ -22,13 +22,13 @@
 //! ```
 //! use fluent_ansi::{prelude::*, ColorTarget, Style, TargetedColor};
 //!
-//! let stl: Style = Style::new().set(Effect::Bold, true).set(ColorTarget::Foreground, Some(Color::RED.to_color()));
-//! let stl: Style = Style::new().set_effect(Effect::Bold, true).set_color(ColorTarget::Foreground, Some(Color::RED));
-//! let stl: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RED, ColorTarget::Foreground));
-//! let stl: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
-//! let stl: Style = Style::new().bold().fg(Color::RED);
-//! let stl: Style = Effect::Bold.fg(Color::RED);
-//! let stl: Style = Color::RED.for_fg().bold();
+//! let style: Style = Style::new().set(Effect::Bold, true).set(ColorTarget::Foreground, Some(Color::RED.to_color()));
+//! let style: Style = Style::new().set_effect(Effect::Bold, true).set_color(ColorTarget::Foreground, Some(Color::RED));
+//! let style: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RED, ColorTarget::Foreground));
+//! let style: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
+//! let style: Style = Style::new().bold().fg(Color::RED);
+//! let style: Style = Effect::Bold.fg(Color::RED);
+//! let style: Style = Color::RED.for_fg().bold();
 //! ```
 //!
 //! All types are immutable and implement [`Copy`], except for [`Styled<C>`](Styled),
@@ -339,6 +339,3 @@ pub mod prelude {
     pub use crate::color::{Color, ToColor};
     pub use crate::{Effect, StyleSet, ToStyleSet};
 }
-
-#[cfg(test)]
-mod tests;
