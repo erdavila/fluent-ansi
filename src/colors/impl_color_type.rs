@@ -24,6 +24,8 @@ macro_rules! impl_color_type {
             pub fn for_target(self, target: $crate::ColorTarget) -> $crate::TargetedColor {
                 $crate::TargetedColor::new(self, target)
             }
+
+            $crate::applied_to::applied_to_method!();
         }
 
         impl $crate::ToStyleSet for $name {
@@ -39,8 +41,6 @@ macro_rules! impl_color_type {
                 $crate::TargetedColor::from(self).to_style()
             }
         }
-
-        impl $crate::AppliedTo for $name {}
 
         impl $crate::StyleElement for $name {
             fn add_to<S: $crate::StyleSet>(self, style_set: S) -> S {

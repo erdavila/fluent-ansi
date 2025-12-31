@@ -54,6 +54,11 @@ macro_rules! test_color_type {
             );
         }
 
+        $crate::test_applied_to_method!(
+            $color,
+            Style::new().fg($color)
+        );
+
         #[test]
         fn to_color() {
             assert_eq!($color.to_color(), $as_color);

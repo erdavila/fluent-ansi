@@ -1,9 +1,11 @@
 #![allow(unused)]
 
+mod applied_to;
 mod color_type;
 mod style_set;
 mod to_style_set;
 
+pub(crate) use applied_to::*;
 pub(crate) use color_type::*;
 pub(crate) use style_set::*;
 pub(crate) use to_style_set::*;

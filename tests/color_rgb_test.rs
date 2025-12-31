@@ -32,17 +32,6 @@ fn rgb() {
 }
 
 #[test]
-fn applied_to() {
-    let stld = RGBColor::new(0, 128, 255).applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(
-        stld.get_style(),
-        Style::new().fg(RGBColor::new(0, 128, 255))
-    );
-}
-
-#[test]
 fn to_style() {
     assert_eq!(
         RGBColor::new(0, 128, 255).to_style(),

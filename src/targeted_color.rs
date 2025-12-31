@@ -1,7 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet, color::Color,
+    Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    applied_to::applied_to_method, color::Color,
 };
 
 /// A color in a specific color target.
@@ -48,6 +49,8 @@ impl TargetedColor {
     pub const fn get_target(self) -> ColorTarget {
         self.target
     }
+
+    applied_to_method!();
 }
 
 impl StyleElement for TargetedColor {
@@ -69,8 +72,6 @@ impl ToStyle for TargetedColor {
         Style::new().color(self)
     }
 }
-
-impl AppliedTo for TargetedColor {}
 
 impl Display for TargetedColor {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {

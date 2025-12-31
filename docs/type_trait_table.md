@@ -2,7 +2,7 @@
 
 It includes blanket implementations.
 
-| Type \\ Trait | `StyleSet: ToStyleSet` | `ToStyleSet` | `ToStyle: Into<Style>` | `AppliedTo: ToStyle + ToStyleSet` | Color type | `ToColor` | `StyleElement: AppliedTo` | `StyleAttribute` |
+| Type \\ Trait | `StyleSet: ToStyleSet` | `ToStyleSet` | `ToStyle: Into<Style>` | `applied_to` method | Color type | `ToColor` | `StyleElement` | `StyleAttribute` |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `Styled` | X | X | | | | | | |
 | `Style` | X | X | X | X | | | | |

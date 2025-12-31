@@ -24,14 +24,6 @@ fn indexed() {
 }
 
 #[test]
-fn applied_to() {
-    let stld = IndexedColor(42).applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(stld.get_style(), Style::new().fg(IndexedColor(42)));
-}
-
-#[test]
 fn to_style() {
     assert_eq!(
         IndexedColor(42).to_style(),

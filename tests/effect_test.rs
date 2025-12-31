@@ -9,13 +9,7 @@ test_to_style_set![
     italic { Effect::Italic, Style::new().italic() },
 ];
 
-#[test]
-fn applied_to() {
-    let stld = Effect::Bold.applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(stld.get_style(), Style::new().bold());
-}
+test_applied_to_method!(Effect::Bold, Style::new().bold());
 
 #[test]
 fn to_style() {

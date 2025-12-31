@@ -45,17 +45,6 @@ fn bright() {
 }
 
 #[test]
-fn applied_to() {
-    let stld = SimpleColor::new(BasicColor::Red).applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(
-        stld.get_style(),
-        Style::new().fg(SimpleColor::new(BasicColor::Red))
-    );
-}
-
-#[test]
 fn from_basic() {
     assert_eq!(
         SimpleColor::from(BasicColor::Red),

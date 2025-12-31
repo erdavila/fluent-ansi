@@ -6,6 +6,7 @@ mod common;
 
 test_to_style_set!(Style::new(), Style::new());
 test_style_set!(Style::new());
+test_applied_to_method!(Style::new().bold(), Style::new().bold());
 
 #[test]
 fn effects_display() {
@@ -43,14 +44,6 @@ fn combined_display() {
         .underline()
         .bg(BasicColor::Green);
     assert_display!(style, "\x1b[1;4;31;42m");
-}
-
-#[test]
-fn applied_to() {
-    let stld = Style::new().bold().applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(stld.get_style(), Style::new().bold());
 }
 
 #[test]

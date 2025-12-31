@@ -9,13 +9,7 @@ test_to_style_set![
     curly { UnderlineStyle::Curly, Style::new().curly_underline() },
 ];
 
-#[test]
-fn applied_to() {
-    let stld = UnderlineStyle::Curly.applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(stld.get_style(), Style::new().curly_underline());
-}
+test_applied_to_method!(UnderlineStyle::Curly, Style::new().curly_underline());
 
 #[test]
 fn to_effect() {

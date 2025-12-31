@@ -43,7 +43,7 @@
 //! be any type that implements [`Display`](core::fmt::Display). When rendered, the content is preceded by the
 //! escape sequence corresponding to the styling, and is succeeded by the escape sequence that resets the styling.
 //!
-//! A [`Styled<C>`] instance is obtained with the [`applied_to()`](AppliedTo::applied_to) method in any styling type,
+//! A [`Styled<C>`] instance is obtained with the `applied_to()` method available in any styling type,
 //! or with [`Styled<C>::new()`] to create an instance without any styling.
 //!
 //! ```
@@ -264,8 +264,8 @@
 //! ```
 
 pub use crate::{
-    applied_to::*, effect::*, reset::*, style::*, style_set::*, styled::*, targeted_color::*,
-    to_style::*, to_style_set::*,
+    effect::*, reset::*, style::*, style_set::*, styled::*, targeted_color::*, to_style::*,
+    to_style_set::*,
 };
 
 mod applied_to;
@@ -339,5 +339,5 @@ pub mod prelude {
 
     pub use crate::UnderlineStyle;
     pub use crate::color::{Color, ToColor};
-    pub use crate::{AppliedTo, Effect, StyleSet, ToStyleSet};
+    pub use crate::{Effect, StyleSet, ToStyleSet};
 }

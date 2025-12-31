@@ -13,6 +13,8 @@ test_to_style_set![
     green_underline { TargetedColor::new_for_underline(BasicColor::Green), Style::new().underline_color(BasicColor::Green) },
 ];
 
+test_applied_to_method!(BasicColor::Red.for_fg(), Style::new().fg(BasicColor::Red));
+
 #[test]
 fn targeted_color() {
     let cp = TargetedColor::new(BasicColor::Red, ColorTarget::Foreground);
@@ -27,14 +29,6 @@ fn targeted_color() {
         cp.to_style(),
         Style::new().set_color(ColorTarget::Foreground, Some(BasicColor::Red))
     );
-}
-
-#[test]
-fn applied_to() {
-    let stld = BasicColor::Red.for_fg().applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(stld.get_style(), Style::new().fg(BasicColor::Red));
 }
 
 #[test]

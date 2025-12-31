@@ -1,4 +1,4 @@
-use fluent_ansi::{AppliedTo as _, Style, ToStyle as _, ToStyleSet as _, color::*};
+use fluent_ansi::{Style, ToStyle as _, ToStyleSet as _, color::*};
 
 use common::*;
 
@@ -18,14 +18,6 @@ fn bright() {
         BasicColor::Red.bright(),
         SimpleColor::new_bright(BasicColor::Red)
     );
-}
-
-#[test]
-fn applied_to() {
-    let stld = BasicColor::Red.applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(stld.get_style(), Style::new().fg(BasicColor::Red));
 }
 
 #[test]

@@ -1,8 +1,8 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, ColorTarget, Effect, Reset, StyleSet, Styled, TargetedColor, ToStyle, ToStyleSet,
-    UnderlineStyle,
+    ColorTarget, Effect, Reset, StyleSet, TargetedColor, ToStyle, ToStyleSet, UnderlineStyle,
+    applied_to::applied_to_method,
     colors::{Color, WriteColorCodes as _},
     style::encoded_effects::EncodedEffects,
 };
@@ -31,6 +31,8 @@ impl Style {
             underline_color: None,
         }
     }
+
+    applied_to_method!();
 }
 
 impl ToStyleSet for Style {
@@ -96,12 +98,6 @@ impl StyleSet for Style {
 impl ToStyle for Style {
     fn to_style(self) -> Style {
         self
-    }
-}
-
-impl AppliedTo for Style {
-    fn applied_to<C: Display>(self, content: C) -> Styled<C> {
-        Styled::new(content).with_style(self)
     }
 }
 

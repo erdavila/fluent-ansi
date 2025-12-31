@@ -3,7 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    AppliedTo, CodeWriter, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    CodeWriter, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    applied_to::applied_to_method,
 };
 pub use underline::*;
 
@@ -43,6 +44,8 @@ pub enum Effect {
 }
 
 impl Effect {
+    applied_to_method!();
+
     #[must_use]
     pub(crate) fn all() -> AllEffects {
         enum_iterator::all()
@@ -99,8 +102,6 @@ impl ToStyle for Effect {
         Style::new().effect(self)
     }
 }
-
-impl AppliedTo for Effect {}
 
 impl Display for Effect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
