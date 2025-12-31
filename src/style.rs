@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    ColorTarget, Effect, Reset, StyleSet, TargetedColor, ToStyleSet, UnderlineStyle,
+    ColorTarget, Effect, Reset, StyleSet, ToStyleSet, UnderlineStyle,
     colors::{Color, WriteColorCodes as _},
     impl_macros::applied_to::impl_applied_to,
     style::encoded_effects::EncodedEffects,
@@ -130,30 +130,6 @@ impl Display for Style {
             }
             write_escape_sequence(f, Codes(*self))
         }
-    }
-}
-
-impl From<Effect> for Style {
-    fn from(effect: Effect) -> Self {
-        effect.to_style()
-    }
-}
-
-impl From<UnderlineStyle> for Style {
-    fn from(underline_style: UnderlineStyle) -> Self {
-        underline_style.to_style()
-    }
-}
-
-impl From<TargetedColor> for Style {
-    fn from(targeted_color: TargetedColor) -> Self {
-        targeted_color.to_style()
-    }
-}
-
-impl From<Reset> for Style {
-    fn from(reset: Reset) -> Self {
-        reset.to_style()
     }
 }
 

@@ -22,8 +22,9 @@ fn bright() {
 
 #[test]
 fn to_simple_color() {
-    assert_eq!(
-        BasicColor::Red.to_simple_color(),
+    assert_from_to!(
+        to_simple_color, SimpleColor;
+        BasicColor::Red,
         SimpleColor::new(BasicColor::Red)
     );
 }

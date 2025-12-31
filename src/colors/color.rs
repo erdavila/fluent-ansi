@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, ToColor, WriteColorCodes},
+    colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, WriteColorCodes},
     impl_macros::color_type::impl_color_type,
 };
 
@@ -54,15 +54,12 @@ impl Color {
     pub const fn none() -> Option<Color> {
         None
     }
-
-    /// Convert this color into a [`Color`].
-    #[must_use]
-    pub fn to_color(self) -> Color {
-        self
-    }
 }
 
-impl_color_type!(Color);
+impl_color_type!(Color {
+    args: [self];
+    to_color: SELF
+});
 
 impl WriteColorCodes for Color {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
@@ -71,11 +68,5 @@ impl WriteColorCodes for Color {
             Color::Indexed(indexed) => indexed.write_color_codes(target, writer),
             Color::RGB(rgb) => rgb.write_color_codes(target, writer),
         }
-    }
-}
-
-impl<C: ToColor> From<C> for Color {
-    fn from(value: C) -> Self {
-        value.to_color()
     }
 }

@@ -58,19 +58,9 @@ fn to_style() {
 }
 
 #[test]
-fn from_effect() {
-    assert_eq!(Style::from(Effect::Bold), Style::new().bold());
-}
-
-#[test]
 fn from_targeted_color() {
     assert_eq!(
         Style::from(BasicColor::Red.for_fg()),
         Style::new().color(BasicColor::Red.for_fg())
     );
-}
-
-#[test]
-fn from_reset() {
-    assert_eq!(Style::from(Reset), Style::new());
 }

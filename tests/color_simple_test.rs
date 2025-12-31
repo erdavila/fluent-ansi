@@ -45,14 +45,6 @@ fn bright() {
 }
 
 #[test]
-fn from_basic() {
-    assert_eq!(
-        SimpleColor::from(BasicColor::Red),
-        SimpleColor::new(BasicColor::Red)
-    );
-}
-
-#[test]
 fn to_style() {
     assert_eq!(
         SimpleColor::new(BasicColor::Red).to_style(),

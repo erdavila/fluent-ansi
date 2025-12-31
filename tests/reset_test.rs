@@ -20,5 +20,9 @@ fn eq() {
 
 #[test]
 fn to_style() {
-    assert_eq!(Reset.to_style(), Style::new());
+    assert_from_to!(
+        to_style, Style;
+        Reset,
+        Style::new()
+    );
 }

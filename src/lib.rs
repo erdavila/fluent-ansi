@@ -337,6 +337,6 @@ pub mod prelude {
     //! ```
 
     pub use crate::UnderlineStyle;
-    pub use crate::color::{Color, ToColor};
+    pub use crate::color::Color;
     pub use crate::{Effect, StyleSet, ToStyleSet};
 }

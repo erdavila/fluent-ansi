@@ -4,7 +4,7 @@ use enum_iterator::Sequence;
 
 use crate::{
     Effect, Style, StyleAttribute, StyleElement, StyleSet, ToStyleSet,
-    impl_macros::applied_to::impl_applied_to,
+    impl_macros::{applied_to::impl_applied_to, from_to::impl_from_to},
 };
 
 pub(crate) type AllUnderlineStyles = enum_iterator::All<UnderlineStyle>;
@@ -30,20 +30,15 @@ pub enum UnderlineStyle {
 impl UnderlineStyle {
     impl_applied_to!();
 
-    /// Converts the type into a [`Style`].
-    #[must_use]
-    pub fn to_style(self) -> Style {
-        Style::new().underline_style(self)
-    }
-
     #[must_use]
     pub(crate) fn all() -> AllUnderlineStyles {
         enum_iterator::all()
     }
+}
 
-    /// Converts the type into an [`Effect`].
-    #[must_use]
-    pub fn to_effect(self) -> Effect {
+impl_from_to!(
+    #[doc = r"Converts the type into an [`Effect`]."]
+    fn to_effect(self: UnderlineStyle) -> Effect {
         match self {
             UnderlineStyle::Solid => Effect::Underline,
             UnderlineStyle::Curly => Effect::CurlyUnderline,
@@ -52,7 +47,14 @@ impl UnderlineStyle {
             UnderlineStyle::Double => Effect::DoubleUnderline,
         }
     }
-}
+);
+
+impl_from_to!(
+    #[doc = r"Converts the type into a [`Style`]."]
+    fn to_style(self: UnderlineStyle) -> Style {
+        self.to_effect().to_style()
+    }
+);
 
 impl Display for UnderlineStyle {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {

@@ -13,7 +13,11 @@ test_applied_to!(Effect::Bold, Style::new().bold());
 
 #[test]
 fn to_style() {
-    assert_eq!(Effect::Bold.to_style(), Style::new().bold());
+    assert_from_to!(
+        to_style, Style;
+        Effect::Bold,
+        Style::new().bold()
+    );
 }
 
 #[test]

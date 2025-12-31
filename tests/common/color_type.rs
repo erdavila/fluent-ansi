@@ -17,6 +17,7 @@ macro_rules! test_color_type {
 
     (NO_MOD: $color:expr, $as_color:expr, $as_style:expr) => {
         use fluent_ansi::{color::*, prelude::*, *};
+        use $crate::common::assert_from_to;
 
         #[test]
         fn for_fg() {
@@ -57,15 +58,30 @@ macro_rules! test_color_type {
         $crate::common::test_applied_to!($color, Style::new().fg($color));
 
         #[test]
+        fn to_targeted_color() {
+            assert_from_to!(
+                to_targeted_color, TargetedColor;
+                $color,
+                TargetedColor::new($color, ColorTarget::Foreground)
+            );
+        }
+
+        #[test]
         fn to_color() {
-            assert_eq!($color.to_color(), $as_color);
-            assert_eq!(Color::from($color), $as_color);
+            assert_from_to!(
+                to_color, Color;
+                $color,
+                $as_color
+            );
         }
 
         #[test]
         fn to_style() {
-            assert_eq!($color.to_style(), $as_style);
-            assert_eq!(Style::from($color), $as_style);
+            assert_from_to!(
+                to_style, Style;
+                $color,
+                $as_style
+            );
         }
     };
 }

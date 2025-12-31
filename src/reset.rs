@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::Style;
+use crate::{Style, impl_macros::from_to::impl_from_to};
 
 /// A type that represents the reset of all styling.
 ///
@@ -12,13 +12,12 @@ use crate::Style;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct Reset;
 
-impl Reset {
-    /// Converts the type into a [`Style`].
-    #[must_use]
-    pub fn to_style(self) -> Style {
+impl_from_to!(
+    #[doc = r"Converts the type into a [`Style`]."]
+    fn to_style(self: Reset) -> Style {
         Style::new()
     }
-}
+);
 
 impl Display for Reset {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
