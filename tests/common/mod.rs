@@ -2,11 +2,13 @@
 
 mod applied_to;
 mod color_type;
+mod from_to;
 mod style_set;
 mod to_style_set;
 
 pub(crate) use applied_to::*;
 pub(crate) use color_type::*;
+pub(crate) use from_to::*;
 pub(crate) use style_set::*;
 pub(crate) use to_style_set::*;
 

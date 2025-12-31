@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{Color, ToColor, WriteColorCodes},
+    color::{Color, WriteColorCodes},
     impl_macros::color_type::impl_color_type,
 };
 
@@ -38,7 +38,10 @@ impl RGBColor {
     }
 }
 
-impl_color_type!(RGBColor);
+impl_color_type!(RGBColor {
+    args: [self];
+    to_color: { Color::RGB(self) }
+});
 
 impl WriteColorCodes for RGBColor {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
@@ -54,11 +57,5 @@ impl WriteColorCodes for RGBColor {
         writer.write_code(self.g)?;
         writer.write_code(self.b)?;
         Ok(())
-    }
-}
-
-impl ToColor for RGBColor {
-    fn to_color(self) -> Color {
-        Color::RGB(self)
     }
 }

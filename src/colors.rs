@@ -38,9 +38,3 @@ impl_reflexive_partial_eq!(SimpleColor::to_color() -> Color);
 impl_reflexive_partial_eq!(IndexedColor::to_color() -> Color);
 impl_reflexive_partial_eq!(RGBColor::to_color() -> Color);
 impl_reflexive_partial_eq!(BasicColor::to_simple_color() -> SimpleColor);
-
-/// A trait to convert a type into a [`Color`].
-pub trait ToColor: Into<Color> {
-    /// Convert this type into a [`Color`].
-    fn to_color(self) -> Color;
-}

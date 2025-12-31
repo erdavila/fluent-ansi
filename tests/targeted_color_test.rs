@@ -33,12 +33,14 @@ fn targeted_color() {
 
 #[test]
 fn to_style() {
-    assert_eq!(
-        BasicColor::Red.for_fg().to_style(),
+    assert_from_to!(
+        to_style, Style;
+        BasicColor::Red.for_fg(),
         Style::new().fg(BasicColor::Red)
     );
-    assert_eq!(
-        BasicColor::Green.for_bg().to_style(),
+    assert_from_to!(
+        to_style, Style;
+        BasicColor::Green.for_bg(),
         Style::new().bg(BasicColor::Green)
     );
 }

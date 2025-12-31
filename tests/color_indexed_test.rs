@@ -1,4 +1,4 @@
-use fluent_ansi::{color::*, prelude::*, *};
+use fluent_ansi::color::*;
 
 use common::*;
 
@@ -21,12 +21,4 @@ fn indexed() {
     assert_eq!(color_2.get_index(), 7u8);
 
     assert_eq!(color_1, color_2);
-}
-
-#[test]
-fn to_style() {
-    assert_eq!(
-        IndexedColor(42).to_style(),
-        Style::new().fg(IndexedColor(42))
-    );
 }

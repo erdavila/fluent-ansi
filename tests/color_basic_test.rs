@@ -1,4 +1,4 @@
-use fluent_ansi::{Style, ToStyle as _, ToStyleSet as _, color::*};
+use fluent_ansi::color::*;
 
 use common::*;
 
@@ -22,13 +22,9 @@ fn bright() {
 
 #[test]
 fn to_simple_color() {
-    assert_eq!(
-        BasicColor::Red.to_simple_color(),
+    assert_from_to!(
+        to_simple_color, SimpleColor;
+        BasicColor::Red,
         SimpleColor::new(BasicColor::Red)
     );
-}
-
-#[test]
-fn to_style() {
-    assert_eq!(BasicColor::Red.to_style(), Style::new().fg(BasicColor::Red));
 }

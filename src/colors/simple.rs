@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{BasicColor, Color, IndexedColor, ToColor, WriteColorCodes},
+    color::{BasicColor, Color, IndexedColor, WriteColorCodes},
     impl_macros::color_type::impl_color_type,
 };
 
@@ -63,7 +63,10 @@ impl SimpleColor {
     }
 }
 
-impl_color_type!(SimpleColor);
+impl_color_type!(SimpleColor {
+    args: [self];
+    to_color: { Color::Simple(self) }
+});
 
 impl WriteColorCodes for SimpleColor {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
@@ -81,17 +84,5 @@ impl WriteColorCodes for SimpleColor {
                 IndexedColor(offset + 8).write_color_codes(target, writer)
             }
         }
-    }
-}
-
-impl ToColor for SimpleColor {
-    fn to_color(self) -> Color {
-        Color::Simple(self)
-    }
-}
-
-impl From<BasicColor> for SimpleColor {
-    fn from(basic_color: BasicColor) -> Self {
-        basic_color.to_simple_color()
     }
 }

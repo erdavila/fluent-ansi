@@ -1,4 +1,4 @@
-use fluent_ansi::{color::*, prelude::*, *};
+use fluent_ansi::color::*;
 
 use common::*;
 
@@ -29,12 +29,4 @@ fn rgb() {
     assert_eq!(color_2.b, 255u8);
 
     assert_eq!(color_1, color_2);
-}
-
-#[test]
-fn to_style() {
-    assert_eq!(
-        RGBColor::new(0, 128, 255).to_style(),
-        Style::new().fg(RGBColor::new(0, 128, 255))
-    );
 }

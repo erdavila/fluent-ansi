@@ -264,8 +264,7 @@
 //! ```
 
 pub use crate::{
-    effect::*, reset::*, style::*, style_set::*, styled::*, targeted_color::*, to_style::*,
-    to_style_set::*,
+    effect::*, reset::*, style::*, style_set::*, styled::*, targeted_color::*, to_style_set::*,
 };
 
 mod colors;
@@ -275,7 +274,6 @@ mod style;
 mod style_set;
 mod styled;
 mod targeted_color;
-mod to_style;
 mod to_style_set;
 
 mod impl_macros;
@@ -339,6 +337,6 @@ pub mod prelude {
     //! ```
 
     pub use crate::UnderlineStyle;
-    pub use crate::color::{Color, ToColor};
+    pub use crate::color::Color;
     pub use crate::{Effect, StyleSet, ToStyleSet};
 }
