@@ -1,4 +1,4 @@
-use crate::{AppliedTo, Effect, StyleSet, TargetedColor, UnderlineStyle, color::Color};
+use crate::{AppliedTo, Effect, StyleSet, TargetedColor, UnderlineStyle, colors::Color};
 
 /// An element that can be added to a [`Style`](crate::Style).
 ///

@@ -269,7 +269,7 @@ pub use crate::{
 };
 
 mod applied_to;
-pub mod color;
+mod colors;
 mod effect;
 mod reset;
 mod style;
@@ -279,17 +279,67 @@ mod targeted_color;
 mod to_style;
 mod to_style_set;
 
-/// Re-exports the minimal set of items to style some content.
-///
-/// This module can be imported to have access to the minimal items to build a [`Styled<C>`] value from
-/// effects and colors.
-///
-/// ```
-/// use fluent_ansi::prelude::*;
-///
-/// let styled = Color::RED.for_bg().bold().applied_to("Some content");
-/// ```
+pub mod color {
+    //! Color types and trait.
+    //!
+    //! There are 4 color types:
+    //! - [`BasicColor`]: 3-bit colors with 8 variants.
+    //! - [`SimpleColor`]: Adds bright variants to the [`BasicColor`]s, totalling 16 colors.
+    //! - [`IndexedColor`]: 8-bit colors (256 colors).
+    //! - [`RGBColor`]: RGB colors (24-bit/true color).
+    //!
+    //! The enum [`Color`] unifies all the color types in a single type and have members to access or create colors of all types:
+    //!
+    //! ```
+    //! use fluent_ansi::{prelude::*, color::{BasicColor, IndexedColor, RGBColor, SimpleColor}};
+    //!
+    //! assert_eq!(Color::RED, BasicColor::Red);
+    //! assert_eq!(Color::RED.bright(), SimpleColor::new_bright(BasicColor::Red));
+    //! assert_eq!(Color::indexed(127), IndexedColor(127));
+    //! assert_eq!(Color::rgb(0, 128, 255), RGBColor::new(0, 128, 255));
+    //! ```
+    //!
+    //! All color types are convertible to [`Color`] and can be used where an `impl Into<Color>` value is expected:
+    //!
+    //! ```
+    //! use fluent_ansi::{prelude::*, color::{BasicColor, IndexedColor, RGBColor, SimpleColor}, ColorTarget, Style};
+    //!
+    //! let style = Style::new();
+    //!
+    //! let _ = style.fg(BasicColor::Red);
+    //! let _ = style.fg(SimpleColor::new_bright(BasicColor::Red));
+    //! let _ = style.fg(IndexedColor::new(128));
+    //! let _ = style.fg(RGBColor::new(0, 128, 255));
+    //!
+    //! let _ = style.bg(BasicColor::Red);
+    //! let _ = style.bg(SimpleColor::new_bright(BasicColor::Red));
+    //! let _ = style.bg(IndexedColor::new(128));
+    //! let _ = style.bg(RGBColor::new(0, 128, 255));
+    //!
+    //! let _ = style.set_color(ColorTarget::Foreground, Some(BasicColor::Red));
+    //! let _ = style.set_color(ColorTarget::Background, Some(SimpleColor::new_bright(BasicColor::Red)));
+    //! let _ = style.set_color(ColorTarget::Foreground, Some(IndexedColor::new(128)));
+    //! let _ = style.set_color(ColorTarget::Background, Some(RGBColor::new(0, 128, 255)));
+    //! ```
+    //!
+    //! The trait [`ColorKind`] is implemented for all color types, and provides methods to associate a color
+    //! to a [`ColorTarget`](crate::ColorTarget) (foreground or background), returning a [`TargetedColor`](crate::TargetedColor) value.
+
+    pub use crate::colors::*;
+}
+
 pub mod prelude {
+    //! Re-exports the minimal set of items to style some content.
+    //!
+    //! This module can be imported to have access to the minimal items to build a [`Styled<C>`](crate::Styled) value from
+    //! effects and colors.
+    //!
+    //! ```
+    //! use fluent_ansi::prelude::*;
+    //!
+    //! let styled = Color::RED.for_bg().bold().applied_to("Some content");
+    //! ```
+
     pub use crate::UnderlineStyle;
     pub use crate::color::{Color, ColorKind, ToColor};
     pub use crate::{AppliedTo, Effect, StyleSet, ToStyleSet};

@@ -1,4 +1,4 @@
-use crate::color::{Color, SimpleColor, ToColor};
+use crate::colors::{Color, SimpleColor, ToColor};
 
 /// The 8 basic non-bright terminal colors.
 ///
@@ -63,8 +63,13 @@ impl ToColor for BasicColor {
 #[cfg(test)]
 mod tests {
     use crate::{
-        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _, color::BasicColor,
-        test_color_kind_methods, test_to_style_set_methods_with_foreground_assumed,
+        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _,
+        colors::{
+            BasicColor,
+            color_kind::tests::{
+                test_color_kind_methods, test_to_style_set_methods_with_foreground_assumed,
+            },
+        },
     };
 
     use super::*;

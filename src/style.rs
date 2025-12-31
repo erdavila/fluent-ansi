@@ -3,7 +3,7 @@ use core::fmt::{Display, Formatter, Result, Write};
 use crate::{
     AppliedTo, ColorTarget, Effect, Reset, StyleSet, Styled, TargetedColor, ToStyle, ToStyleSet,
     UnderlineStyle,
-    color::{Color, ColorKind, WriteColorCodes as _},
+    colors::{Color, ColorKind, WriteColorCodes as _},
     style::encoded_effects::EncodedEffects,
 };
 
@@ -197,7 +197,7 @@ fn write_escape_sequence(f: &mut impl Write, codes: impl Display) -> Result {
 mod tests {
     use crate::{
         assert_display,
-        color::{BasicColor, IndexedColor, RGBColor, SimpleColor},
+        colors::{BasicColor, IndexedColor, RGBColor, SimpleColor},
         test_style_set_methods, test_to_style_set_methods,
     };
 

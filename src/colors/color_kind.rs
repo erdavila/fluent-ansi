@@ -1,8 +1,6 @@
-use core::fmt::Result;
-
 use crate::{
-    AppliedTo, CodeWriter, ColorTarget, Style, StyleElement, StyleSet, TargetedColor, ToStyle,
-    ToStyleSet, color::Color,
+    AppliedTo, ColorTarget, Style, StyleElement, StyleSet, TargetedColor, ToStyle, ToStyleSet,
+    colors::Color,
 };
 
 /// A trait for color kinds that can be converted into a [`Color`].
@@ -32,10 +30,6 @@ pub trait ColorKind: Into<Color> {
     }
 }
 
-pub(crate) trait WriteColorCodes: ColorKind {
-    fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result;
-}
-
 impl<C: Into<Color>> ColorKind for C {}
 
 impl<CK: ColorKind> ToStyleSet for CK {
@@ -61,13 +55,12 @@ impl<CK: ColorKind> StyleElement for CK {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     /// Includes tests for the [`ColorKind`](crate::color::ColorKind) trait methods.
-    #[macro_export]
     macro_rules! test_color_kind_methods {
         ($mod:ident; $color:expr, $as_color:expr) => {
             mod $mod {
-                $crate::test_color_kind_methods!($color, $as_color);
+                $crate::colors::color_kind::tests::test_color_kind_methods!($color, $as_color);
             }
         };
         ($color:expr, $as_color:expr) => {
@@ -117,12 +110,18 @@ mod tests {
             }
         };
     }
+    pub(crate) use test_color_kind_methods;
 
     /// Includes tests for the [`ToStyleSet`] trait assuming the color target is foreground.
-    #[macro_export]
     macro_rules! test_to_style_set_methods_with_foreground_assumed {
+        ($mod:ident; $color:expr) => {
+            mod $mod {
+                $crate::test_to_style_set_methods!($color, Style::new().fg($color));
+            }
+        };
         ($color:expr) => {
             $crate::test_to_style_set_methods!($color, Style::new().fg($color));
         };
     }
+    pub(crate) use test_to_style_set_methods_with_foreground_assumed;
 }
