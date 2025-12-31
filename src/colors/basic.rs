@@ -68,7 +68,7 @@ impl ToColor for BasicColor {
 #[cfg(test)]
 mod tests {
     use crate::{
-        Style, ToStyle as _, ToStyleSet as _,
+        Style, ToStyleSet as _,
         colors::{
             BasicColor,
             color_methods::tests::{

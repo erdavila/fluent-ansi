@@ -1,8 +1,9 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    ColorTarget, Effect, Reset, StyleSet, TargetedColor, ToStyle, ToStyleSet, UnderlineStyle,
+    ColorTarget, Effect, Reset, StyleSet, TargetedColor, ToStyleSet, UnderlineStyle,
     applied_to_method::applied_to_method,
+    color::{BasicColor, IndexedColor, RGBColor, SimpleColor},
     colors::{Color, WriteColorCodes as _},
     style::encoded_effects::EncodedEffects,
 };
@@ -33,6 +34,12 @@ impl Style {
     }
 
     applied_to_method!();
+
+    /// Converts the type into a [`Style`].
+    #[must_use]
+    pub fn to_style(self) -> Style {
+        self
+    }
 }
 
 impl ToStyleSet for Style {
@@ -95,12 +102,6 @@ impl StyleSet for Style {
     }
 }
 
-impl ToStyle for Style {
-    fn to_style(self) -> Style {
-        self
-    }
-}
-
 impl Display for Style {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         if *self == Style::new() {
@@ -151,11 +152,21 @@ impl From<TargetedColor> for Style {
     }
 }
 
-impl<C: Into<Color>> From<C> for Style {
-    fn from(color: C) -> Self {
-        color.to_style()
-    }
+macro_rules! impl_from_color {
+    ($type:ty) => {
+        impl From<$type> for Style {
+            fn from(value: $type) -> Self {
+                value.to_style()
+            }
+        }
+    };
 }
+
+impl_from_color!(BasicColor);
+impl_from_color!(SimpleColor);
+impl_from_color!(IndexedColor);
+impl_from_color!(RGBColor);
+impl_from_color!(Color);
 
 impl From<Reset> for Style {
     fn from(reset: Reset) -> Self {

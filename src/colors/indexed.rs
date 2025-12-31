@@ -61,7 +61,7 @@ impl ToColor for IndexedColor {
 #[cfg(test)]
 mod tests {
     use crate::{
-        Style, ToStyle as _, ToStyleSet as _,
+        Style, ToStyleSet as _,
         colors::color_methods::tests::{
             test_color_methods, test_to_style_set_methods_with_foreground_assumed,
         },

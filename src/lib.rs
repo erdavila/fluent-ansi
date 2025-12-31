@@ -264,8 +264,7 @@
 //! ```
 
 pub use crate::{
-    effect::*, reset::*, style::*, style_set::*, styled::*, targeted_color::*, to_style::*,
-    to_style_set::*,
+    effect::*, reset::*, style::*, style_set::*, styled::*, targeted_color::*, to_style_set::*,
 };
 
 mod applied_to_method;
@@ -276,7 +275,6 @@ mod style;
 mod style_set;
 mod styled;
 mod targeted_color;
-mod to_style;
 mod to_style_set;
 
 pub mod color {

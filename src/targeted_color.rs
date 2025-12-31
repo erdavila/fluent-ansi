@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    Style, StyleAttribute, StyleElement, StyleSet, ToStyleSet,
     applied_to_method::applied_to_method, color::Color,
 };
 
@@ -51,6 +51,12 @@ impl TargetedColor {
     }
 
     applied_to_method!();
+
+    /// Converts the type into a [`Style`].
+    #[must_use]
+    pub fn to_style(self) -> Style {
+        Style::new().color(self)
+    }
 }
 
 impl StyleElement for TargetedColor {
@@ -64,12 +70,6 @@ impl ToStyleSet for TargetedColor {
 
     fn to_style_set(self) -> Self::StyleSet {
         self.to_style()
-    }
-}
-
-impl ToStyle for TargetedColor {
-    fn to_style(self) -> Style {
-        Style::new().color(self)
     }
 }
 

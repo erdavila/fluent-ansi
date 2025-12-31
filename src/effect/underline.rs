@@ -3,7 +3,7 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    Effect, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    Effect, Style, StyleAttribute, StyleElement, StyleSet, ToStyleSet,
     applied_to_method::applied_to_method,
 };
 
@@ -29,6 +29,12 @@ pub enum UnderlineStyle {
 
 impl UnderlineStyle {
     applied_to_method!();
+
+    /// Converts the type into a [`Style`].
+    #[must_use]
+    pub fn to_style(self) -> Style {
+        Style::new().underline_style(self)
+    }
 
     #[must_use]
     pub(crate) fn all() -> AllUnderlineStyles {
@@ -58,12 +64,6 @@ impl ToStyleSet for UnderlineStyle {
 
     fn to_style_set(self) -> Self::StyleSet {
         self.to_style()
-    }
-}
-
-impl ToStyle for UnderlineStyle {
-    fn to_style(self) -> Style {
-        Style::new().underline_style(self)
     }
 }
 
