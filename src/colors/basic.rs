@@ -68,7 +68,7 @@ impl ToColor for BasicColor {
 #[cfg(test)]
 mod tests {
     use crate::{
-        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _,
+        Style, ToStyle as _, ToStyleSet as _,
         colors::{
             BasicColor,
             color_methods::tests::{
@@ -92,14 +92,6 @@ mod tests {
             BasicColor::Red.bright(),
             SimpleColor::new_bright(BasicColor::Red)
         );
-    }
-
-    #[test]
-    fn applied_to() {
-        let stld = BasicColor::Red.applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().fg(BasicColor::Red));
     }
 
     #[test]

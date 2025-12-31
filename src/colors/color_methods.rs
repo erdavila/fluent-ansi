@@ -1,6 +1,4 @@
-use crate::{
-    AppliedTo, Style, StyleElement, StyleSet, TargetedColor, ToStyle, ToStyleSet, color::Color,
-};
+use crate::{Style, StyleElement, StyleSet, TargetedColor, ToStyle, ToStyleSet, color::Color};
 
 macro_rules! color_methods {
     () => {
@@ -27,6 +25,8 @@ macro_rules! color_methods {
         pub fn for_target(self, target: $crate::ColorTarget) -> $crate::TargetedColor {
             $crate::TargetedColor::new(self, target)
         }
+
+        $crate::applied_to_method::applied_to_method!();
     };
 }
 pub(crate) use color_methods;
@@ -44,8 +44,6 @@ impl<C: Into<Color>> ToStyle for C {
         TargetedColor::from(self).to_style()
     }
 }
-
-impl<C: Into<Color>> AppliedTo for C {}
 
 impl<C: Into<Color>> StyleElement for C {
     fn add_to<S: StyleSet>(self, style_set: S) -> S {
@@ -100,6 +98,11 @@ pub(crate) mod tests {
                         TargetedColor::new($color, ColorTarget::Underline)
                     );
                 }
+
+                $crate::applied_to_method::tests::test_applied_to_method!(
+                    $color,
+                    Style::new().fg($color)
+                );
 
                 #[test]
                 fn to_color() {

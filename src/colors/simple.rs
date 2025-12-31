@@ -98,7 +98,7 @@ impl From<BasicColor> for SimpleColor {
 #[cfg(test)]
 mod tests {
     use crate::{
-        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _,
+        Style, ToStyle as _, ToStyleSet as _,
         colors::color_methods::tests::{
             test_color_methods, test_to_style_set_methods_with_foreground_assumed,
         },
@@ -163,17 +163,6 @@ mod tests {
 
         assert_eq!(simple_regular_color.bright(), simple_bright_color);
         assert_eq!(simple_bright_color.bright(), simple_bright_color);
-    }
-
-    #[test]
-    fn applied_to() {
-        let stld = SimpleColor::new(BasicColor::Red).applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(
-            stld.get_style(),
-            Style::new().fg(SimpleColor::new(BasicColor::Red))
-        );
     }
 
     #[test]

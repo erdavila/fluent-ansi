@@ -61,7 +61,7 @@ impl ToColor for IndexedColor {
 #[cfg(test)]
 mod tests {
     use crate::{
-        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _,
+        Style, ToStyle as _, ToStyleSet as _,
         colors::color_methods::tests::{
             test_color_methods, test_to_style_set_methods_with_foreground_assumed,
         },
@@ -82,14 +82,6 @@ mod tests {
         assert_eq!(color_2.get_index(), 7u8);
 
         assert_eq!(color_1, color_2);
-    }
-
-    #[test]
-    fn applied_to() {
-        let stld = IndexedColor(42).applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().fg(IndexedColor(42)));
     }
 
     #[test]

@@ -3,7 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    AppliedTo, Effect, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    Effect, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    applied_to_method::applied_to_method,
 };
 
 pub(crate) type AllUnderlineStyles = enum_iterator::All<UnderlineStyle>;
@@ -27,6 +28,8 @@ pub enum UnderlineStyle {
 }
 
 impl UnderlineStyle {
+    applied_to_method!();
+
     #[must_use]
     pub(crate) fn all() -> AllUnderlineStyles {
         enum_iterator::all()
@@ -43,8 +46,6 @@ impl UnderlineStyle {
         }
     }
 }
-
-impl AppliedTo for UnderlineStyle {}
 
 impl Display for UnderlineStyle {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
@@ -104,20 +105,17 @@ impl StyleAttribute for Underline {
 
 #[cfg(test)]
 mod tests {
-    use crate::{tests::assert_display, to_style_set::tests::test_to_style_set_methods};
+    use crate::{
+        applied_to_method::tests::test_applied_to_method, tests::assert_display,
+        to_style_set::tests::test_to_style_set_methods,
+    };
 
     use super::*;
 
     test_to_style_set_methods!(solid; UnderlineStyle::Solid, Style::new().underline());
     test_to_style_set_methods!(curly; UnderlineStyle::Curly, Style::new().curly_underline());
 
-    #[test]
-    fn applied_to() {
-        let stld = UnderlineStyle::Curly.applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().curly_underline());
-    }
+    test_applied_to_method!(UnderlineStyle::Curly, Style::new().curly_underline());
 
     #[test]
     fn to_effect() {

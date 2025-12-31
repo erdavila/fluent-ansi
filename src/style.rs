@@ -1,8 +1,8 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, ColorTarget, Effect, Reset, StyleSet, Styled, TargetedColor, ToStyle, ToStyleSet,
-    UnderlineStyle,
+    ColorTarget, Effect, Reset, StyleSet, TargetedColor, ToStyle, ToStyleSet, UnderlineStyle,
+    applied_to_method::applied_to_method,
     colors::{Color, WriteColorCodes as _},
     style::encoded_effects::EncodedEffects,
 };
@@ -31,6 +31,8 @@ impl Style {
             underline_color: None,
         }
     }
+
+    applied_to_method!();
 }
 
 impl ToStyleSet for Style {
@@ -96,12 +98,6 @@ impl StyleSet for Style {
 impl ToStyle for Style {
     fn to_style(self) -> Style {
         self
-    }
-}
-
-impl AppliedTo for Style {
-    fn applied_to<C: Display>(self, content: C) -> Styled<C> {
-        Styled::new(content).with_style(self)
     }
 }
 
@@ -196,6 +192,7 @@ fn write_escape_sequence(f: &mut impl Write, codes: impl Display) -> Result {
 #[cfg(test)]
 mod tests {
     use crate::{
+        applied_to_method::tests::test_applied_to_method,
         colors::{BasicColor, IndexedColor, RGBColor, SimpleColor},
         style_set::tests::test_style_set_methods,
         tests::assert_display,
@@ -206,6 +203,7 @@ mod tests {
 
     test_to_style_set_methods!(Style::new(), Style::new());
     test_style_set_methods!(Style::new());
+    test_applied_to_method!(Style::new().bold(), Style::new().bold());
 
     #[test]
     fn effects_display() {
@@ -243,14 +241,6 @@ mod tests {
             .underline()
             .bg(BasicColor::Green);
         assert_display!(stl, "\x1b[1;4;31;42m");
-    }
-
-    #[test]
-    fn applied_to() {
-        let stld = Style::new().bold().applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().bold());
     }
 
     #[test]

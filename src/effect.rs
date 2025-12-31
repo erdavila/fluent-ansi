@@ -3,7 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    AppliedTo, CodeWriter, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    CodeWriter, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    applied_to_method::applied_to_method,
 };
 pub use underline::*;
 
@@ -43,6 +44,8 @@ pub enum Effect {
 }
 
 impl Effect {
+    applied_to_method!();
+
     #[must_use]
     pub(crate) fn all() -> AllEffects {
         enum_iterator::all()
@@ -100,8 +103,6 @@ impl ToStyle for Effect {
     }
 }
 
-impl AppliedTo for Effect {}
-
 impl Display for Effect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         self.to_style().fmt(f)
@@ -117,7 +118,8 @@ impl From<UnderlineStyle> for Effect {
 #[cfg(test)]
 mod tests {
     use crate::{
-        ToStyleSet as _, tests::assert_display, to_style_set::tests::test_to_style_set_methods,
+        ToStyleSet as _, applied_to_method::tests::test_applied_to_method, tests::assert_display,
+        to_style_set::tests::test_to_style_set_methods,
     };
 
     use super::*;
@@ -125,13 +127,7 @@ mod tests {
     test_to_style_set_methods!(bold; Effect::Bold, Style::new().bold());
     test_to_style_set_methods!(italic; Effect::Italic, Style::new().italic());
 
-    #[test]
-    fn applied_to() {
-        let stld = Effect::Bold.applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().bold());
-    }
+    test_applied_to_method!(Effect::Bold, Style::new().bold());
 
     #[test]
     fn to_style() {

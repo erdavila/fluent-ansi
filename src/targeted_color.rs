@@ -1,7 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet, color::Color,
+    Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    applied_to_method::applied_to_method, color::Color,
 };
 
 /// A color in a specific color target.
@@ -48,6 +49,8 @@ impl TargetedColor {
     pub const fn get_target(self) -> ColorTarget {
         self.target
     }
+
+    applied_to_method!();
 }
 
 impl StyleElement for TargetedColor {
@@ -69,8 +72,6 @@ impl ToStyle for TargetedColor {
         Style::new().color(self)
     }
 }
-
-impl AppliedTo for TargetedColor {}
 
 impl Display for TargetedColor {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
@@ -111,6 +112,7 @@ impl StyleAttribute for ColorTarget {
 mod tests {
     use crate::{
         StyleSet as _,
+        applied_to_method::tests::test_applied_to_method,
         colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, ToColor as _},
         tests::assert_display,
         to_style_set::tests::test_to_style_set_methods,
@@ -141,13 +143,7 @@ mod tests {
     test_to_style_set_methods!(red_underline; TargetedColor::new_for_underline(BasicColor::Red), Style::new().underline_color(BasicColor::Red));
     test_to_style_set_methods!(green_underline; TargetedColor::new_for_underline(BasicColor::Green), Style::new().underline_color(BasicColor::Green));
 
-    #[test]
-    fn applied_to() {
-        let stld = BasicColor::Red.for_fg().applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().fg(BasicColor::Red));
-    }
+    test_applied_to_method!(BasicColor::Red.for_fg(), Style::new().fg(BasicColor::Red));
 
     #[test]
     fn to_style() {
