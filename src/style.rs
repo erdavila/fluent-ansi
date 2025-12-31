@@ -2,8 +2,8 @@ use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
     ColorTarget, Effect, Reset, StyleSet, TargetedColor, ToStyleSet, UnderlineStyle,
-    applied_to_method::applied_to_method,
     colors::{Color, WriteColorCodes as _},
+    impl_macros::applied_to::impl_applied_to,
     style::encoded_effects::EncodedEffects,
 };
 
@@ -32,7 +32,7 @@ impl Style {
         }
     }
 
-    applied_to_method!();
+    impl_applied_to!();
 
     /// Converts the type into a [`Style`].
     #[must_use]

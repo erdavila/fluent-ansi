@@ -1,5 +1,5 @@
 // Dependency: for the current type T, impl From<T> for Style.
-macro_rules! applied_to_method {
+macro_rules! impl_applied_to {
     () => {
         /// Applies the styling to the given content, returning a [`Styled<C>`](crate::Styled) instance.
         #[must_use]
@@ -9,4 +9,4 @@ macro_rules! applied_to_method {
         }
     };
 }
-pub(crate) use applied_to_method;
+pub(crate) use impl_applied_to;

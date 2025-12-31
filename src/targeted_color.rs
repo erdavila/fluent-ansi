@@ -1,8 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Style, StyleAttribute, StyleElement, StyleSet, ToStyleSet,
-    applied_to_method::applied_to_method, color::Color,
+    Style, StyleAttribute, StyleElement, StyleSet, ToStyleSet, color::Color,
+    impl_macros::applied_to::impl_applied_to,
 };
 
 /// A color in a specific color target.
@@ -50,7 +50,7 @@ impl TargetedColor {
         self.target
     }
 
-    applied_to_method!();
+    impl_applied_to!();
 
     /// Converts the type into a [`Style`].
     #[must_use]

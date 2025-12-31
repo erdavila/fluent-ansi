@@ -1,6 +1,6 @@
 use crate::{
-    color::impl_color,
     colors::{Color, SimpleColor, ToColor},
+    impl_macros::color_type::impl_color_type,
 };
 
 /// The 8 basic non-bright terminal colors.
@@ -56,7 +56,7 @@ impl BasicColor {
     }
 }
 
-impl_color!(BasicColor);
+impl_color_type!(BasicColor);
 
 impl ToColor for BasicColor {
     /// Convert this basic color into a [`Color`].

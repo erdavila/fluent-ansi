@@ -4,7 +4,7 @@ use enum_iterator::Sequence;
 
 use crate::{
     CodeWriter, Style, StyleAttribute, StyleElement, StyleSet, ToStyleSet,
-    applied_to_method::applied_to_method,
+    impl_macros::applied_to::impl_applied_to,
 };
 pub use underline::*;
 
@@ -44,7 +44,7 @@ pub enum Effect {
 }
 
 impl Effect {
-    applied_to_method!();
+    impl_applied_to!();
 
     /// Converts the effect into a [`Style`].
     #[must_use]

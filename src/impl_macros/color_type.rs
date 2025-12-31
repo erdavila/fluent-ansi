@@ -1,4 +1,4 @@
-macro_rules! impl_color {
+macro_rules! impl_color_type {
     ($name:ty) => {
         impl $name {
             /// Associate this color with the foreground plane.
@@ -25,7 +25,7 @@ macro_rules! impl_color {
                 $crate::TargetedColor::new(self, target)
             }
 
-            $crate::applied_to_method::applied_to_method!();
+            $crate::impl_macros::applied_to::impl_applied_to!();
 
             /// Converts the type into a [`Style`](crate::Style).
             #[must_use]
@@ -55,4 +55,4 @@ macro_rules! impl_color {
         }
     };
 }
-pub(crate) use impl_color;
+pub(crate) use impl_color_type;

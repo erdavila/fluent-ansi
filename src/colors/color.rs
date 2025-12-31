@@ -2,8 +2,8 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::impl_color,
     colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, ToColor, WriteColorCodes},
+    impl_macros::color_type::impl_color_type,
 };
 
 /// An enum representing all supported color types.
@@ -62,7 +62,7 @@ impl Color {
     }
 }
 
-impl_color!(Color);
+impl_color_type!(Color);
 
 impl WriteColorCodes for Color {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
