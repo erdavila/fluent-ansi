@@ -1,5 +1,14 @@
+#![allow(unused)]
+
+mod color_methods;
+mod style_set;
+mod to_style_set;
+
+pub(crate) use color_methods::*;
+pub(crate) use style_set::*;
+pub(crate) use to_style_set::*;
+
 /// A macro to assert that a type implementing `Display` produces the expected output.
-#[macro_export]
 macro_rules! assert_display {
     ($display:expr, $expected:literal) => {{
         use core::fmt::Write as _;
@@ -10,3 +19,4 @@ macro_rules! assert_display {
         assert_eq!(s.as_str(), $expected);
     }};
 }
+pub(crate) use assert_display;

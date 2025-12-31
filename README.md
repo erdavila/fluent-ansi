@@ -44,13 +44,13 @@ There are several ways to reach the same result, depending on your preference:
 ```rust
 use fluent_ansi::{prelude::*, ColorTarget, Style, TargetedColor};
 
-let stl: Style = Style::new().set(Effect::Bold, true).set(ColorTarget::Foreground, Some(Color::RED.to_color()));
-let stl: Style = Style::new().set_effect(Effect::Bold, true).set_color(ColorTarget::Foreground, Some(Color::RED));
-let stl: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RED, ColorTarget::Foreground));
-let stl: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
-let stl: Style = Style::new().bold().fg(Color::RED);
-let stl: Style = Effect::Bold.fg(Color::RED);
-let stl: Style = Color::RED.bold();
+let style: Style = Style::new().set(Effect::Bold, true).set(ColorTarget::Foreground, Some(Color::RED.to_color()));
+let style: Style = Style::new().set_effect(Effect::Bold, true).set_color(ColorTarget::Foreground, Some(Color::RED));
+let style: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RED, ColorTarget::Foreground));
+let style: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
+let style: Style = Style::new().bold().fg(Color::RED);
+let style: Style = Effect::Bold.fg(Color::RED);
+let style: Style = Color::RED.bold();
 ```
 
 ### Styling Elements
