@@ -268,7 +268,6 @@ pub use crate::{
     to_style_set::*,
 };
 
-mod applied_to;
 mod colors;
 mod effect;
 mod reset;
@@ -278,6 +277,8 @@ mod styled;
 mod targeted_color;
 mod to_style;
 mod to_style_set;
+
+mod impl_macros;
 
 pub mod color {
     //! Color types and trait.

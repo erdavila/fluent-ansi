@@ -25,7 +25,7 @@ macro_rules! impl_color_type {
                 $crate::TargetedColor::new(self, target)
             }
 
-            $crate::applied_to::applied_to_method!();
+            $crate::impl_macros::applied_to::impl_applied_to!();
         }
 
         impl $crate::ToStyleSet for $name {

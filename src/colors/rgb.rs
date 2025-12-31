@@ -2,7 +2,8 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{Color, ToColor, WriteColorCodes, impl_color_type},
+    color::{Color, ToColor, WriteColorCodes},
+    impl_macros::color_type::impl_color_type,
 };
 
 /// A type alias for [`RGBColor`].

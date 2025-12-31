@@ -2,7 +2,8 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{ToColor, WriteColorCodes, impl_color_type},
+    color::{ToColor, WriteColorCodes},
+    impl_macros::color_type::impl_color_type,
 };
 
 use super::Color;

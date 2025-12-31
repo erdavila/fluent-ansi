@@ -2,8 +2,8 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::impl_color_type,
     colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, ToColor, WriteColorCodes},
+    impl_macros::color_type::impl_color_type,
 };
 
 /// An enum representing all supported color types.

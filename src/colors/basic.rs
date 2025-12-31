@@ -1,6 +1,6 @@
 use crate::{
-    color::impl_color_type,
     colors::{Color, SimpleColor, ToColor},
+    impl_macros::color_type::impl_color_type,
 };
 
 /// The 8 basic non-bright terminal colors.

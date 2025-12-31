@@ -3,14 +3,12 @@ use core::fmt::Result;
 use crate::{CodeWriter, ColorTarget};
 pub use basic::*;
 pub use color::*;
-pub(crate) use impl_color_type::*;
 pub use indexed::*;
 pub use rgb::*;
 pub use simple::*;
 
 mod basic;
 mod color;
-mod impl_color_type;
 mod indexed;
 mod rgb;
 mod simple;
