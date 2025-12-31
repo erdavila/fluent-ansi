@@ -3,7 +3,6 @@ use core::fmt::{Display, Formatter, Result, Write};
 use crate::{
     ColorTarget, Effect, Reset, StyleSet, TargetedColor, ToStyleSet, UnderlineStyle,
     applied_to_method::applied_to_method,
-    color::{BasicColor, IndexedColor, RGBColor, SimpleColor},
     colors::{Color, WriteColorCodes as _},
     style::encoded_effects::EncodedEffects,
 };
@@ -152,22 +151,6 @@ impl From<TargetedColor> for Style {
     }
 }
 
-macro_rules! impl_from_color {
-    ($type:ty) => {
-        impl From<$type> for Style {
-            fn from(value: $type) -> Self {
-                value.to_style()
-            }
-        }
-    };
-}
-
-impl_from_color!(BasicColor);
-impl_from_color!(SimpleColor);
-impl_from_color!(IndexedColor);
-impl_from_color!(RGBColor);
-impl_from_color!(Color);
-
 impl From<Reset> for Style {
     fn from(reset: Reset) -> Self {
         reset.to_style()
@@ -203,10 +186,8 @@ fn write_escape_sequence(f: &mut impl Write, codes: impl Display) -> Result {
 #[cfg(test)]
 mod tests {
     use crate::{
-        applied_to_method::tests::test_applied_to_method,
-        colors::{BasicColor, IndexedColor, RGBColor, SimpleColor},
-        style_set::tests::test_style_set_methods,
-        tests::assert_display,
+        applied_to_method::tests::test_applied_to_method, colors::BasicColor,
+        style_set::tests::test_style_set_methods, tests::assert_display,
         to_style_set::tests::test_to_style_set_methods,
     };
 
@@ -275,26 +256,6 @@ mod tests {
         assert_eq!(
             Style::from(BasicColor::Red.for_fg()),
             Style::new().color(BasicColor::Red.for_fg())
-        );
-    }
-
-    #[test]
-    fn from_color() {
-        assert_eq!(
-            Style::from(BasicColor::Red),
-            Style::new().color(BasicColor::Red.for_fg())
-        );
-        assert_eq!(
-            Style::from(SimpleColor::new(BasicColor::Red)),
-            Style::new().color(SimpleColor::new(BasicColor::Red).for_fg())
-        );
-        assert_eq!(
-            Style::from(IndexedColor(42)),
-            Style::new().color(IndexedColor(42).for_fg())
-        );
-        assert_eq!(
-            Style::from(RGBColor::new(0, 128, 255)),
-            Style::new().color(RGBColor::new(0, 128, 255).for_fg())
         );
     }
 

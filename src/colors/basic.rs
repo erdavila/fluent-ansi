@@ -1,5 +1,5 @@
 use crate::{
-    color::color_methods,
+    color::impl_color,
     colors::{Color, SimpleColor, ToColor},
 };
 
@@ -49,14 +49,14 @@ impl BasicColor {
         self as u8
     }
 
-    color_methods!();
-
     /// Convert this basic color into a [`SimpleColor`].
     #[must_use]
     pub fn to_simple_color(self) -> SimpleColor {
         SimpleColor::new(self)
     }
 }
+
+impl_color!(BasicColor);
 
 impl ToColor for BasicColor {
     /// Convert this basic color into a [`Color`].
@@ -71,17 +71,16 @@ mod tests {
         Style, ToStyleSet as _,
         colors::{
             BasicColor,
-            color_methods::tests::{
-                test_color_methods, test_to_style_set_methods_with_foreground_assumed,
-            },
+            impl_color::tests::{test_color, test_to_style_set_methods_with_foreground_assumed},
         },
     };
 
     use super::*;
 
-    test_color_methods!(
+    test_color!(
         BasicColor::Red,
-        Color::Simple(SimpleColor::new(BasicColor::Red))
+        Color::Simple(SimpleColor::new(BasicColor::Red)),
+        Style::new().fg(BasicColor::Red)
     );
 
     test_to_style_set_methods_with_foreground_assumed!(BasicColor::Red);

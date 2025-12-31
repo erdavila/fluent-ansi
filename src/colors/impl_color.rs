@@ -1,65 +1,71 @@
-use crate::{Style, StyleElement, StyleSet, TargetedColor, ToStyleSet, color::Color};
+macro_rules! impl_color {
+    ($name:ty) => {
+        impl $name {
+            /// Associate this color with the foreground plane.
+            #[must_use]
+            pub fn for_fg(self) -> $crate::TargetedColor {
+                self.for_target($crate::ColorTarget::Foreground)
+            }
 
-macro_rules! color_methods {
-    () => {
-        /// Associate this color with the foreground plane.
-        #[must_use]
-        pub fn for_fg(self) -> $crate::TargetedColor {
-            self.for_target($crate::ColorTarget::Foreground)
+            /// Associate this color with the background plane.
+            #[must_use]
+            pub fn for_bg(self) -> $crate::TargetedColor {
+                self.for_target($crate::ColorTarget::Background)
+            }
+
+            /// Associate this color with the underline effect.
+            #[must_use]
+            pub fn for_underline(self) -> $crate::TargetedColor {
+                self.for_target($crate::ColorTarget::Underline)
+            }
+
+            /// Associate this color with the specified color target.
+            #[must_use]
+            pub fn for_target(self, target: $crate::ColorTarget) -> $crate::TargetedColor {
+                $crate::TargetedColor::new(self, target)
+            }
+
+            $crate::applied_to_method::applied_to_method!();
+
+            /// Converts the type into a [`Style`](crate::Style).
+            #[must_use]
+            pub fn to_style(self) -> $crate::Style {
+                $crate::TargetedColor::from(self).to_style()
+            }
         }
 
-        /// Associate this color with the background plane.
-        #[must_use]
-        pub fn for_bg(self) -> $crate::TargetedColor {
-            self.for_target($crate::ColorTarget::Background)
+        impl $crate::ToStyleSet for $name {
+            type StyleSet = $crate::Style;
+
+            fn to_style_set(self) -> Self::StyleSet {
+                $crate::TargetedColor::from(self).to_style_set()
+            }
         }
 
-        /// Associate this color with the underline effect.
-        #[must_use]
-        pub fn for_underline(self) -> $crate::TargetedColor {
-            self.for_target($crate::ColorTarget::Underline)
+        impl $crate::StyleElement for $name {
+            fn add_to<S: $crate::StyleSet>(self, style_set: S) -> S {
+                $crate::TargetedColor::from(self).add_to(style_set)
+            }
         }
 
-        /// Associate this color with the specified color target.
-        #[must_use]
-        pub fn for_target(self, target: $crate::ColorTarget) -> $crate::TargetedColor {
-            $crate::TargetedColor::new(self, target)
-        }
-
-        $crate::applied_to_method::applied_to_method!();
-
-        /// Converts the type into a [`Style`](crate::Style).
-        #[must_use]
-        pub fn to_style(self) -> $crate::Style {
-            $crate::TargetedColor::from(self).to_style()
+        impl From<$name> for $crate::Style {
+            fn from(value: $name) -> Self {
+                value.to_style()
+            }
         }
     };
 }
-pub(crate) use color_methods;
-
-impl<C: Into<Color>> ToStyleSet for C {
-    type StyleSet = Style;
-
-    fn to_style_set(self) -> Self::StyleSet {
-        TargetedColor::from(self).to_style_set()
-    }
-}
-
-impl<C: Into<Color>> StyleElement for C {
-    fn add_to<S: StyleSet>(self, style_set: S) -> S {
-        TargetedColor::from(self).add_to(style_set)
-    }
-}
+pub(crate) use impl_color;
 
 #[cfg(test)]
 pub(crate) mod tests {
-    macro_rules! test_color_methods {
-        ($mod:ident; $color:expr, $as_color:expr) => {
+    macro_rules! test_color {
+        ($mod:ident; $color:expr, $as_color:expr, $as_style:expr) => {
             mod $mod {
-                $crate::colors::color_methods::tests::test_color_methods!($color, $as_color);
+                $crate::colors::impl_color::tests::test_color!($color, $as_color, $as_style);
             }
         };
-        ($color:expr, $as_color:expr) => {
+        ($color:expr, $as_color:expr, $as_style:expr) => {
             mod color_methods {
                 use crate::{color::*, *};
 
@@ -107,11 +113,18 @@ pub(crate) mod tests {
                 #[test]
                 fn to_color() {
                     assert_eq!($color.to_color(), $as_color);
+                    assert_eq!(Color::from($color), $as_color);
+                }
+
+                #[test]
+                fn to_style() {
+                    assert_eq!($color.to_style(), $as_style);
+                    assert_eq!(Style::from($color), $as_style);
                 }
             }
         };
     }
-    pub(crate) use test_color_methods;
+    pub(crate) use test_color;
 
     /// Includes tests for the [`ToStyleSet`] trait assuming the color target is foreground.
     macro_rules! test_to_style_set_methods_with_foreground_assumed {

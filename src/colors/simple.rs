@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{BasicColor, Color, IndexedColor, ToColor, WriteColorCodes, color_methods},
+    color::{BasicColor, Color, IndexedColor, ToColor, WriteColorCodes, impl_color},
 };
 
 /// A simple color type representing the 16 basic terminal colors (8 basic colors + bright variants).
@@ -60,9 +60,9 @@ impl SimpleColor {
     pub const fn is_bright(self) -> bool {
         self.bright
     }
-
-    color_methods!();
 }
+
+impl_color!(SimpleColor);
 
 impl WriteColorCodes for SimpleColor {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
@@ -99,29 +99,31 @@ impl From<BasicColor> for SimpleColor {
 mod tests {
     use crate::{
         Style, ToStyleSet as _,
-        colors::color_methods::tests::{
-            test_color_methods, test_to_style_set_methods_with_foreground_assumed,
+        colors::impl_color::tests::{
+            test_color, test_to_style_set_methods_with_foreground_assumed,
         },
     };
 
     use super::*;
 
-    test_color_methods!(
+    test_color!(
         non_bright;
         SimpleColor::new(Color::RED),
         Color::Simple(SimpleColor {
             basic_color: BasicColor::Red,
             bright: false
-        })
+        }),
+        Style::new().fg(SimpleColor::new(BasicColor::Red))
     );
 
-    test_color_methods!(
+    test_color!(
         bright;
         SimpleColor::new_bright(Color::RED),
         Color::Simple(SimpleColor {
             basic_color: BasicColor::Red,
             bright: true
-        })
+        }),
+        Style::new().fg(SimpleColor::new_bright(BasicColor::Red))
     );
 
     test_to_style_set_methods_with_foreground_assumed!(SimpleColor::new(BasicColor::Red));

@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::color_methods,
+    color::impl_color,
     colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, ToColor, WriteColorCodes},
 };
 
@@ -47,8 +47,6 @@ impl Color {
         RGBColor::new(r, g, b)
     }
 
-    color_methods!();
-
     /// Helper method to return a [`None`] value.
     ///
     /// Use it to clear the color for some target with the [`StyleSet::set_color()`](crate::StyleSet::set_color) method.
@@ -63,6 +61,8 @@ impl Color {
         self
     }
 }
+
+impl_color!(Color);
 
 impl WriteColorCodes for Color {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
@@ -82,26 +82,29 @@ impl<C: ToColor> From<C> for Color {
 
 #[cfg(test)]
 mod tests {
-    use crate::colors::color_methods::tests::{
-        test_color_methods, test_to_style_set_methods_with_foreground_assumed,
+    use crate::colors::impl_color::tests::{
+        test_color, test_to_style_set_methods_with_foreground_assumed,
     };
 
     use super::*;
 
-    test_color_methods!(
+    test_color!(
         simple;
         Color::Simple(SimpleColor::new(BasicColor::Red)),
-        Color::Simple(SimpleColor::new(BasicColor::Red))
+        Color::Simple(SimpleColor::new(BasicColor::Red)),
+        Style::new().fg(BasicColor::Red)
     );
-    test_color_methods!(
+    test_color!(
         indexed;
         Color::Indexed(IndexedColor(42)),
-        Color::Indexed(IndexedColor(42))
+        Color::Indexed(IndexedColor(42)),
+        Style::new().fg(IndexedColor(42))
     );
-    test_color_methods!(
+    test_color!(
         rgb;
         Color::RGB(RGBColor::new(0, 128, 255)),
-        Color::RGB(RGBColor::new(0, 128, 255))
+        Color::RGB(RGBColor::new(0, 128, 255)),
+        Style::new().fg(RGBColor::new(0, 128, 255))
     );
 
     test_to_style_set_methods_with_foreground_assumed!(simple_fg; Color::Simple(SimpleColor::new(BasicColor::Red)));

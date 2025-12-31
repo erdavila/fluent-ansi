@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{Color, ToColor, WriteColorCodes, color_methods},
+    color::{Color, ToColor, WriteColorCodes, impl_color},
 };
 
 /// A type alias for [`RGBColor`].
@@ -35,9 +35,9 @@ impl RGBColor {
     pub const fn new(r: u8, g: u8, b: u8) -> Self {
         Self { r, g, b }
     }
-
-    color_methods!();
 }
+
+impl_color!(RGBColor);
 
 impl WriteColorCodes for RGBColor {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
@@ -66,16 +66,17 @@ impl ToColor for RGBColor {
 mod tests {
     use crate::{
         Style, ToStyleSet as _,
-        colors::color_methods::tests::{
-            test_color_methods, test_to_style_set_methods_with_foreground_assumed,
+        colors::impl_color::tests::{
+            test_color, test_to_style_set_methods_with_foreground_assumed,
         },
     };
 
     use super::*;
 
-    test_color_methods!(
+    test_color!(
         RGBColor::new(0, 128, 255),
-        Color::RGB(RGBColor::new(0, 128, 255))
+        Color::RGB(RGBColor::new(0, 128, 255)),
+        Style::new().fg(RGBColor::new(0, 128, 255))
     );
 
     test_to_style_set_methods_with_foreground_assumed!(RGBColor::new(0, 128, 255));
