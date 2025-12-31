@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{ToColor, WriteColorCodes},
+    colors::{ToColor, WriteColorCodes},
 };
 
 use super::Color;
@@ -60,7 +60,7 @@ impl ToColor for IndexedColor {
 mod tests {
     use crate::{
         AppliedTo as _, Style, ToStyle as _, ToStyleSet as _,
-        color::color_kind::tests::{
+        colors::color_kind::tests::{
             test_color_kind_methods, test_to_style_set_methods_with_foreground_assumed,
         },
     };

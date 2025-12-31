@@ -1,4 +1,4 @@
-use crate::{ColorTarget, Effect, GetEffects, ToStyleSet, UnderlineStyle, color::Color};
+use crate::{ColorTarget, Effect, GetEffects, ToStyleSet, UnderlineStyle, colors::Color};
 
 /// A trait to represent an attribute that can be set or retrieved from a [`Style`](crate::Style).
 pub trait StyleAttribute {

@@ -112,7 +112,7 @@ impl<C: Display> Display for Styled<C> {
 #[cfg(test)]
 mod tests {
     use crate::{
-        color::BasicColor, style_set::tests::test_style_set_methods, tests::assert_display,
+        colors::BasicColor, style_set::tests::test_style_set_methods, tests::assert_display,
         to_style_set::tests::test_to_style_set_methods,
     };
 
