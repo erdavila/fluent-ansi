@@ -1,48 +1,24 @@
-use fluent_ansi::{color::*, prelude::*, *};
+use fluent_ansi::{color::*, *};
 
 use crate::common::*;
 
 mod common;
 
-test_to_style_set![
-    red_fg { TargetedColor::new_for_fg(BasicColor::Red), Style::new().fg(BasicColor::Red) },
-    green_fg { TargetedColor::new_for_fg(BasicColor::Green), Style::new().fg(BasicColor::Green) },
-    red_bg { TargetedColor::new_for_fg(BasicColor::Red), Style::new().fg(BasicColor::Red) },
-    green_bg { TargetedColor::new_for_fg(BasicColor::Green), Style::new().fg(BasicColor::Green) },
-    red_underline { TargetedColor::new_for_underline(BasicColor::Red), Style::new().underline_color(BasicColor::Red) },
-    green_underline { TargetedColor::new_for_underline(BasicColor::Green), Style::new().underline_color(BasicColor::Green) },
+test_fluent_type![
+    red_fg { TargetedColor::new_for_fg(Color::RED), Style::new().fg(Color::RED) },
+    green_fg { TargetedColor::new_for_fg(Color::GREEN), Style::new().fg(Color::GREEN) },
+    red_bg { TargetedColor::new_for_fg(Color::RED), Style::new().fg(Color::RED) },
+    green_bg { TargetedColor::new_for_fg(Color::GREEN), Style::new().fg(Color::GREEN) },
+    red_underline { TargetedColor::new_for_underline(Color::RED), Style::new().underline_color(Color::RED) },
+    green_underline { TargetedColor::new_for_underline(Color::GREEN), Style::new().underline_color(Color::GREEN) },
 ];
-
-test_applied_to!(BasicColor::Red.for_fg(), Style::new().fg(BasicColor::Red));
 
 #[test]
 fn targeted_color() {
-    let cp = TargetedColor::new(BasicColor::Red, ColorTarget::Foreground);
+    let targeted_color = TargetedColor::new(BasicColor::Red, ColorTarget::Foreground);
 
-    assert_eq!(cp.get_color(), BasicColor::Red.to_color());
-    assert_eq!(cp.get_target(), ColorTarget::Foreground);
-    assert_eq!(
-        cp.to_style_set(),
-        Style::new().set_color(ColorTarget::Foreground, Some(BasicColor::Red))
-    );
-    assert_eq!(
-        cp.to_style(),
-        Style::new().set_color(ColorTarget::Foreground, Some(BasicColor::Red))
-    );
-}
-
-#[test]
-fn to_style() {
-    assert_from_to!(
-        to_style, Style;
-        BasicColor::Red.for_fg(),
-        Style::new().fg(BasicColor::Red)
-    );
-    assert_from_to!(
-        to_style, Style;
-        BasicColor::Green.for_bg(),
-        Style::new().bg(BasicColor::Green)
-    );
+    assert_eq!(targeted_color.get_color(), BasicColor::Red.to_color());
+    assert_eq!(targeted_color.get_target(), ColorTarget::Foreground);
 }
 
 #[test]

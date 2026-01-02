@@ -4,9 +4,11 @@ use common::*;
 
 mod common;
 
-test_to_style_set!(Style::new(), Style::new());
+test_fluent_type![
+    clear { Style::new(), Style::new() },
+    bold { Style::new().bold(), Style::new().bold() },
+];
 test_style_set!(Style::new());
-test_applied_to!(Style::new().bold(), Style::new().bold());
 
 #[test]
 fn effects_display() {
@@ -49,18 +51,4 @@ fn combined_display() {
 #[test]
 fn default() {
     assert_display!(Style::default(), "\x1b[0m");
-}
-
-#[test]
-fn to_style() {
-    let style = Style::new().bold().fg(BasicColor::Red);
-    assert_eq!(style.to_style(), style);
-}
-
-#[test]
-fn from_targeted_color() {
-    assert_eq!(
-        Style::from(BasicColor::Red.for_fg()),
-        Style::new().color(BasicColor::Red.for_fg())
-    );
 }

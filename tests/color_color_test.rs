@@ -22,12 +22,6 @@ test_color_type![
     },
 ];
 
-test_to_style_set_with_fg_assumed![
-    simple { Color::Simple(SimpleColor::new(BasicColor::Red)) },
-    indexed { Color::Indexed(IndexedColor(42)) },
-    rgb { Color::RGB(RGBColor::new(0, 128, 255)) },
-];
-
 #[test]
 fn basic() {
     macro_rules! assert_basic_color_shortcut {
@@ -60,36 +54,4 @@ fn rgb() {
     // The returned type must be RGBColor instead of Color
     let color: RGBColor = Color::rgb(0, 128, 255);
     assert_eq!(color, RGBColor::new(0, 128, 255));
-}
-
-#[test]
-fn from_basic_color() {
-    assert_eq!(
-        Color::from(BasicColor::Red),
-        Color::Simple(SimpleColor::new(BasicColor::Red))
-    );
-}
-
-#[test]
-fn from_simple_color() {
-    assert_eq!(
-        Color::from(SimpleColor::new(BasicColor::Red)),
-        Color::Simple(SimpleColor::new(BasicColor::Red))
-    );
-}
-
-#[test]
-fn from_indexed_color() {
-    assert_eq!(
-        Color::from(IndexedColor(7)),
-        Color::Indexed(IndexedColor(7))
-    );
-}
-
-#[test]
-fn from_rgb() {
-    assert_eq!(
-        Color::from(RGBColor::new(0, 128, 255)),
-        Color::RGB(RGBColor::new(0, 128, 255))
-    );
 }

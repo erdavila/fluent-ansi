@@ -3,8 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    CodeWriter, Style, StyleAttribute, StyleElement, StyleSet, ToStyleSet,
-    impl_macros::{applied_to::impl_applied_to, from_to::impl_from_to},
+    CodeWriter, Style, StyleAttribute, StyleElement, StyleSet,
+    impl_macros::fluent::impl_fluent_type,
 };
 pub use underline::*;
 
@@ -43,9 +43,12 @@ pub enum Effect {
     Overline,
 }
 
-impl Effect {
-    impl_applied_to!();
+impl_fluent_type!(Effect {
+    args: [self];
+    to_style: { Style::new().effect(self) }
+});
 
+impl Effect {
     #[must_use]
     pub(crate) fn all() -> AllEffects {
         enum_iterator::all()
@@ -71,13 +74,6 @@ impl Effect {
     }
 }
 
-impl_from_to!(
-    #[doc = r"Converts the effect into a [`Style`]."]
-    fn to_style(self: Effect) -> Style {
-        Style::new().effect(self)
-    }
-);
-
 impl StyleElement for Effect {
     fn add_to<S: StyleSet>(self, style_set: S) -> S {
         style_set.set_effect(self, true)
@@ -93,14 +89,6 @@ impl StyleAttribute for Effect {
 
     fn get_from<S: StyleSet>(self, style_set: &S) -> Self::Value {
         style_set.get_effect(self)
-    }
-}
-
-impl ToStyleSet for Effect {
-    type StyleSet = Style;
-
-    fn to_style_set(self) -> Self::StyleSet {
-        self.to_style()
     }
 }
 

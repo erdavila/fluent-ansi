@@ -1,15 +1,13 @@
-use fluent_ansi::{prelude::*, *};
+use fluent_ansi::prelude::*;
 
 use common::*;
 
 mod common;
 
-test_to_style_set![
+test_fluent_type![
     solid { UnderlineStyle::Solid, Style::new().underline() },
     curly { UnderlineStyle::Curly, Style::new().curly_underline() },
 ];
-
-test_applied_to!(UnderlineStyle::Curly, Style::new().curly_underline());
 
 #[test]
 fn to_effect() {
@@ -37,35 +35,6 @@ fn to_effect() {
         to_effect, Effect;
         UnderlineStyle::Double,
         Effect::DoubleUnderline
-    );
-}
-
-#[test]
-fn to_style() {
-    assert_from_to!(
-        to_style, Style;
-        UnderlineStyle::Solid,
-        Style::new().underline()
-    );
-    assert_from_to!(
-        to_style, Style;
-        UnderlineStyle::Curly,
-        Style::new().curly_underline()
-    );
-    assert_from_to!(
-        to_style, Style;
-        UnderlineStyle::Dotted,
-        Style::new().dotted_underline()
-    );
-    assert_from_to!(
-        to_style, Style;
-        UnderlineStyle::Dashed,
-        Style::new().dashed_underline()
-    );
-    assert_from_to!(
-        to_style, Style;
-        UnderlineStyle::Double,
-        Style::new().double_underline()
     );
 }
 

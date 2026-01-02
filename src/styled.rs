@@ -1,6 +1,9 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Effect, GetEffects, Style, StyleSet, ToStyleSet, UnderlineStyle, prelude::Color};
+use crate::{
+    Effect, GetEffects, Style, StyleSet, UnderlineStyle, impl_macros::fluent::impl_fluent_methods,
+    prelude::Color,
+};
 
 /// A value that associates some content with a specific style.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
@@ -52,18 +55,16 @@ impl<C: Display> Styled<C> {
         Self { style, ..self }
     }
 
+    impl_fluent_methods! {
+        type StyleSet = Styled<C>;
+        args: [self];
+        to_style_set: { self }
+    }
+
     #[must_use]
     fn modify_style(self, f: impl FnOnce(Style) -> Style) -> Self {
         let style = f(self.style);
         Self { style, ..self }
-    }
-}
-
-impl<C: Display> ToStyleSet for Styled<C> {
-    type StyleSet = Self;
-
-    fn to_style_set(self) -> Self::StyleSet {
-        self
     }
 }
 

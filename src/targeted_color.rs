@@ -1,9 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Style, StyleAttribute, StyleElement, StyleSet, ToStyleSet,
-    color::Color,
-    impl_macros::{applied_to::impl_applied_to, from_to::impl_from_to},
+    Style, StyleAttribute, StyleElement, StyleSet, color::Color,
+    impl_macros::fluent::impl_fluent_type,
 };
 
 /// A color in a specific color target.
@@ -50,28 +49,16 @@ impl TargetedColor {
     pub const fn get_target(self) -> ColorTarget {
         self.target
     }
-
-    impl_applied_to!();
 }
 
-impl_from_to!(
-    #[doc = r"Converts the type into a [`Style`]."]
-    fn to_style(self: TargetedColor) -> Style {
-        Style::new().color(self)
-    }
-);
+impl_fluent_type!(TargetedColor {
+    args: [self];
+    to_style: { Style::new().color(self) }
+});
 
 impl StyleElement for TargetedColor {
     fn add_to<S: StyleSet>(self, style_set: S) -> S {
         style_set.set_color(self.get_target(), Some(self.get_color()))
-    }
-}
-
-impl ToStyleSet for TargetedColor {
-    type StyleSet = Style;
-
-    fn to_style_set(self) -> Self::StyleSet {
-        self.to_style()
     }
 }
 

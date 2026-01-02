@@ -4,7 +4,7 @@ use common::*;
 
 mod common;
 
-test_to_style_set!(Styled::new("CONTENT"), Styled::new("CONTENT"));
+test_fluent_methods!(Styled::new("CONTENT"), Styled::new("CONTENT"));
 
 test_style_set!(Styled::new("CONTENT"));
 

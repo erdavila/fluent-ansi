@@ -3,8 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    Effect, Style, StyleAttribute, StyleElement, StyleSet, ToStyleSet,
-    impl_macros::{applied_to::impl_applied_to, from_to::impl_from_to},
+    Effect, StyleAttribute, StyleElement, StyleSet,
+    impl_macros::{fluent::impl_fluent_type, from_to::impl_from_to},
 };
 
 pub(crate) type AllUnderlineStyles = enum_iterator::All<UnderlineStyle>;
@@ -28,13 +28,16 @@ pub enum UnderlineStyle {
 }
 
 impl UnderlineStyle {
-    impl_applied_to!();
-
     #[must_use]
     pub(crate) fn all() -> AllUnderlineStyles {
         enum_iterator::all()
     }
 }
+
+impl_fluent_type!(UnderlineStyle {
+    args: [self];
+    to_style: { self.to_effect().to_style() }
+});
 
 impl_from_to!(
     #[doc = r"Converts the type into an [`Effect`]."]
@@ -49,24 +52,9 @@ impl_from_to!(
     }
 );
 
-impl_from_to!(
-    #[doc = r"Converts the type into a [`Style`]."]
-    fn to_style(self: UnderlineStyle) -> Style {
-        self.to_effect().to_style()
-    }
-);
-
 impl Display for UnderlineStyle {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         self.to_effect().fmt(f)
-    }
-}
-
-impl ToStyleSet for UnderlineStyle {
-    type StyleSet = Style;
-
-    fn to_style_set(self) -> Self::StyleSet {
-        self.to_style()
     }
 }
 

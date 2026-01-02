@@ -27,9 +27,12 @@ macro_rules! impl_color_type {
             pub fn for_target(self, target: $crate::ColorTarget) -> $crate::TargetedColor {
                 $crate::TargetedColor::new(self, target)
             }
-
-            $crate::impl_macros::applied_to::impl_applied_to!();
         }
+
+        $crate::impl_macros::fluent::impl_fluent_type!($name {
+            args: [self];
+            to_style: { $crate::TargetedColor::from(self).to_style() }
+        });
 
         $crate::impl_macros::color_type::__impl_color_type__to_color!($name, $self, $to_color);
 
@@ -40,26 +43,11 @@ macro_rules! impl_color_type {
             }
         );
 
-        impl $crate::ToStyleSet for $name {
-            type StyleSet = $crate::Style;
-
-            fn to_style_set(self) -> Self::StyleSet {
-                $crate::TargetedColor::from(self).to_style_set()
-            }
-        }
-
         impl $crate::StyleElement for $name {
             fn add_to<S: $crate::StyleSet>(self, style_set: S) -> S {
                 $crate::TargetedColor::from(self).add_to(style_set)
             }
         }
-
-        $crate::impl_macros::from_to::impl_from_to!(
-            #[doc = r"Converts the type into a [`Style`](crate::Style)"]
-            fn to_style(self: $name) -> $crate::Style {
-                $crate::TargetedColor::from(self).to_style()
-            }
-        );
     };
 }
 pub(crate) use impl_color_type;
