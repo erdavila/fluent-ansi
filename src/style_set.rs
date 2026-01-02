@@ -1,4 +1,4 @@
-use crate::{ColorTarget, Effect, GetEffects, ToStyleSet, UnderlineStyle, colors::Color};
+use crate::{ColorTarget, Effect, GetEffects, UnderlineStyle, colors::Color};
 
 /// A trait to represent an attribute that can be set or retrieved from a [`Style`](crate::Style).
 pub trait StyleAttribute {
@@ -16,9 +16,9 @@ pub trait StyleAttribute {
 
 /// A trait to set and get styling options on a type.
 ///
-/// This trait extends [`ToStyleSet`] with methods to get the current state of styling options,
+/// This trait includes methods to set and get the current state of styling options,
 /// such as checking if an effect is set or getting the color of a target.
-pub trait StyleSet: ToStyleSet<StyleSet = Self> {
+pub trait StyleSet: Sized {
     /// Sets the given effect to the specified value.
     #[must_use]
     fn set_effect(self, effect: impl Into<Effect>, value: bool) -> Self;

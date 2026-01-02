@@ -1,9 +1,9 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    ColorTarget, Effect, Reset, StyleSet, ToStyleSet, UnderlineStyle,
+    ColorTarget, Effect, Reset, StyleSet, UnderlineStyle,
     colors::{Color, WriteColorCodes as _},
-    impl_macros::applied_to::impl_applied_to,
+    impl_macros::fluent::impl_fluent_type,
     style::encoded_effects::EncodedEffects,
 };
 
@@ -31,23 +31,12 @@ impl Style {
             underline_color: None,
         }
     }
-
-    impl_applied_to!();
-
-    /// Converts the type into a [`Style`].
-    #[must_use]
-    pub fn to_style(self) -> Style {
-        self
-    }
 }
 
-impl ToStyleSet for Style {
-    type StyleSet = Self;
-
-    fn to_style_set(self) -> Self::StyleSet {
-        self
-    }
-}
+impl_fluent_type!(Style {
+    args: [self];
+    to_style: SELF
+});
 
 impl StyleSet for Style {
     fn set_effect(self, effect: impl Into<Effect>, value: bool) -> Self {

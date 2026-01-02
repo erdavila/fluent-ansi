@@ -10,8 +10,6 @@ test_color_type!(
     Style::new().fg(RGBColor::new(0, 128, 255))
 );
 
-test_to_style_set_with_fg_assumed!(RGBColor::new(0, 128, 255));
-
 #[test]
 fn rgb() {
     let color_1 = RGBColor {

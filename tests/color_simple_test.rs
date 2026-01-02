@@ -17,8 +17,6 @@ test_color_type![
     },
 ];
 
-test_to_style_set_with_fg_assumed!(SimpleColor::new(BasicColor::Red));
-
 #[test]
 fn new() {
     let color = SimpleColor::new(BasicColor::Red);

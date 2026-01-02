@@ -1,4 +1,4 @@
-use fluent_ansi::{prelude::*, *};
+use fluent_ansi::*;
 
 use common::*;
 

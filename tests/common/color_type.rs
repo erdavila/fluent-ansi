@@ -55,10 +55,7 @@ macro_rules! test_color_type {
             );
         }
 
-        $crate::test_applied_to_method!(
-            $color,
-            Style::new().fg($color)
-        );
+        $crate::common::test_fluent_type!(NO_MOD: $color, Style::new().fg($color));
 
         #[test]
         fn to_targeted_color() {
@@ -75,15 +72,6 @@ macro_rules! test_color_type {
                 to_color, Color;
                 $color,
                 $as_color
-            );
-        }
-
-        #[test]
-        fn to_style() {
-            assert_from_to!(
-                to_style, Style;
-                $color,
-                $as_style
             );
         }
     };

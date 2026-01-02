@@ -10,8 +10,6 @@ test_color_type!(
     Style::new().fg(BasicColor::Red)
 );
 
-test_to_style_set_with_fg_assumed!(BasicColor::Red);
-
 #[test]
 fn bright() {
     assert_eq!(

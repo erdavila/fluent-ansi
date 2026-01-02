@@ -10,8 +10,6 @@ test_color_type!(
     Style::new().fg(IndexedColor(7))
 );
 
-test_to_style_set_with_fg_assumed!(IndexedColor(7));
-
 #[test]
 fn indexed() {
     let color_1 = IndexedColor(7);

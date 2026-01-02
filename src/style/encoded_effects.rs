@@ -85,6 +85,7 @@ impl EncodedEffects {
 }
 
 /// An iterator over the effects that are currently set.
+#[derive(Debug, Clone)]
 pub struct GetEffects {
     inner: AllEffects,
     encoded_effects: EncodedEffects,
