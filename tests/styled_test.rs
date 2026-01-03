@@ -6,7 +6,7 @@ mod common;
 
 test_fluent_methods!(Styled::new("CONTENT"), Styled::new("CONTENT"));
 
-test_style_set!(Styled::new("CONTENT"));
+test_composed_styling_type!(Styled::new("CONTENT"));
 
 #[test]
 fn content_and_style() {

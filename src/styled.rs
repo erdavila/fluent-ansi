@@ -1,7 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Effect, GetEffects, Style, StyleSet, UnderlineStyle, impl_macros::fluent::impl_fluent_methods,
+    Effect, GetEffects, Style, UnderlineStyle,
+    impl_macros::{composed_styling::impl_composed_styling_methods, fluent::impl_fluent_methods},
     prelude::Color,
 };
 
@@ -56,45 +57,48 @@ impl<C: Display> Styled<C> {
     }
 
     impl_fluent_methods! {
-        type StyleSet = Styled<C>;
+        type ComposedStyling = Styled<C>;
         args: [self];
-        to_style_set: { self }
+        to_composed_styling: { self }
+    }
+
+    impl_composed_styling_methods! {
+        args: [self, effect, underline_style, target, color, value];
+        example_variable: r"styled";
+
+        set_effect: {
+            self.modify_style(|style| style.set_effect(effect, value))
+        }
+
+        get_effect: {
+            self.style.get_effect(effect)
+        }
+
+        get_effects: {
+            self.style.get_effects()
+        }
+
+        set_underline_style: {
+            self.modify_style(|style| style.set_underline_style(underline_style))
+        }
+
+        get_underline_style: {
+            self.style.get_underline_style()
+        }
+
+        set_color: {
+            self.modify_style(|style| style.set_color(target, color))
+        }
+
+        get_color: {
+            self.style.get_color(target)
+        }
     }
 
     #[must_use]
     fn modify_style(self, f: impl FnOnce(Style) -> Style) -> Self {
         let style = f(self.style);
         Self { style, ..self }
-    }
-}
-
-impl<C: Display> StyleSet for Styled<C> {
-    fn set_effect(self, effect: impl Into<Effect>, value: bool) -> Self {
-        self.modify_style(|style| style.set_effect(effect, value))
-    }
-
-    fn get_effect(&self, effect: impl Into<Effect>) -> bool {
-        self.style.get_effect(effect)
-    }
-
-    fn get_effects(&self) -> GetEffects {
-        self.style.get_effects()
-    }
-
-    fn set_underline_style(self, underline_style: Option<UnderlineStyle>) -> Self {
-        self.modify_style(|style| style.set_underline_style(underline_style))
-    }
-
-    fn get_underline_style(&self) -> Option<UnderlineStyle> {
-        self.style.get_underline_style()
-    }
-
-    fn set_color(self, target: crate::ColorTarget, color: Option<impl Into<Color>>) -> Self {
-        self.modify_style(|style| style.set_color(target, color))
-    }
-
-    fn get_color(&self, target: crate::ColorTarget) -> Option<Color> {
-        self.style.get_color(target)
     }
 }
 

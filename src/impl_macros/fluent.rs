@@ -22,123 +22,122 @@ pub(crate) use impl_fluent_type;
 macro_rules! impl_fluent_methods {
     () => {
         $crate::impl_macros::fluent::impl_fluent_methods! {
-            type StyleSet = $crate::Style;
+            type ComposedStyling = $crate::Style;
             args: [self];
-            to_style_set: { self.to_style() }
+            to_composed_styling: { self.to_style() }
         }
     };
 
     {
-        type StyleSet = $style_set_type:ty;
+        type ComposedStyling = $composed_styling_type:ty;
         args: [$self:ident];
-        to_style_set: $to_style_set:block
+        to_composed_styling: $to_composed_styling:block
     } => {
         /// Sets the bold effect.
         #[must_use]
-        pub fn bold(self) -> $style_set_type {
+        pub fn bold(self) -> $composed_styling_type {
             self.effect($crate::Effect::Bold)
         }
 
         /// Sets the faint effect.
         #[must_use]
-        pub fn faint(self) -> $style_set_type {
+        pub fn faint(self) -> $composed_styling_type {
             self.effect($crate::Effect::Faint)
         }
 
         /// Sets the italic effect.
         #[must_use]
-        pub fn italic(self) -> $style_set_type {
+        pub fn italic(self) -> $composed_styling_type {
             self.effect($crate::Effect::Italic)
         }
 
         /// Sets the solid underline effect.
         #[must_use]
-        pub fn underline(self) -> $style_set_type {
+        pub fn underline(self) -> $composed_styling_type {
             self.effect($crate::Effect::Underline)
         }
 
         /// Sets the curly underline effect.
         #[must_use]
-        pub fn curly_underline(self) -> $style_set_type {
+        pub fn curly_underline(self) -> $composed_styling_type {
             self.effect($crate::Effect::CurlyUnderline)
         }
 
         /// Sets the dotted underline effect.
         #[must_use]
-        pub fn dotted_underline(self) -> $style_set_type {
+        pub fn dotted_underline(self) -> $composed_styling_type {
             self.effect($crate::Effect::DottedUnderline)
         }
 
         /// Sets the dashed underline effect.
         #[must_use]
-        pub fn dashed_underline(self) -> $style_set_type {
+        pub fn dashed_underline(self) -> $composed_styling_type {
             self.effect($crate::Effect::DashedUnderline)
         }
 
         /// Sets the blink effect.
         #[must_use]
-        pub fn blink(self) -> $style_set_type {
+        pub fn blink(self) -> $composed_styling_type {
             self.effect($crate::Effect::Blink)
         }
 
         /// Sets the reverse effect.
         #[must_use]
-        pub fn reverse(self) -> $style_set_type {
+        pub fn reverse(self) -> $composed_styling_type {
             self.effect($crate::Effect::Reverse)
         }
 
         /// Sets the conceal effect.
         #[must_use]
-        pub fn conceal(self) -> $style_set_type {
+        pub fn conceal(self) -> $composed_styling_type {
             self.effect($crate::Effect::Conceal)
         }
 
         /// Sets the strikethrough effect.
         #[must_use]
-        pub fn strikethrough(self) -> $style_set_type {
+        pub fn strikethrough(self) -> $composed_styling_type {
             self.effect($crate::Effect::Strikethrough)
         }
 
         /// Sets the double underline effect.
         #[must_use]
-        pub fn double_underline(self) -> $style_set_type {
+        pub fn double_underline(self) -> $composed_styling_type {
             self.effect($crate::Effect::DoubleUnderline)
         }
 
         /// Sets the overline effect.
         #[must_use]
-        pub fn overline(self) -> $style_set_type {
+        pub fn overline(self) -> $composed_styling_type {
             self.effect($crate::Effect::Overline)
         }
 
         /// Sets the given effect.
         #[must_use]
-        pub fn effect(self, effect: impl Into<$crate::Effect>) -> $style_set_type {
-            use crate::StyleSet as _;
-            self.to_style_set().set_effect(effect, true)
+        pub fn effect(self, effect: impl Into<$crate::Effect>) -> $composed_styling_type {
+            self.to_composed_styling().set_effect(effect, true)
         }
 
         /// Sets the underline style.
         #[must_use]
-        pub fn underline_style(self, underline_style: $crate::UnderlineStyle) -> $style_set_type {
+        pub fn underline_style(self, underline_style: $crate::UnderlineStyle) -> $composed_styling_type {
             self.effect(underline_style)
         }
 
         /// Sets the foreground color.
         #[must_use]
-        pub fn fg(self, color: impl Into<$crate::color::Color>) -> $style_set_type {
+        pub fn fg(self, color: impl Into<$crate::color::Color>) -> $composed_styling_type {
             self.color($crate::TargetedColor::new_for_fg(color))
         }
 
         /// Sets the background color.
         #[must_use]
-        pub fn bg(self, color: impl Into<$crate::color::Color>) -> $style_set_type {
+        pub fn bg(self, color: impl Into<$crate::color::Color>) -> $composed_styling_type {
             self.color($crate::TargetedColor::new_for_bg(color))
         }
 
         /// Sets the underline color.
         #[must_use]
-        pub fn underline_color(self, color: impl Into<$crate::color::Color>) -> $style_set_type {
+        pub fn underline_color(self, color: impl Into<$crate::color::Color>) -> $composed_styling_type {
             self.color($crate::TargetedColor::new_for_underline(color))
         }
 
@@ -147,10 +146,9 @@ macro_rules! impl_fluent_methods {
         pub fn color(
             self,
             targeted_color: impl Into<$crate::TargetedColor>,
-        ) -> $style_set_type {
-            use crate::StyleSet as _;
+        ) -> $composed_styling_type {
             let targeted_color = targeted_color.into();
-            self.to_style_set().set_color(
+            self.to_composed_styling().set_color(
                 targeted_color.get_target(),
                 Some(targeted_color.get_color()),
             )
@@ -159,14 +157,14 @@ macro_rules! impl_fluent_methods {
         /// Adds the given element to the style.
         #[expect(clippy::should_implement_trait)]
         #[must_use]
-        pub fn add(self, element: impl $crate::StyleElement) -> $style_set_type {
-            let style_set = self.to_style_set();
-            element.add_to(style_set)
+        pub fn add(self, element: impl $crate::StyleElement<$composed_styling_type>) -> $composed_styling_type {
+            let composed_styling = self.to_composed_styling();
+            element.add_to(composed_styling)
         }
 
         #[allow(clippy::wrong_self_convention)]
         #[must_use]
-        fn to_style_set($self) -> $style_set_type $to_style_set
+        fn to_composed_styling($self) -> $composed_styling_type $to_composed_styling
     };
 }
 pub(crate) use impl_fluent_methods;

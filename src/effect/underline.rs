@@ -3,8 +3,9 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    Effect, StyleAttribute, StyleElement, StyleSet,
+    Effect,
     impl_macros::{fluent::impl_fluent_type, from_to::impl_from_to},
+    impl_style_atribute_for, impl_style_element_for,
 };
 
 pub(crate) type AllUnderlineStyles = enum_iterator::All<UnderlineStyle>;
@@ -58,38 +59,43 @@ impl Display for UnderlineStyle {
     }
 }
 
-impl StyleElement for UnderlineStyle {
-    fn add_to<S: StyleSet>(self, style_set: S) -> S {
-        style_set.set_underline_style(Some(self))
+impl_style_element_for! { UnderlineStyle {
+    args: [self, composed_styling];
+    add_to: {
+        composed_styling.set_underline_style(Some(self))
     }
-}
+}}
 
-impl StyleAttribute for UnderlineStyle {
+impl_style_atribute_for! { UnderlineStyle {
     type Value = bool;
+    args: [self, composed_styling, value];
 
-    fn set_in<S: StyleSet>(self, style_set: S, value: Self::Value) -> S {
-        style_set.set_effect(self.to_effect(), value)
+    set_in: {
+        composed_styling.set_effect(self.to_effect(), value)
     }
 
-    fn get_from<S: StyleSet>(self, style_set: &S) -> Self::Value {
-        style_set.get_effect(self.to_effect())
+    get_from: {
+        composed_styling.get_effect(self.to_effect())
     }
-}
+}}
 
 /// The underline attribute.
 ///
-/// Usable in the [`StyleSet::set`] and [`StyleSet::get`] methods.
+/// Usable in the
+/// [`Style::set`](crate::Style::set)/[`Styled::set`](crate::Styled::set) and
+/// [`Style::get`](crate::Style::get)/[`Styled::get`](crate::Styled::get) methods.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Underline;
 
-impl StyleAttribute for Underline {
+impl_style_atribute_for! { Underline {
     type Value = Option<UnderlineStyle>;
+    args: [self, composed_styling, value];
 
-    fn set_in<S: StyleSet>(self, style_set: S, value: Self::Value) -> S {
-        style_set.set_underline_style(value)
+    set_in: {
+        composed_styling.set_underline_style(value)
     }
 
-    fn get_from<S: StyleSet>(self, style_set: &S) -> Self::Value {
-        style_set.get_underline_style()
+    get_from: {
+        composed_styling.get_underline_style()
     }
-}
+}}

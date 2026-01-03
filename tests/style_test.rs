@@ -8,7 +8,7 @@ test_fluent_type![
     clear { Style::new(), Style::new() },
     bold { Style::new().bold(), Style::new().bold() },
 ];
-test_style_set!(Style::new());
+test_composed_styling_type!(Style::new());
 
 #[test]
 fn effects_display() {

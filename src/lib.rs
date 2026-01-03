@@ -225,21 +225,27 @@
 //!
 //! These methods always return the same type from where they are called.
 //!
+//! <div class="warning">
+//!
+//!    The links below link to their implementation in [`Style`], but they are the same for [`Styled<C>`].
+//!
+//! </div>
+//!
 //! | Method | To modify what | Note |
 //! |--------|----------------|------|
-//! | [`set_effect(impl Into<Effect>, bool)`](StyleSet::set_effect)                  | effect (including underline styles) |
-//! | [`set_underline_style(Option<UnderlineStyle>)`](StyleSet::set_underline_style) | underline style |
-//! | [`set_color(ColorTarget, Option<impl Into<Color>>)`](StyleSet::set_color)      | color | See note \[1] below. |
-//! | [`set(Effect, bool)`](StyleSet::set)                                           | effect | See note \[2] below. |
-//! | [`set(UnderlineStyle, bool)`](StyleSet::set)                                   | underline style | See note \[2] below. |
-//! | [`set(Underline, Option<UnderlineStyle>)`](StyleSet::set)                      | underline style | See note \[2] below. |
-//! | [`set(ColorTarget, Option<Color>)`](StyleSet::set)                             | color | See note \[2] below. |
-//! | [`unset(Effect)`](StyleSet::unset)                                             | effect | See note \[3] below. |
-//! | [`unset(UnderlineStyle)`](StyleSet::unset)                                     | underline style | See note \[3] below. |
-//! | [`unset(Underline)`](StyleSet::unset)                                          | underline style | See note \[3] below. |
-//! | [`unset(ColorTarget)`](StyleSet::unset)                                        | color | See note \[3] below. |
+//! | [`set_effect(impl Into<Effect>, bool)`](Style::set_effect)                  | effect (including underline styles) |
+//! | [`set_underline_style(Option<UnderlineStyle>)`](Style::set_underline_style) | underline style |
+//! | [`set_color(ColorTarget, Option<impl Into<Color>>)`](Style::set_color)      | color | See note \[1] below. |
+//! | [`set(Effect, bool)`](Style::set)                                           | effect | See note \[2] below. |
+//! | [`set(UnderlineStyle, bool)`](Style::set)                                   | underline style | See note \[2] below. |
+//! | [`set(Underline, Option<UnderlineStyle>)`](Style::set)                      | underline style | See note \[2] below. |
+//! | [`set(ColorTarget, Option<Color>)`](Style::set)                             | color | See note \[2] below. |
+//! | [`unset(Effect)`](Style::unset)                                             | effect | See note \[3] below. |
+//! | [`unset(UnderlineStyle)`](Style::unset)                                     | underline style | See note \[3] below. |
+//! | [`unset(Underline)`](Style::unset)                                          | underline style | See note \[3] below. |
+//! | [`unset(ColorTarget)`](Style::unset)                                        | color | See note \[3] below. |
 //!
-//! *Note* \[1]: to clear a color with [`set_color()`](StyleSet::set_color), the color type must be specified in the `None` value.
+//! *Note* \[1]: to clear a color with [`set_color()`](Style::set_color), the color type must be specified in the `None` value.
 //! To help with that, the [`Color::none()`](color::Color::none) method can be used:
 //!
 //! ```
@@ -251,27 +257,33 @@
 //! style.set_color(color_target, Color::none());
 //! ```
 //!
-//! *Note* \[2]: there is in fact a single [`set()`](StyleSet::set) method that is based on the [`StyleAttribute`] trait.
+//! *Note* \[2]: there is in fact a single [`set()`](Style::set) method that is based on the [`StyleAttribute`] trait.
 //!
-//! *Note* \[3]: there is in fact a single [`unset()`](StyleSet::unset) method that is based on the [`StyleAttribute`] trait.
+//! *Note* \[3]: there is in fact a single [`unset()`](Style::unset) method that is based on the [`StyleAttribute`] trait.
 //!
 //!
 //! ### Querying methods
 //!
 //! These methods for querying effects and colors and whose return type depends on what is being queried.
 //!
+//! <div class="warning">
+//!
+//!    The links below link to their implementation in [`Style`], but they are the same for [`Styled<C>`].
+//!
+//! </div>
+//!
 //! | Method | To query what | Note |
 //! |--------|---------------|------|
-//! | [`get_effect(impl Into<Effect>) -> bool`](StyleSet::get_effect)                    | effect (including underline styles) |
-//! | [`get_underline_style() -> Option<UnderlineStyle>`](StyleSet::get_underline_style) | underline style |
-//! | [`get_effects() -> GetEffects`](StyleSet::get_effects)                             | effect | Returns an iterator on the effects that are currently set. |
-//! | [`get_color(ColorTarget) -> Option<Color>`](StyleSet::get_color)                   | color |
-//! | [`get(Effect) -> bool`](StyleSet::get)                                             | effect | See note below. |
-//! | [`get(UnderlineStyle) -> bool`](StyleSet::get)                                     | underline style | See note below. |
-//! | [`get(Underline) -> Option<UnderlineStyle>`](StyleSet::get)                        | underline style | See note below. |
-//! | [`get(ColorTarget) -> Option<Color>`](StyleSet::get)                               | color | See note below. |
+//! | [`get_effect(impl Into<Effect>) -> bool`](Style::get_effect)                    | effect (including underline styles) |
+//! | [`get_underline_style() -> Option<UnderlineStyle>`](Style::get_underline_style) | underline style |
+//! | [`get_effects() -> GetEffects`](Style::get_effects)                             | effect | Returns an iterator on the effects that are currently set. |
+//! | [`get_color(ColorTarget) -> Option<Color>`](Style::get_color)                   | color |
+//! | [`get(Effect) -> bool`](Style::get)                                             | effect | See note below. |
+//! | [`get(UnderlineStyle) -> bool`](Style::get)                                     | underline style | See note below. |
+//! | [`get(Underline) -> Option<UnderlineStyle>`](Style::get)                        | underline style | See note below. |
+//! | [`get(ColorTarget) -> Option<Color>`](Style::get)                               | color | See note below. |
 //!
-//! *Note*: there is in fact a single [`get()`](StyleSet::get) method that is based on the [`StyleAttribute`] trait.
+//! *Note*: there is in fact a single [`get()`](Style::get) method that is based on the [`StyleAttribute`] trait.
 //!
 //!
 //! # The [`Reset`] singleton
@@ -289,15 +301,16 @@
 //! ```
 
 pub use crate::{
-    effect::*, reset::*, style::*, style_element::*, style_set::*, styled::*, targeted_color::*,
+    effect::*, reset::*, style::*, style_attribute::*, style_element::*, styled::*,
+    targeted_color::*,
 };
 
 mod colors;
 mod effect;
 mod reset;
 mod style;
+mod style_attribute;
 mod style_element;
-mod style_set;
 mod styled;
 mod targeted_color;
 
@@ -361,7 +374,7 @@ pub mod prelude {
     //! let styled = Color::RED.for_bg().bold().applied_to("Some content");
     //! ```
 
+    pub use crate::Effect;
     pub use crate::UnderlineStyle;
     pub use crate::color::Color;
-    pub use crate::{Effect, StyleSet};
 }

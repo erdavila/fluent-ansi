@@ -43,11 +43,12 @@ macro_rules! impl_color_type {
             }
         );
 
-        impl $crate::StyleElement for $name {
-            fn add_to<S: $crate::StyleSet>(self, style_set: S) -> S {
-                $crate::TargetedColor::from(self).add_to(style_set)
+        $crate::impl_style_element_for! { $name {
+            args: [$self, composed_styling];
+            add_to: {
+                $crate::TargetedColor::from($self).add_to(composed_styling)
             }
-        }
+        }}
     };
 }
 pub(crate) use impl_color_type;
