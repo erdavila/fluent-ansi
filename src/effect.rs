@@ -3,8 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    CodeWriter, Style, StyleAttribute, StyleSet, StylingElement,
-    impl_macros::fluent::impl_fluent_type,
+    CodeWriter, Style, impl_macros::fluent::impl_fluent_type, impl_styling_atribute_for,
+    impl_styling_element_for,
 };
 pub use underline::*;
 
@@ -74,23 +74,25 @@ impl_fluent_type!(Effect {
     to_style: { Style::new().effect(self) }
 });
 
-impl StylingElement for Effect {
-    fn add_to<S: StyleSet>(self, style_set: S) -> S {
-        style_set.set_effect(self, true)
+impl_styling_element_for! { Effect {
+    args: [self, composed_styling];
+    add_to: {
+        composed_styling.set_effect(self, true)
     }
-}
+}}
 
-impl StyleAttribute for Effect {
+impl_styling_atribute_for! { Effect {
     type Value = bool;
+    args: [self, composed_styling, value];
 
-    fn set_in<S: StyleSet>(self, style_set: S, value: Self::Value) -> S {
-        style_set.set_effect(self, value)
+    set_in: {
+        composed_styling.set_effect(self, value)
     }
 
-    fn get_from<S: StyleSet>(self, style_set: &S) -> Self::Value {
-        style_set.get_effect(self)
+    get_from: {
+        composed_styling.get_effect(self)
     }
-}
+}}
 
 impl Display for Effect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {

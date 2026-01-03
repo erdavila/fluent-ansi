@@ -45,22 +45,22 @@ macro_rules! test_fluent_type {
 pub(crate) use test_fluent_type;
 
 macro_rules! test_fluent_methods {
-    ($value:expr, $as_style_set:expr) => {
+    ($value:expr, $as_composed_styling:expr) => {
         mod fluent_methods {
             use fluent_ansi::*;
 
-            $crate::common::test_fluent_methods!(NO_MOD: $value, $as_style_set);
+            $crate::common::test_fluent_methods!(NO_MOD: $value, $as_composed_styling);
         }
     };
 
-    (NO_MOD: $value:expr, $as_style_set:expr) => {
+    (NO_MOD: $value:expr, $as_composed_styling:expr) => {
         #[test]
         fn effects() {
             use fluent_ansi::*;
 
             macro_rules! assert_effect_method {
                 ($effect:expr, $method:ident) => {{
-                    let expected_style = $as_style_set.$method();
+                    let expected_style = $as_composed_styling.$method();
 
                     assert_eq!(
                         $value.$method(),
@@ -104,7 +104,7 @@ macro_rules! test_fluent_methods {
 
             macro_rules! assert_effect_method {
                 ($underline_style:expr, $method:ident) => {{
-                    let expected_style = $as_style_set.$method();
+                    let expected_style = $as_composed_styling.$method();
 
                     assert_eq!(
                         $value.underline_style($underline_style),
@@ -148,7 +148,7 @@ macro_rules! test_fluent_methods {
                 };
                 ($method:ident, $color:expr) => {{
                     let result = $value.$method($color);
-                    let expected = $as_style_set.$method($color);
+                    let expected = $as_composed_styling.$method($color);
                     assert_eq!(result, expected);
                 }};
             }
@@ -174,7 +174,7 @@ macro_rules! test_fluent_methods {
                 };
                 ($method:ident, $color:expr, $target_method:ident, $arg:expr) => {{
                     let result = $value.$method($arg);
-                    let expected = $as_style_set.$target_method($color);
+                    let expected = $as_composed_styling.$target_method($color);
                     assert_eq!(result, expected);
                 }};
             }

@@ -1,14 +1,14 @@
 #![allow(unused)]
 
 mod color_type;
+mod composed_styling;
 mod fluent;
 mod from_to;
-mod style_set;
 
 pub(crate) use color_type::*;
+pub(crate) use composed_styling::*;
 pub(crate) use fluent::*;
 pub(crate) use from_to::*;
-pub(crate) use style_set::*;
 
 /// A macro to assert that a type implementing `Display` produces the expected output.
 macro_rules! assert_display {

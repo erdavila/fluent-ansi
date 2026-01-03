@@ -49,7 +49,8 @@ impl Color {
 
     /// Helper method to return a [`None`] value.
     ///
-    /// Use it to clear the color for some target with the [`StyleSet::set_color()`](crate::StyleSet::set_color) method.
+    /// Use it to clear the color for some target with [`Style::set_color()`](crate::Style::set_color)
+    /// or [`Styled<C>::set_color()`](crate::Styled<C>::set_color).
     #[must_use]
     pub const fn none() -> Option<Color> {
         None

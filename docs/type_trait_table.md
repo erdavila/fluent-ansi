@@ -2,7 +2,7 @@
 
 It includes blanket implementations.
 
-| Type \\ Trait | `StyleSet` | Fluent methods | `applied_to` method | `to_style` method | Color type | `StyleElement` | `StyleAttribute` |
+| Type \\ Trait | Composed styling methods | Fluent methods | `applied_to` method | `to_style` method | Color type | `StyleElement` | `StyleAttribute` |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `Styled` | X | X | | | | | |
 | `Style` | X | X | X | X | | | |
