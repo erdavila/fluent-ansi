@@ -1,7 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    AppliedTo, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet, colors::Color,
+    Style, color::Color, impl_macros::fluent::impl_fluent_type, impl_styling_atribute_for,
+    impl_styling_element_for,
 };
 
 /// A color in a specific color target.
@@ -50,37 +51,21 @@ impl TargetedColor {
     }
 }
 
-impl StyleElement for TargetedColor {
-    fn add_to<S: StyleSet>(self, style_set: S) -> S {
-        style_set.set_color(self.get_target(), Some(self.get_color()))
+impl_fluent_type!(TargetedColor {
+    args: [self];
+    to_style: { Style::new().color(self) }
+});
+
+impl_styling_element_for! { TargetedColor {
+    args: [self, composed_styling];
+    add_to: {
+        composed_styling.set_color(self.get_target(), Some(self.get_color()))
     }
-}
-
-impl ToStyleSet for TargetedColor {
-    type StyleSet = Style;
-
-    fn to_style_set(self) -> Self::StyleSet {
-        self.to_style()
-    }
-}
-
-impl ToStyle for TargetedColor {
-    fn to_style(self) -> Style {
-        Style::new().color(self)
-    }
-}
-
-impl AppliedTo for TargetedColor {}
+}}
 
 impl Display for TargetedColor {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         self.to_style().fmt(f)
-    }
-}
-
-impl<C: Into<Color>> From<C> for TargetedColor {
-    fn from(value: C) -> Self {
-        Self::new(value, ColorTarget::Foreground)
     }
 }
 
@@ -95,14 +80,15 @@ pub enum ColorTarget {
     Underline,
 }
 
-impl StyleAttribute for ColorTarget {
+impl_styling_atribute_for! { ColorTarget {
     type Value = Option<Color>;
+    args: [self, composed_styling, value];
 
-    fn set_in<S: StyleSet>(self, style_set: S, value: Self::Value) -> S {
-        style_set.set_color(self, value)
+    set_in: {
+        composed_styling.set_color(self, value)
     }
 
-    fn get_from<S: StyleSet>(self, style_set: &S) -> Self::Value {
-        style_set.get_color(self)
+    get_from: {
+        composed_styling.get_color(self)
     }
-}
+}}

@@ -1,9 +1,9 @@
-macro_rules! test_color_methods {
+macro_rules! test_color_type {
     ( $( $mod:ident { $( $tt:tt )+ } ),+ $(,)? ) => {
         mod color_type {
             $(
                 mod $mod {
-                    $crate::common::test_color_methods!(NO_MOD: $( $tt )+ );
+                    $crate::common::test_color_type!(NO_MOD: $( $tt )+ );
                 }
             )+
         }
@@ -11,12 +11,13 @@ macro_rules! test_color_methods {
 
     ($color:expr, $as_color:expr, $as_style:expr) => {
         mod color_type {
-            $crate::common::test_color_methods!(NO_MOD: $color, $as_color, $as_style);
+            $crate::common::test_color_type!(NO_MOD: $color, $as_color, $as_style);
         }
     };
 
     (NO_MOD: $color:expr, $as_color:expr, $as_style:expr) => {
         use fluent_ansi::{color::*, *};
+        use $crate::common::assert_from_to;
 
         #[test]
         fn for_fg() {
@@ -54,14 +55,28 @@ macro_rules! test_color_methods {
             );
         }
 
+        $crate::common::test_fluent_type!(NO_MOD: $color, Style::new().fg($color));
+
+        #[test]
+        fn to_targeted_color() {
+            assert_from_to!(
+                to_targeted_color, TargetedColor;
+                $color,
+                TargetedColor::new($color, ColorTarget::Foreground)
+            );
+        }
+
         #[test]
         fn to_color() {
-            assert_eq!($color.to_color(), $as_color);
-            assert_eq!(Color::from($color), $as_color);
+            assert_from_to!(
+                to_color, Color;
+                $color,
+                $as_color
+            );
         }
     };
 }
-pub(crate) use test_color_methods;
+pub(crate) use test_color_type;
 
 macro_rules! test_to_style_set_with_fg_assumed {
     ( $( $mod:ident { $color:expr } ),+ $(,)? ) => {

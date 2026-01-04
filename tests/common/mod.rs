@@ -1,12 +1,14 @@
 #![allow(unused)]
 
-mod color_methods;
-mod style_set;
-mod to_style_set;
+mod color_type;
+mod composed_styling;
+mod fluent;
+mod from_to;
 
-pub(crate) use color_methods::*;
-pub(crate) use style_set::*;
-pub(crate) use to_style_set::*;
+pub(crate) use color_type::*;
+pub(crate) use composed_styling::*;
+pub(crate) use fluent::*;
+pub(crate) use from_to::*;
 
 /// A macro to assert that a type implementing `Display` produces the expected output.
 macro_rules! assert_display {

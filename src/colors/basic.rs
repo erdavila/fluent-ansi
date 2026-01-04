@@ -1,4 +1,7 @@
-use crate::colors::{Color, SimpleColor, ToColor};
+use crate::{
+    colors::{Color, SimpleColor},
+    impl_macros::{color_type::impl_color_type, from_to::impl_from_to},
+};
 
 /// The 8 basic non-bright terminal colors.
 ///
@@ -35,12 +38,6 @@ pub enum BasicColor {
 }
 
 impl BasicColor {
-    /// Convert this basic color into a [`SimpleColor`].
-    #[must_use]
-    pub fn to_simple_color(self) -> SimpleColor {
-        SimpleColor::new(self)
-    }
-
     /// Returns a bright variant of this basic color.
     #[must_use]
     pub fn bright(self) -> SimpleColor {
@@ -53,9 +50,16 @@ impl BasicColor {
     }
 }
 
-impl ToColor for BasicColor {
-    /// Convert this basic color into a [`Color`].
-    fn to_color(self) -> Color {
+impl_color_type!(BasicColor {
+    args: [self];
+    to_color: {
         self.to_simple_color().to_color()
     }
-}
+});
+
+impl_from_to!(
+    #[doc = r"Convert this basic color into a [`SimpleColor`]."]
+    fn to_simple_color(self: BasicColor) -> SimpleColor {
+        SimpleColor::new(self)
+    }
+);

@@ -1,9 +1,9 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, ColorTarget, Effect, Reset, StyleSet, Styled, TargetedColor, ToStyle, ToStyleSet,
-    UnderlineStyle,
-    colors::{Color, ColorKind, WriteColorCodes as _},
+    ColorTarget, Effect, Reset, UnderlineStyle,
+    colors::{Color, WriteColorCodes as _},
+    impl_macros::{composed_styling::impl_composed_styling_methods, fluent::impl_fluent_type},
     style::encoded_effects::EncodedEffects,
 };
 
@@ -31,79 +31,67 @@ impl Style {
             underline_color: None,
         }
     }
-}
 
-impl ToStyleSet for Style {
-    type StyleSet = Self;
+    impl_composed_styling_methods! {
+        args: [self, effect, underline_style, target, color, value];
+        example_variable: r"style";
 
-    fn to_style_set(self) -> Self::StyleSet {
-        self
-    }
-}
-
-impl StyleSet for Style {
-    fn set_effect(self, effect: impl Into<Effect>, value: bool) -> Self {
-        let effect = effect.into();
-        let encoded_effects = self.encoded_effects.set(effect, value);
-        Self {
-            encoded_effects,
-            ..self
-        }
-    }
-
-    fn get_effect(&self, effect: impl Into<Effect>) -> bool {
-        let effect = effect.into();
-        self.encoded_effects.get(effect)
-    }
-
-    fn get_effects(&self) -> GetEffects {
-        self.encoded_effects.get_effects()
-    }
-
-    fn set_underline_style(self, underline_style: Option<UnderlineStyle>) -> Self {
-        let encoded_effects = self.encoded_effects.set_underline(underline_style);
-        Self {
-            encoded_effects,
-            ..self
-        }
-    }
-
-    fn get_underline_style(&self) -> Option<UnderlineStyle> {
-        UnderlineStyle::all().find(|&underline_style| self.get_effect(underline_style))
-    }
-
-    fn set_color(self, target: ColorTarget, color: Option<impl Into<Color>>) -> Self {
-        let color = color.map(Into::into);
-        match target {
-            ColorTarget::Foreground => Self { fg: color, ..self },
-            ColorTarget::Background => Self { bg: color, ..self },
-            ColorTarget::Underline => Self {
-                underline_color: color,
+        set_effect: {
+            let effect = effect.into();
+            let encoded_effects = self.encoded_effects.set(effect, value);
+            Self {
+                encoded_effects,
                 ..self
-            },
+            }
+        }
+
+        get_effect: {
+            let effect = effect.into();
+            self.encoded_effects.get(effect)
+        }
+
+        get_effects: {
+            self.encoded_effects.get_effects()
+        }
+
+        set_underline_style: {
+            let encoded_effects = self.encoded_effects.set_underline(underline_style);
+            Self {
+                encoded_effects,
+                ..self
+            }
+        }
+
+        get_underline_style: {
+            UnderlineStyle::all().find(|&underline_style| self.get_effect(underline_style))
+        }
+
+        set_color: {
+            let color = color.map(Into::into);
+            match target {
+                ColorTarget::Foreground => Self { fg: color, ..self },
+                ColorTarget::Background => Self { bg: color, ..self },
+                ColorTarget::Underline => Self {
+                    underline_color: color,
+                    ..self
+                },
+            }
+        }
+
+        get_color: {
+            match target {
+                ColorTarget::Foreground => self.fg,
+                ColorTarget::Background => self.bg,
+                ColorTarget::Underline => self.underline_color,
+            }
         }
     }
-
-    fn get_color(&self, target: ColorTarget) -> Option<Color> {
-        match target {
-            ColorTarget::Foreground => self.fg,
-            ColorTarget::Background => self.bg,
-            ColorTarget::Underline => self.underline_color,
-        }
-    }
 }
 
-impl ToStyle for Style {
-    fn to_style(self) -> Style {
-        self
-    }
-}
-
-impl AppliedTo for Style {
-    fn applied_to<C: Display>(self, content: C) -> Styled<C> {
-        Styled::new(content).with_style(self)
-    }
-}
+impl_fluent_type!(Style {
+    args: [self];
+    to_style: SELF
+});
 
 impl Display for Style {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
@@ -134,36 +122,6 @@ impl Display for Style {
             }
             write_escape_sequence(f, Codes(*self))
         }
-    }
-}
-
-impl From<Effect> for Style {
-    fn from(effect: Effect) -> Self {
-        effect.to_style()
-    }
-}
-
-impl From<UnderlineStyle> for Style {
-    fn from(underline_style: UnderlineStyle) -> Self {
-        underline_style.to_style()
-    }
-}
-
-impl From<TargetedColor> for Style {
-    fn from(targeted_color: TargetedColor) -> Self {
-        targeted_color.to_style()
-    }
-}
-
-impl<CK: ColorKind> From<CK> for Style {
-    fn from(color: CK) -> Self {
-        color.to_style()
-    }
-}
-
-impl From<Reset> for Style {
-    fn from(reset: Reset) -> Self {
-        reset.to_style()
     }
 }
 

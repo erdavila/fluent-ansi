@@ -1,49 +1,40 @@
-use fluent_ansi::{prelude::*, *};
+use fluent_ansi::prelude::*;
 
 use common::*;
 
 mod common;
 
-test_to_style_set![
+test_fluent_type![
     solid { UnderlineStyle::Solid, Style::new().underline() },
     curly { UnderlineStyle::Curly, Style::new().curly_underline() },
 ];
 
 #[test]
-fn applied_to() {
-    let stld = UnderlineStyle::Curly.applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(stld.get_style(), Style::new().curly_underline());
-}
-
-#[test]
 fn to_effect() {
-    assert_eq!(UnderlineStyle::Solid.to_effect(), Effect::Underline);
-    assert_eq!(UnderlineStyle::Curly.to_effect(), Effect::CurlyUnderline);
-    assert_eq!(UnderlineStyle::Dotted.to_effect(), Effect::DottedUnderline);
-    assert_eq!(UnderlineStyle::Dashed.to_effect(), Effect::DashedUnderline);
-    assert_eq!(UnderlineStyle::Double.to_effect(), Effect::DoubleUnderline);
-}
-
-#[test]
-fn to_style() {
-    assert_eq!(UnderlineStyle::Solid.to_style(), Style::new().underline());
-    assert_eq!(
-        UnderlineStyle::Curly.to_style(),
-        Style::new().curly_underline()
+    assert_from_to!(
+        to_effect, Effect;
+        UnderlineStyle::Solid,
+        Effect::Underline
     );
-    assert_eq!(
-        UnderlineStyle::Dotted.to_style(),
-        Style::new().dotted_underline()
+    assert_from_to!(
+        to_effect, Effect;
+        UnderlineStyle::Curly,
+        Effect::CurlyUnderline
     );
-    assert_eq!(
-        UnderlineStyle::Dashed.to_style(),
-        Style::new().dashed_underline()
+    assert_from_to!(
+        to_effect, Effect;
+        UnderlineStyle::Dotted,
+        Effect::DottedUnderline
     );
-    assert_eq!(
-        UnderlineStyle::Double.to_style(),
-        Style::new().double_underline()
+    assert_from_to!(
+        to_effect, Effect;
+        UnderlineStyle::Dashed,
+        Effect::DashedUnderline
+    );
+    assert_from_to!(
+        to_effect, Effect;
+        UnderlineStyle::Double,
+        Effect::DoubleUnderline
     );
 }
 

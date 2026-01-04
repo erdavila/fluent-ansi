@@ -2,7 +2,8 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, ToColor, WriteColorCodes},
+    colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, WriteColorCodes},
+    impl_macros::color_type::impl_color_type,
 };
 
 /// An enum representing all supported color types.
@@ -48,18 +49,18 @@ impl Color {
 
     /// Helper method to return a [`None`] value.
     ///
-    /// Use it to clear the color for some target with the [`StyleSet::set_color()`](crate::StyleSet::set_color) method.
+    /// Use it to clear the color for some target with [`Style::set_color()`](crate::Style::set_color)
+    /// or [`Styled<C>::set_color()`](crate::Styled<C>::set_color).
     #[must_use]
     pub const fn none() -> Option<Color> {
         None
     }
-
-    /// Convert this color into a [`Color`].
-    #[must_use]
-    pub fn to_color(self) -> Color {
-        self
-    }
 }
+
+impl_color_type!(Color {
+    args: [self];
+    to_color: SELF
+});
 
 impl WriteColorCodes for Color {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
@@ -68,11 +69,5 @@ impl WriteColorCodes for Color {
             Color::Indexed(indexed) => indexed.write_color_codes(target, writer),
             Color::RGB(rgb) => rgb.write_color_codes(target, writer),
         }
-    }
-}
-
-impl<C: ToColor> From<C> for Color {
-    fn from(value: C) -> Self {
-        value.to_color()
     }
 }

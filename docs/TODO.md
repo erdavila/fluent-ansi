@@ -1,13 +1,14 @@
 - `const` everywhere - allow defining styles at compile time
-  - Eliminate traits? Use macros to add methods to types?
   - Complete implementation requires experimental feature (`const_trait_impl`) and nightly compiler
     - Implement what is possible in `main`, and the remaining in a branch.
-- Style merge
+- `Style` merge
 - Rename `unset` -> `remove`
-- Document views
-  - fluent methods
-  - `StyleElement`
-  - `StyleAttributes`
+- Rename
+  - `UnderlineStyle` -> `UnderlineEffect`
+  - `Underline` -> `UnderlineStyle`
+  - `underline_style()` -> `underline_effect()`
+  - `set_underline_style()` -> `set_underline_effect()`
+  - `get_underline_style()` -> `get_underline_effect()`
 - trait to apply methods in any content that implements `Display`
   - Example: `"Some content".bold().underline()`
   - with method `with_style(Style)`
@@ -15,3 +16,4 @@
   - Ideas:
     - https://crates.io/crates/ansiconst
     - https://doc.rust-lang.org/nightly/core/macro.format_args.html
+- Consider implementing the `Add` trait instead of defining the `add` method in fluent types.

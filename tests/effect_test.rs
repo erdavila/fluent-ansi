@@ -1,26 +1,13 @@
-use fluent_ansi::{prelude::*, *};
+use fluent_ansi::prelude::*;
 
 use crate::common::*;
 
 mod common;
 
-test_to_style_set![
+test_fluent_type![
     bold { Effect::Bold, Style::new().bold() },
     italic { Effect::Italic, Style::new().italic() },
 ];
-
-#[test]
-fn applied_to() {
-    let stld = Effect::Bold.applied_to("CONTENT");
-
-    assert_eq!(stld.get_content(), &"CONTENT");
-    assert_eq!(stld.get_style(), Style::new().bold());
-}
-
-#[test]
-fn to_style() {
-    assert_eq!(Effect::Bold.to_style(), Style::new().bold());
-}
 
 #[test]
 fn display() {

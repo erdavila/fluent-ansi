@@ -3,19 +3,17 @@ use core::fmt::Result;
 use crate::{CodeWriter, ColorTarget};
 pub use basic::*;
 pub use color::*;
-pub use color_kind::*;
 pub use indexed::*;
 pub use rgb::*;
 pub use simple::*;
 
 mod basic;
 mod color;
-mod color_kind;
 mod indexed;
 mod rgb;
 mod simple;
 
-pub(crate) trait WriteColorCodes: ColorKind {
+pub(crate) trait WriteColorCodes {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result;
 }
 
@@ -40,9 +38,3 @@ impl_reflexive_partial_eq!(SimpleColor::to_color() -> Color);
 impl_reflexive_partial_eq!(IndexedColor::to_color() -> Color);
 impl_reflexive_partial_eq!(RGBColor::to_color() -> Color);
 impl_reflexive_partial_eq!(BasicColor::to_simple_color() -> SimpleColor);
-
-/// A trait to convert a type into a [`Color`].
-pub trait ToColor: Into<Color> {
-    /// Convert this type into a [`Color`].
-    fn to_color(self) -> Color;
-}
