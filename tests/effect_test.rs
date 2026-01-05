@@ -14,7 +14,7 @@ fn display() {
     assert_display!(Effect::Bold, "\x1b[1m");
     assert_display!(Effect::Faint, "\x1b[2m");
     assert_display!(Effect::Italic, "\x1b[3m");
-    assert_display!(Effect::Underline, "\x1b[4m");
+    assert_display!(Effect::SolidUnderline, "\x1b[4m");
     assert_display!(Effect::CurlyUnderline, "\x1b[4:3m");
     assert_display!(Effect::DottedUnderline, "\x1b[4:4m");
     assert_display!(Effect::DashedUnderline, "\x1b[4:5m");

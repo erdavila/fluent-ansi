@@ -89,13 +89,14 @@ macro_rules! test_fluent_methods {
             assert_effect_method!(Effect::Bold, bold);
             assert_effect_method!(Effect::Faint, faint);
             assert_effect_method!(Effect::Italic, italic);
-            assert_effect_method!(Effect::Underline, underline);
+            assert_effect_method!(Effect::SolidUnderline, solid_underline);
             assert_effect_method!(Effect::Blink, blink);
             assert_effect_method!(Effect::Reverse, reverse);
             assert_effect_method!(Effect::Conceal, conceal);
             assert_effect_method!(Effect::Strikethrough, strikethrough);
             assert_effect_method!(Effect::DoubleUnderline, double_underline);
             assert_effect_method!(Effect::Overline, overline);
+            assert_effect_method!(Effect::UNDERLINE, underline);
         }
 
         #[test]
@@ -130,7 +131,7 @@ macro_rules! test_fluent_methods {
                 }};
             }
 
-            assert_effect_method!(UnderlineEffect::Solid, underline);
+            assert_effect_method!(UnderlineEffect::Solid, solid_underline);
             assert_effect_method!(UnderlineEffect::Curly, curly_underline);
             assert_effect_method!(UnderlineEffect::Dotted, dotted_underline);
             assert_effect_method!(UnderlineEffect::Dashed, dashed_underline);

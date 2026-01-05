@@ -234,12 +234,12 @@ mod tests {
     fn get_effects() {
         let effects = EncodedEffects::default()
             .add(Effect::Bold)
-            .add(Effect::Underline);
+            .add(Effect::SolidUnderline);
 
         let mut get_effects = effects.get_effects();
 
         assert_eq!(get_effects.next(), Some(Effect::Bold));
-        assert_eq!(get_effects.next(), Some(Effect::Underline));
+        assert_eq!(get_effects.next(), Some(Effect::SolidUnderline));
         assert_eq!(get_effects.next(), None);
     }
 }

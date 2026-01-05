@@ -35,6 +35,7 @@ fn effects_display() {
     assert_display!(styled.faint(), "\x1b[2mCONTENT\x1b[0m");
     assert_display!(styled.italic(), "\x1b[3mCONTENT\x1b[0m");
     assert_display!(styled.underline(), "\x1b[4mCONTENT\x1b[0m");
+    assert_display!(styled.solid_underline(), "\x1b[4mCONTENT\x1b[0m");
     assert_display!(styled.curly_underline(), "\x1b[4:3mCONTENT\x1b[0m");
     assert_display!(styled.dotted_underline(), "\x1b[4:4mCONTENT\x1b[0m");
     assert_display!(styled.dashed_underline(), "\x1b[4:5mCONTENT\x1b[0m");
@@ -59,7 +60,7 @@ fn combined_display() {
     let styled = Styled::new("CONTENT")
         .bold()
         .fg(BasicColor::Red)
-        .underline()
+        .solid_underline()
         .bg(BasicColor::Green);
     assert_display!(styled, "\x1b[1;4;31;42mCONTENT\x1b[0m");
 }

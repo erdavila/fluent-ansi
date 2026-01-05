@@ -32,7 +32,7 @@ fn effects() {
         (Effect::Bold, "Bold"),
         (Effect::Faint, "Faint"),
         (Effect::Italic, "Italic"),
-        (Effect::Underline, "Underline"),
+        (Effect::SolidUnderline, "SolidUnderline"),
         (Effect::CurlyUnderline, "CurlyUnderline"),
         (Effect::DottedUnderline, "DottedUnderline"),
         (Effect::DashedUnderline, "DashedUnderline"),

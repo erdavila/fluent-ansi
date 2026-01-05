@@ -19,6 +19,7 @@ fn effects_display() {
     assert_display!(style.faint(), "\x1b[2m");
     assert_display!(style.italic(), "\x1b[3m");
     assert_display!(style.underline(), "\x1b[4m");
+    assert_display!(style.solid_underline(), "\x1b[4m");
     assert_display!(style.curly_underline(), "\x1b[4:3m");
     assert_display!(style.dotted_underline(), "\x1b[4:4m");
     assert_display!(style.dashed_underline(), "\x1b[4:5m");
@@ -43,7 +44,7 @@ fn combined_display() {
     let style = Style::new()
         .bold()
         .fg(BasicColor::Red)
-        .underline()
+        .solid_underline()
         .bg(BasicColor::Green);
     assert_display!(style, "\x1b[1;4;31;42m");
 }

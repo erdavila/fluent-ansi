@@ -5,7 +5,7 @@ use common::*;
 mod common;
 
 test_fluent_type![
-    solid { UnderlineEffect::Solid, Style::new().underline() },
+    solid { UnderlineEffect::Solid, Style::new().solid_underline() },
     curly { UnderlineEffect::Curly, Style::new().curly_underline() },
 ];
 
@@ -14,7 +14,7 @@ fn to_effect() {
     assert_from_to!(
         to_effect, Effect;
         UnderlineEffect::Solid,
-        Effect::Underline
+        Effect::SolidUnderline
     );
     assert_from_to!(
         to_effect, Effect;

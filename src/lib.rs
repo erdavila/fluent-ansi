@@ -155,7 +155,7 @@
 //! let style: Style = Effect::Bold.fg(Color::RED);
 //! assert_eq!(format!("{style}"), "\x1b[1;31m");
 //!
-//! let style: Style = style.effect(Effect::Underline);
+//! let style: Style = style.effect(Effect::SolidUnderline);
 //! assert_eq!(format!("{style}"), "\x1b[1;4;31m");
 //!
 //! let styled = style.applied_to("Some content");
@@ -196,7 +196,7 @@
 //!
 //! | Method | To set what | Note |
 //! |--------|-------------|------|
-//! | [`bold()`](Effect::bold),<br/>[`italic()`](Effect::italic),<br/>[`underline()`](Effect::underline),<br/>etc.                                     | effect |
+//! | [`bold()`](Effect::bold),<br/>[`italic()`](Effect::italic),<br/>[`solid_underline()`](Effect::solid_underline),<br/>etc.                         | effect |
 //! | [`effect(impl Into<Effect>)`](Effect::effect)                                                                                                    | effect<br/>(including underline effects) |
 //! | [`underline_effect(UnderlineEffect)`](Effect::underline_effect)                                                                                  | underline effect |
 //! | [`fg(impl Into<Color>)`](Effect::fg)<br/>[`bg(impl Into<Color>)`](Effect::bg)<br/>[`underline_color(impl Into<Color>)`](Effect::underline_color) | color |

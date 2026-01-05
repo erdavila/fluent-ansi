@@ -44,7 +44,7 @@ impl_from_to!(
     #[doc = r"Converts the type into an [`Effect`]."]
     fn to_effect(self: UnderlineEffect) -> Effect {
         match self {
-            UnderlineEffect::Solid => Effect::Underline,
+            UnderlineEffect::Solid => Effect::SolidUnderline,
             UnderlineEffect::Curly => Effect::CurlyUnderline,
             UnderlineEffect::Dotted => Effect::DottedUnderline,
             UnderlineEffect::Dashed => Effect::DashedUnderline,

@@ -22,7 +22,7 @@ pub enum Effect {
     /// Italic styling.
     Italic,
     /// Solid underline styling.
-    Underline,
+    SolidUnderline,
     /// Curly underline styling.
     CurlyUnderline,
     /// Dotted underline styling.
@@ -44,6 +44,9 @@ pub enum Effect {
 }
 
 impl Effect {
+    /// An alias for [`Effect::SolidUnderline`].
+    pub const UNDERLINE: Effect = Effect::SolidUnderline;
+
     #[must_use]
     pub(crate) fn all() -> AllEffects {
         enum_iterator::all()
@@ -54,7 +57,7 @@ impl Effect {
             Effect::Bold => "1",
             Effect::Faint => "2",
             Effect::Italic => "3",
-            Effect::Underline => "4",
+            Effect::SolidUnderline => "4",
             Effect::CurlyUnderline => "4:3",
             Effect::DottedUnderline => "4:4",
             Effect::DashedUnderline => "4:5",

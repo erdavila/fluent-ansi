@@ -4,7 +4,7 @@
 - `Style` merge
 - Rename `unset` -> `remove`
 - trait to apply methods in any content that implements `Display`
-  - Example: `"Some content".bold().underline()`
+  - Example: `"Some content".bold().solid_underline()`
   - with method `with_style(Style)`
 - Handle nesting. How?!
   - Ideas:

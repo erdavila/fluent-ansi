@@ -51,10 +51,16 @@ macro_rules! impl_fluent_methods {
             self.effect($crate::Effect::Italic)
         }
 
-        /// Sets the solid underline effect.
+        /// An alias for [`Self::solid_underline()`].
         #[must_use]
         pub fn underline(self) -> $composed_styling_type {
-            self.effect($crate::Effect::Underline)
+            self.solid_underline()
+        }
+
+        /// Sets the solid underline effect.
+        #[must_use]
+        pub fn solid_underline(self) -> $composed_styling_type {
+            self.effect($crate::Effect::SolidUnderline)
         }
 
         /// Sets the curly underline effect.

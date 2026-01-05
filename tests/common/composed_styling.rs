@@ -40,12 +40,12 @@ macro_rules! test_composed_styling_type {
 
             #[test]
             fn get_effects() {
-                let composed_styling = $empty_composed_styling.bold().italic().underline();
+                let composed_styling = $empty_composed_styling.bold().italic().solid_underline();
                 let mut effects = composed_styling.get_effects();
 
                 assert_eq!(effects.next(), Some(Effect::Bold));
                 assert_eq!(effects.next(), Some(Effect::Italic));
-                assert_eq!(effects.next(), Some(Effect::Underline));
+                assert_eq!(effects.next(), Some(Effect::SolidUnderline));
                 assert_eq!(effects.next(), None);
             }
 
@@ -58,7 +58,7 @@ macro_rules! test_composed_styling_type {
                 {
                     let composed_styling =
                         $empty_composed_styling.set_underline_effect(Some(UnderlineEffect::Solid));
-                    assert_eq!(composed_styling, $empty_composed_styling.underline());
+                    assert_eq!(composed_styling, $empty_composed_styling.solid_underline());
                     assert_eq!(
                         composed_styling.get_underline_effect(),
                         Some(UnderlineEffect::Solid)
@@ -77,7 +77,7 @@ macro_rules! test_composed_styling_type {
                 {
                     let composed_styling =
                         $empty_composed_styling.set(UnderlineStyle, Some(UnderlineEffect::Solid));
-                    assert_eq!(composed_styling, $empty_composed_styling.underline());
+                    assert_eq!(composed_styling, $empty_composed_styling.solid_underline());
                     assert_eq!(
                         composed_styling.get_underline_effect(),
                         Some(UnderlineEffect::Solid)
@@ -96,7 +96,7 @@ macro_rules! test_composed_styling_type {
                 {
                     let composed_styling =
                         $empty_composed_styling.set(UnderlineEffect::Solid, true);
-                    assert_eq!(composed_styling, $empty_composed_styling.underline());
+                    assert_eq!(composed_styling, $empty_composed_styling.solid_underline());
                     assert_eq!(
                         composed_styling.get_underline_effect(),
                         Some(UnderlineEffect::Solid)
@@ -117,7 +117,7 @@ macro_rules! test_composed_styling_type {
                 {
                     let composed_styling =
                         $empty_composed_styling.set(UnderlineEffect::Solid, true);
-                    assert_eq!(composed_styling, $empty_composed_styling.underline());
+                    assert_eq!(composed_styling, $empty_composed_styling.solid_underline());
                     assert_eq!(
                         composed_styling.get_underline_effect(),
                         Some(UnderlineEffect::Solid)
@@ -138,7 +138,7 @@ macro_rules! test_composed_styling_type {
                 {
                     let composed_styling =
                         $empty_composed_styling.set_effect(UnderlineEffect::Solid, true);
-                    assert_eq!(composed_styling, $empty_composed_styling.underline());
+                    assert_eq!(composed_styling, $empty_composed_styling.solid_underline());
                     assert_eq!(
                         composed_styling.get_underline_effect(),
                         Some(UnderlineEffect::Solid)
