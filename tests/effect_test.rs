@@ -4,7 +4,7 @@ use crate::common::*;
 
 mod common;
 
-test_fluent_type![
+test_additive_styling_type![
     bold { Effect::Bold, Style::new().bold() },
     italic { Effect::Italic, Style::new().italic() },
 ];

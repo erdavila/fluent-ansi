@@ -4,7 +4,7 @@ use crate::common::*;
 
 mod common;
 
-test_fluent_type![
+test_additive_styling_type![
     red_fg { TargetedColor::new_for_fg(Color::RED), Style::new().fg(Color::RED) },
     green_fg { TargetedColor::new_for_fg(Color::GREEN), Style::new().fg(Color::GREEN) },
     red_bg { TargetedColor::new_for_fg(Color::RED), Style::new().fg(Color::RED) },

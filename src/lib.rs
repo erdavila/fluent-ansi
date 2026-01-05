@@ -39,14 +39,14 @@
 //!
 //! The styling types are categorized according to the following:
 //!
-//! * [Styling element types](#styling-element-types):
+//! * [Styling element types]:
 //!   * [Effect types](#effect-types):
 //!     * [`Effect`]
 //!     * [`UnderlineEffect`]
 //!   * [Color types](#color-types):
 //!     * [`TargetedColor`]
 //!     * The color types in [`color`]
-//! * [Composed styling types](#composed-styling-types):
+//! * [Composed styling types]:
 //!   * [`Style`]
 //!   * [`Styled<C>`]
 //!
@@ -64,9 +64,9 @@
 //! assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 //! ```
 //!
-//! When composed, they result in the [`Style`] [composed styling type](#composed-styling-types).
+//! When composed, they result in the [`Style`] [composed styling type].
 //!
-//! When applied to some content, they result in the [`Styled<C>`] [composed styling type](#composed-styling-types).
+//! When applied to some content, they result in the [`Styled<C>`] [composed styling type].
 //!
 //!
 //! ### Effect types
@@ -125,7 +125,7 @@
 //! assert_eq!(rendered_1, "\x1b[31mSome content\x1b[0m");
 //! ```
 //!
-//! You can skip mentioning the color target when using it only in the foreground. But
+//! You can refrain from mentioning the color target when using only in the foreground. But
 //! if another color target is being used too, be explicit about the foreground target:
 //!
 //! ```
@@ -146,8 +146,8 @@
 //!
 //! ## Composed styling types
 //!
-//! [`Style`] is the result of composing [styling element](#styling-element-types) values. A [`Style`]
-//! can be used on its own or -- through their fluent methods -- compose with other styling elements, or applied to some content:
+//! [`Style`] is the result of composing [styling element] values. A [`Style`] can be used on its own or -- through
+//! their methods -- compose with other styling elements, or applied to some content:
 //!
 //! ```
 //! use fluent_ansi::{prelude::*, Style};
@@ -166,7 +166,7 @@
 //! be any type that implements [`Display`](core::fmt::Display). When rendered, the content is preceded by the
 //! escape sequence corresponding to the styling, and is succeeded by the escape sequence that resets the styling.
 //!
-//! A [`Styled<C>`] instance is obtained with the `applied_to()` method available in any [styling element type](#styling-element-types)
+//! A [`Styled<C>`] instance is obtained with the `applied_to()` method available in any [styling element type]
 //! and in [`Style`], or with [`Styled<C>::new()`] to create an instance without any styling.
 //!
 //! ```
@@ -180,110 +180,146 @@
 //!
 //! # Styling methods
 //!
-//! Since all types are immutable, all methods return a new [`Styled<C>`] when called from that type,
-//! or a new [`Style`] when called from any other type.
+//! Since all types are immutable, all methods return a new value, that is a [composed styling type], which is:
+//!
+//! * [`Styled<C>`] when the method is called from that type,
+//! * [`Style`] when the method is called from any other type.
+//!
+//! There are three group of methods, according to how styling is handled:
+//! * [fluent](#fluent-methods) methods
+//! * methods for handling styling as [elements and sets](#methods-for-elements-and-sets)
+//! * methods for handling styling as [attributes](#methods-for-attributes)
+//!
+//! <div class="warning">
+//!
+//!    In the methods docs below, the links take to their implementation in [`Style`], but they are the same for all types.
+//!
+//! </div>
+//!
+//! <div class="warning">
+//!
+//!    Although some methods below are documented with varying signatures (e.g. `color(TargetedColor)` and `color(impl Into<Color>)`),
+//!    each method name has a single implementation with a generic argument in each type. Check the linked method documentation to see
+//!    the real signature.
+//!
+//! </div>
 //!
 //!
 //! ## Fluent methods
 //!
 //! The fluent methods allow to _compose_/_add_/_set_ styling. They are available in all [styling types](#styling-types).
 //!
-//! <div class="warning">
-//!
-//!    The links below link to their implementation in [`Effect`], but they are the same for all types.
-//!
-//! </div>
-//!
-//! | Method | To set what | Note |
-//! |--------|-------------|------|
-//! | [`bold()`](Effect::bold),<br/>[`italic()`](Effect::italic),<br/>[`solid_underline()`](Effect::solid_underline),<br/>etc.                         | effect |
-//! | [`effect(impl Into<Effect>)`](Effect::effect)                                                                                                    | effect<br/>(including underline effects) |
-//! | [`underline_effect(UnderlineEffect)`](Effect::underline_effect)                                                                                  | underline effect |
-//! | [`fg(impl Into<Color>)`](Effect::fg)<br/>[`bg(impl Into<Color>)`](Effect::bg)<br/>[`underline_color(impl Into<Color>)`](Effect::underline_color) | color |
-//! | [`color(TargetedColor)`](Effect::color)                                                                                                          | color | See note \[1] below. |
-//! | [`color(impl Into<Color>)`](Effect::color)                                                                                                       | foreground color | See note \[1] below. |
-//! | [`add(Effect)`](Effect::add)                                                                                                                     | effect | See note \[2] below. |
-//! | [`add(UnderlineEffect)`](Effect::add)                                                                                                            | underline effect | See note \[2] below. |
-//! | [`add(TargetedColor)`](Effect::add)                                                                                                              | color | See note \[2] below. |
-//! | [`add(impl Into<Color>)`](Effect::add)                                                                                                           | foreground color | See note \[2] below. |
-//! | [`applied_to(impl Display)`](Effect::applied_to)                                                                                                 | content | See note \[3] below. |
-//!
-//! *Note* \[1]: each styling type has in fact a single [`color()`](Effect::color) method that takes an <code>impl Into\<[TargetedColor]></code> argument.
-//!
-//! *Note* \[2]: each styling type has in fact a single [`add()`](Effect::add) method that takes an <code>impl [StylingElement]</code> argument.
-//!
-//! *Note* \[3]: [`applied_to()`](Effect::applied_to) is not available in [`Styled<C>`] values, and always returns a [`Styled<C>`].
+//! | Method | To set what |
+//! |--------|-------------|
+//! | [`bold()`](Style::bold),<br/>[`italic()`](Style::italic),<br/>[`solid_underline()`](Style::solid_underline),<br/>etc.                         | effect |
+//! | [`effect(impl Into<Effect>)`](Style::effect)                                                                                                  | effect<br/>(including underline effects) |
+//! | [`underline_effect(UnderlineEffect)`](Style::underline_effect)                                                                                | underline effect |
+//! | [`fg(impl Into<Color>)`](Style::fg)<br/>[`bg(impl Into<Color>)`](Style::bg)<br/>[`underline_color(impl Into<Color>)`](Style::underline_color) | color |
+//! | [`color(TargetedColor)`](Style::color)                                                                                                        | color |
+//! | [`color(impl Into<Color>)`](Style::color)                                                                                                     | foreground color |
+//! | [`applied_to(impl Display)`](Style::applied_to) [^applied-to-method]                                                                                                 | content | See note \[3] below. |
 //!
 //!
-//! ## General methods
+//! ## Methods for elements and sets
 //!
-//! The general methods allow to [modify](#modification-methods) (_compose_/_add_/_set_ and _clear_/_remove_) and [query](#querying-methods)
-//! the current styling in [composed styling types](#composed-styling-types).
+//! All [styling types] can be viewed as _styling sets_ where [styling elements] can be added to or removed from.
+//!
+//! The `add` method adds an _element_ to a _set_, and the `remove` method removes an _element_ from a _set_.
 //!
 //!
-//! ### Modification methods
+//! ### The `add` method
 //!
-//! These methods always return the same type from where they are called.
+//! The `add` method can be used to _compose_/_add_/_set_ some styling, and is available in all [styling types].
 //!
-//! <div class="warning">
+//! | Method | To add what |
+//! |--------|-------------|
+//! | [`add(Effect)`](Style::add)           | effect |
+//! | [`add(UnderlineEffect)`](Style::add)  | underline effect |
+//! | [`add(TargetedColor)`](Style::add)    | color |
+//! | [`add(impl Into<Color>)`](Style::add) | foreground color |
 //!
-//!    The links below link to their implementation in [`Style`], but they are the same for [`Styled<C>`].
+//! ### The `remove` method
 //!
-//! </div>
+//! The `remove` method can be used to _clear_/_remove_ some styling, and is available in the [composed styling types].
 //!
-//! | Method | To modify what | Note |
+//! | Method | To remove what | Note |
 //! |--------|----------------|------|
-//! | [`set_effect(impl Into<Effect>, bool)`](Style::set_effect)                     | effect (including underline effects) |
-//! | [`set_underline_effect(Option<UnderlineEffect>)`](Style::set_underline_effect) | underline effect |
-//! | [`set_color(ColorTarget, Option<impl Into<Color>>)`](Style::set_color)         | color | See note \[1] below. |
-//! | [`set(Effect, bool)`](Style::set)                                              | effect | See note \[2] below. |
-//! | [`set(UnderlineEffect, bool)`](Style::set)                                     | underline effect | See note \[2] below. |
-//! | [`set(UnderlineStyle, Option<UnderlineEffect>)`](Style::set)                   | underline effect | See note \[2] below. |
-//! | [`set(ColorTarget, Option<Color>)`](Style::set)                                | color | See note \[2] below. |
-//! | [`unset(Effect)`](Style::unset)                                                | effect | See note \[3] below. |
-//! | [`unset(UnderlineEffect)`](Style::unset)                                       | underline effect | See note \[3] below. |
-//! | [`unset(UnderlineStyle)`](Style::unset)                                        | underline effect | See note \[3] below. |
-//! | [`unset(ColorTarget)`](Style::unset)                                           | color | See note \[3] below. |
+//! | [`remove(Effect)`](Style::remove)          | effect |
+//! | [`remove(UnderlineEffect)`](Style::remove) | underline effect | Remove the specific effect, if set |
+//! | [`remove(UnderlineStyle)`](Style::remove)  | underline effect | Remove any underline effect that may be set |
+//! | [`remove(ColorTarget)`](Style::remove)     | color |
 //!
-//! *Note* \[1]: to clear a color with [`set_color()`](Style::set_color), the color type must be specified in the `None` value.
-//! To help with that, the [`Color::none()`](color::Color::none) method can be used:
+//! ### Example
 //!
 //! ```
-//! # use fluent_ansi::{prelude::*, ColorTarget, Style, color::Color};
-//! # let style = Style::new();
-//! # let color_target = ColorTarget::Foreground;
-//! style.set_color(color_target, None::<Color>);
-//! // or
-//! style.set_color(color_target, Color::none());
+//! use fluent_ansi::{prelude::*, ColorTarget, UnderlineStyle, Styled};
+//!
+//! let styled = Styled::new("Some content")
+//!     .add(Effect::Bold)
+//!     .add(Effect::DottedUnderline)
+//!     .add(Color::RED.for_underline());
+//! assert_eq!(format!("{styled}"), "\x1b[1;4:4;58;5;1mSome content\x1b[0m");
+//!
+//! // ...
+//!
+//! let altered_styled = styled
+//!     .remove(UnderlineStyle)
+//!     .remove(ColorTarget::Underline)
+//!     .add(Color::indexed(42).for_bg());
+//! assert_eq!(format!("{altered_styled}"), "\x1b[1;48;5;42mSome content\x1b[0m");
 //! ```
 //!
-//! *Note* \[2]: each composed styling type has in fact a single [`set()`](Style::set) method that is based on the [`StylingAttribute`] trait.
 //!
-//! *Note* \[3]: each composed styling type has in fact a single [`unset()`](Style::unset) method that is based on the [`StylingAttribute`] trait.
+//! ## Methods for attributes
 //!
+//! Styling can be seen as _attributes_, which have _values_. The type of the _value_ varies according to the _attribute_.
 //!
-//! ### Querying methods
+//! | Attribute | Value type | Meaning |
+//! |-----------|------------|---------|
+//! | [`Effect`]          | [`bool`]                    | Whether the effect is set or not |
+//! | [`UnderlineEffect`] | [`bool`]                    | Whether the specific underline effect is set or not |
+//! | [`UnderlineStyle`]  | [`Option<UnderlineEffect>`] | Which underline effect is in use, if any |
+//! | [`ColorTarget`]     | [`Option<Color>`]           | Which color is in use for that target, if any |
 //!
-//! These methods for querying effects and colors and whose return type depends on what is being queried.
+//! The `set` method can be used to _add_/_set_/_clear_/_remove_ some styling, and the `get` method can be used to _query_ any styling.
+//! Both methods are available in all [composed styling types].
 //!
-//! <div class="warning">
+//! There are also styling-specific variations for the `set` and `get` methods, in addition to the `get_effects()`, that returns an
+//! iterator on the effects that are set.
 //!
-//!    The links below link to their implementation in [`Style`], but they are the same for [`Styled<C>`].
+//! | Methods | Styling |
+//! |---------|---------|
+//! | [`set(Effect, bool)`](Style::set)                            <br/> [`set_effect(Effect, bool)`](Style::set_effect)                                          | effect
+//! | [`set(UnderlineEffect, bool)`](Style::set)                   <br/> [`set_effect(UnderlineEffect, bool)`](Style::set_effect)                                 | underline effect |
+//! | [`set(UnderlineStyle, Option<UnderlineEffect>)`](Style::set) <br/> [`set_underline_effect(Option<UnderlineEffect>)`](Style::set_underline_effect)           | underline effect |
+//! | [`set(ColorTarget, Option<Color>)`](Style::set)              <br/> [`set_color(ColorTarget, Option<impl Into<Color>>)`](Style::set_color) [^set-color-none] | color |
 //!
-//! </div>
+//! | Methods | Styling |
+//! |---------|---------|
+//! | [`get(Effect) -> bool`](Style::get)                            <br/> [`get_effect(Effect) -> bool`](Style::get_effect) <br/>[`get_effects() -> GetEffects`](Style::get_effect) | effect
+//! | [`get(UnderlineEffect) -> bool`](Style::get)                   <br/> [`get_effect(UnderlineEffect) -> bool`](Style::get_effect)                                                | underline effect |
+//! | [`get(UnderlineStyle) -> Option<UnderlineEffect>`](Style::get) <br/> [`get_underline_effect() -> Option<UnderlineEffect>`](Style::get_underline_effect)                        | underline effect |
+//! | [`get(ColorTarget) -> Option<Color>`](Style::get)              <br/> [`get_color(ColorTarget) -> Option<Color>)`](Style::get_color)                                            | color |
 //!
-//! | Method | To query what | Note |
-//! |--------|---------------|------|
-//! | [`get_effect(impl Into<Effect>) -> bool`](Style::get_effect)                       | effect (including underline effects) |
-//! | [`get_underline_effect() -> Option<UnderlineEffect>`](Style::get_underline_effect) | underline effect |
-//! | [`get_effects() -> GetEffects`](Style::get_effects)                                | effect | Returns an iterator on the effects that are currently set. |
-//! | [`get_color(ColorTarget) -> Option<Color>`](Style::get_color)                      | color |
-//! | [`get(Effect) -> bool`](Style::get)                                                | effect | See note below. |
-//! | [`get(UnderlineEffect) -> bool`](Style::get)                                       | underline effect | See note below. |
-//! | [`get(UnderlineStyle) -> Option<UnderlineEffect>`](Style::get)                     | underline effect | See note below. |
-//! | [`get(ColorTarget) -> Option<Color>`](Style::get)                                  | color | See note below. |
+//! ### Example
 //!
-//! *Note*: each composed styling type has in fact a single [`get()`](Style::get) method that is based on the [`StylingAttribute`] trait.
+//! ```
+//! use fluent_ansi::{prelude::*, ColorTarget, UnderlineStyle, Styled};
+//!
+//! let styled = Styled::new("Some content")
+//!     .set(Effect::Bold, true)
+//!     .set(Effect::DottedUnderline, true)
+//!     .set(ColorTarget::Underline, Some(Color::RED.to_color()));
+//! assert_eq!(format!("{styled}"), "\x1b[1;4:4;58;5;1mSome content\x1b[0m");
+//!
+//! // ...
+//!
+//! let altered_styled = styled
+//!     .set(UnderlineStyle, None)
+//!     .set(ColorTarget::Underline, None)
+//!     .set(ColorTarget::Background, Some(Color::indexed(42).to_color()));
+//! assert_eq!(format!("{altered_styled}"), "\x1b[1;48;5;42mSome content\x1b[0m");
+//! ```
 //!
 //!
 //! # The [`Reset`] singleton
@@ -299,6 +335,19 @@
 //!
 //! assert_eq!(output, "\x1b[1;31mSome content\x1b[0m");
 //! ```
+//!
+//!
+//! [styling types]: #styling-types
+//! [styling element]: #styling-element-types
+//! [styling elements]: #styling-element-types
+//! [styling element type]: #styling-element-types
+//! [styling element types]: #styling-element-types
+//! [composed styling type]: #composed-styling-types
+//! [composed styling types]: #composed-styling-types
+//!
+//! [^applied-to-method]: [`applied_to()`](Style::applied_to) is not available in [`Styled<C>`] values, and always returns a [`Styled<C>`].
+//! [^set-color-none]: To clear a color with [`set_color()`](Style::set_color), the color type must be specified in the `None` value as e.g.
+//!     `None::<Color>`. As an alternative, use the [`Color::none()`](color::Color::none) method.
 
 pub use crate::{
     effect::*, reset::*, style::*, styled::*, styling_attribute::*, styling_element::*,

@@ -1,8 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Style, color::Color, impl_macros::fluent::impl_fluent_type, impl_styling_atribute_for,
-    impl_styling_element_for,
+    Style, color::Color, impl_macros::additive_styling::impl_additive_styling_type,
+    impl_styling_atribute_for, impl_styling_element_for,
 };
 
 /// A color in a specific color target.
@@ -51,7 +51,7 @@ impl TargetedColor {
     }
 }
 
-impl_fluent_type!(TargetedColor {
+impl_additive_styling_type!(TargetedColor {
     args: [self];
     to_style: { Style::new().color(self) }
 });

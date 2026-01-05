@@ -55,7 +55,7 @@ macro_rules! test_color_type {
             );
         }
 
-        $crate::common::test_fluent_type!(NO_MOD: $color, Style::new().fg($color));
+        $crate::common::test_additive_styling_type!(NO_MOD: $color, Style::new().fg($color));
 
         #[test]
         fn to_targeted_color() {

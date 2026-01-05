@@ -1,13 +1,13 @@
 #![allow(unused)]
 
+mod additive_styling;
 mod color_type;
 mod composed_styling;
-mod fluent;
 mod from_to;
 
+pub(crate) use additive_styling::*;
 pub(crate) use color_type::*;
 pub(crate) use composed_styling::*;
-pub(crate) use fluent::*;
 pub(crate) use from_to::*;
 
 /// A macro to assert that a type implementing `Display` produces the expected output.

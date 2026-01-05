@@ -4,7 +4,7 @@ use common::*;
 
 mod common;
 
-test_fluent_type![
+test_additive_styling_type![
     solid { UnderlineEffect::Solid, Style::new().solid_underline() },
     curly { UnderlineEffect::Curly, Style::new().curly_underline() },
 ];

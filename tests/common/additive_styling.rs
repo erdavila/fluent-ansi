@@ -1,4 +1,4 @@
-macro_rules! test_fluent_type {
+macro_rules! test_additive_styling_type {
     ( $( $mod:ident { $value:expr, $as_style:expr } ),+ $(,)? ) => {
         mod fluent_type {
             $(
@@ -6,7 +6,7 @@ macro_rules! test_fluent_type {
                     #[allow(unused_imports)]
                     use fluent_ansi::{*, color::*};
 
-                    $crate::common::test_fluent_type!(NO_MOD: $value, $as_style);
+                    $crate::common::test_additive_styling_type!(NO_MOD: $value, $as_style);
                 }
             )+
         }
@@ -17,12 +17,12 @@ macro_rules! test_fluent_type {
             #[allow(unused_imports)]
             use fluent_ansi::{*, color::*};
 
-            $crate::common::test_fluent_type!(NO_MOD: $value, $as_style);
+            $crate::common::test_additive_styling_type!(NO_MOD: $value, $as_style);
         }
     };
 
     (NO_MOD: $value:expr, $as_style:expr) => {
-        $crate::common::test_fluent_methods!(NO_MOD: $value, $as_style);
+        $crate::common::test_additive_styling_methods!(NO_MOD: $value, $as_style);
 
         #[test]
         fn applied_to() {
@@ -42,14 +42,14 @@ macro_rules! test_fluent_type {
         }
     };
 }
-pub(crate) use test_fluent_type;
+pub(crate) use test_additive_styling_type;
 
-macro_rules! test_fluent_methods {
+macro_rules! test_additive_styling_methods {
     ($value:expr, $as_composed_styling:expr) => {
         mod fluent_methods {
             use fluent_ansi::*;
 
-            $crate::common::test_fluent_methods!(NO_MOD: $value, $as_composed_styling);
+            $crate::common::test_additive_styling_methods!(NO_MOD: $value, $as_composed_styling);
         }
     };
 
@@ -189,4 +189,4 @@ macro_rules! test_fluent_methods {
         }
     };
 }
-pub(crate) use test_fluent_methods;
+pub(crate) use test_additive_styling_methods;

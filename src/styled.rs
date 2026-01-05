@@ -2,7 +2,10 @@ use core::fmt::{Display, Formatter, Result};
 
 use crate::{
     Effect, GetEffects, Style, UnderlineEffect,
-    impl_macros::{composed_styling::impl_composed_styling_methods, fluent::impl_fluent_methods},
+    impl_macros::{
+        additive_styling::impl_additive_styling_methods,
+        composed_styling::impl_composed_styling_methods,
+    },
     prelude::Color,
 };
 
@@ -56,7 +59,7 @@ impl<C: Display> Styled<C> {
         Self { style, ..self }
     }
 
-    impl_fluent_methods! {
+    impl_additive_styling_methods! {
         type ComposedStyling = Styled<C>;
         args: [self];
         to_composed_styling: { self }

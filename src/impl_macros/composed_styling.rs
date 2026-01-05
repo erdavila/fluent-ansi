@@ -42,13 +42,19 @@ macro_rules! impl_composed_styling_methods {
 
         /// Sets the color for the given color target.
         ///
-        /// Use [`Color::none()`] to clear the color for some color target:
+        /// To clear the color for some color target, the color type must be specified in the `None` value.
+        /// To help with that, the [`Color::none()`](Color::none) method can be used:
         ///
-        /// ```
-        /// # use fluent_ansi::{prelude::*, ColorTarget, Style};
-        #[doc = concat!(r"# let ", $example_variable, r" = Style::new();")]
-        #[doc = concat!(r"", $example_variable, r".set_color(ColorTarget::Foreground, Color::none());")]
-        /// ```
+        #[doc = concat!(r"
+```
+# use fluent_ansi::{prelude::*, ColorTarget, Style};
+# let ", $example_variable, r" = Style::new();
+", $example_variable, r".set_color(ColorTarget::Foreground, None::<Color>);
+// or
+", $example_variable, r".set_color(ColorTarget::Foreground, Color::none());
+```
+")]
+        ///
         #[must_use]
         pub fn set_color($self, $target: $crate::ColorTarget, $color: Option<impl Into<Color>>) -> Self {
             $set_color
@@ -72,9 +78,9 @@ macro_rules! impl_composed_styling_methods {
             attr.get_from(self)
         }
 
-        /// Unsets the given attribute.
+        /// Clears the given attribute.
         #[must_use]
-        pub fn unset<A: $crate::StylingAttribute<Self>>(self, attr: A) -> Self {
+        pub fn remove<A: $crate::StylingAttribute<Self>>(self, attr: A) -> Self {
             attr.set_in(self, A::Value::default())
         }
     };

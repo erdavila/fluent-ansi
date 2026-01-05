@@ -3,7 +3,10 @@ use core::fmt::{Display, Formatter, Result, Write};
 use crate::{
     ColorTarget, Effect, Reset, UnderlineEffect,
     colors::{Color, WriteColorCodes as _},
-    impl_macros::{composed_styling::impl_composed_styling_methods, fluent::impl_fluent_type},
+    impl_macros::{
+        additive_styling::impl_additive_styling_type,
+        composed_styling::impl_composed_styling_methods,
+    },
     style::encoded_effects::EncodedEffects,
 };
 
@@ -88,7 +91,7 @@ impl Style {
     }
 }
 
-impl_fluent_type!(Style {
+impl_additive_styling_type!(Style {
     args: [self];
     to_style: SELF
 });

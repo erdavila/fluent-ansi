@@ -3,8 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    CodeWriter, Style, impl_macros::fluent::impl_fluent_type, impl_styling_atribute_for,
-    impl_styling_element_for,
+    CodeWriter, Style, impl_macros::additive_styling::impl_additive_styling_type,
+    impl_styling_atribute_for, impl_styling_element_for,
 };
 pub use underline::*;
 
@@ -72,7 +72,7 @@ impl Effect {
     }
 }
 
-impl_fluent_type!(Effect {
+impl_additive_styling_type!(Effect {
     args: [self];
     to_style: { Style::new().effect(self) }
 });

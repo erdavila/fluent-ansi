@@ -31,7 +31,7 @@ macro_rules! test_composed_styling_type {
                     assert_eq!(composed_styling.get_effect(Effect::Bold), true);
                     assert_eq!(composed_styling.get(Effect::Bold), true);
 
-                    let composed_styling = composed_styling.unset(Effect::Bold);
+                    let composed_styling = composed_styling.remove(Effect::Bold);
                     assert_eq!(composed_styling, $empty_composed_styling);
                     assert_eq!(composed_styling.get_effect(Effect::Bold), false);
                     assert_eq!(composed_styling.get(Effect::Bold), false);
@@ -87,7 +87,7 @@ macro_rules! test_composed_styling_type {
                         Some(UnderlineEffect::Solid)
                     );
 
-                    let composed_styling = composed_styling.unset(UnderlineStyle);
+                    let composed_styling = composed_styling.remove(UnderlineStyle);
                     assert_eq!(composed_styling, $empty_composed_styling);
                     assert_eq!(composed_styling.get_underline_effect(), None);
                     assert_eq!(composed_styling.get(UnderlineStyle), None);
@@ -107,7 +107,7 @@ macro_rules! test_composed_styling_type {
                     );
                     assert_eq!(composed_styling.get(UnderlineEffect::Solid), true);
 
-                    let composed_styling = composed_styling.unset(UnderlineEffect::Solid);
+                    let composed_styling = composed_styling.remove(UnderlineEffect::Solid);
                     assert_eq!(composed_styling, $empty_composed_styling);
                     assert_eq!(composed_styling.get_underline_effect(), None);
                     assert_eq!(composed_styling.get(UnderlineStyle), None);
@@ -206,7 +206,7 @@ macro_rules! test_composed_styling_type {
                     }
 
                     {
-                        let empty_composed_styling = composed_styling.unset($color_target);
+                        let empty_composed_styling = composed_styling.remove($color_target);
                         assert_eq!(empty_composed_styling, $empty_composed_styling);
                         assert_eq!(empty_composed_styling.get_color($color_target), None);
                         assert_eq!(empty_composed_styling.get($color_target), None);

@@ -1,10 +1,10 @@
-macro_rules! impl_fluent_type {
+macro_rules! impl_additive_styling_type {
     ($name:ident {
         args: [$self:ident];
         to_style: $to_style:tt
     }) => {
         impl $name {
-            $crate::impl_macros::fluent::impl_fluent_methods!();
+            $crate::impl_macros::additive_styling::impl_additive_styling_methods!();
 
             /// Applies the styling to the given content, returning a [`Styled<C>`](crate::Styled) instance.
             #[must_use]
@@ -14,14 +14,16 @@ macro_rules! impl_fluent_type {
             }
         }
 
-        $crate::impl_macros::fluent::__impl_fluent_type__to_style!($name, $self, $to_style);
+        $crate::impl_macros::additive_styling::__impl_additive_styling_type__to_style!(
+            $name, $self, $to_style
+        );
     };
 }
-pub(crate) use impl_fluent_type;
+pub(crate) use impl_additive_styling_type;
 
-macro_rules! impl_fluent_methods {
+macro_rules! impl_additive_styling_methods {
     () => {
-        $crate::impl_macros::fluent::impl_fluent_methods! {
+        $crate::impl_macros::additive_styling::impl_additive_styling_methods! {
             type ComposedStyling = $crate::Style;
             args: [self];
             to_composed_styling: { self.to_style() }
@@ -173,9 +175,9 @@ macro_rules! impl_fluent_methods {
         fn to_composed_styling($self) -> $composed_styling_type $to_composed_styling
     };
 }
-pub(crate) use impl_fluent_methods;
+pub(crate) use impl_additive_styling_methods;
 
-macro_rules! __impl_fluent_type__to_style {
+macro_rules! __impl_additive_styling_type__to_style {
     ($name:ident, $self:ident, SELF) => {
         // Defines only the to_style method
         impl $name {
@@ -195,4 +197,4 @@ macro_rules! __impl_fluent_type__to_style {
         );
     };
 }
-pub(crate) use __impl_fluent_type__to_style;
+pub(crate) use __impl_additive_styling_type__to_style;
