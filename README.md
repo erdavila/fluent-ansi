@@ -95,6 +95,16 @@ assert_eq!(format!("{blue_background}"), "\x1b[44m");
 assert_eq!(format!("{}", blue_background.applied_to("Some content")), "\x1b[44mSome content\x1b[0m");
 ```
 
+## Demo
+
+Execute this to see a demo of ANSI formatting in action:
+
+```bash
+cargo run --example demo
+```
+
+Its source is in [`examples/demo`](./examples/demo) if you want to check it.
+
 ## Changelog
 
 ### v0.3.0

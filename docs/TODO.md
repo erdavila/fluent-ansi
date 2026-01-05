@@ -1,4 +1,3 @@
-- Move fluent-ansi-demo here
 - const everywhere - allow defining styles at compile time
   - Eliminate traits? Use macros to add methods to types?
   - Complete implementation requires experimental feature (`const_trait_impl`) and nightly compiler
