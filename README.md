@@ -66,9 +66,9 @@ assert_eq!(format!("{}", Effect::Bold), "\x1b[1m");
 assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 ```
 
-#### Underline Styles
+#### Underline Effects
 
-In addition to standard effects, specific underline styles are supported (and are mutually exclusive):
+In addition to standard effects, specific underline effects are supported (and are mutually exclusive):
 
 ```rust
 use fluent_ansi::prelude::*;

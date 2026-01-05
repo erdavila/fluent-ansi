@@ -42,7 +42,7 @@
 //! * [Styling element types](#styling-element-types):
 //!   * [Effect types](#effect-types):
 //!     * [`Effect`]
-//!     * [`UnderlineStyle`]
+//!     * [`UnderlineEffect`]
 //!   * [Color types](#color-types):
 //!     * [`TargetedColor`]
 //!     * The color types in [`color`]
@@ -73,7 +73,7 @@
 //!
 //! An effect is an styling element type that may or may not be present. They correspond to the variants in the [`Effect`] enum.
 //!
-//! A subset of effects correspond to underline styles. They are mutually exclusive, meaning that when
+//! A subset of effects correspond to underline effects. They are mutually exclusive, meaning that when
 //! one of them is set, any previously set underline effect is cleared.
 //!
 //! ```
@@ -89,7 +89,7 @@
 //! assert!(style.get_effect(Effect::DashedUnderline));
 //! ```
 //!
-//! The [`UnderlineStyle`] enum variants represent the underline effects.
+//! The [`UnderlineEffect`] enum variants represent the underline effects.
 //!
 //!
 //! ### Color types
@@ -197,13 +197,13 @@
 //! | Method | To set what | Note |
 //! |--------|-------------|------|
 //! | [`bold()`](Effect::bold),<br/>[`italic()`](Effect::italic),<br/>[`underline()`](Effect::underline),<br/>etc.                                     | effect |
-//! | [`effect(impl Into<Effect>)`](Effect::effect)                                                                                                    | effect<br/>(including underline styles) |
-//! | [`underline_style(UnderlineStyle)`](Effect::underline_style)                                                                                     | underline style |
+//! | [`effect(impl Into<Effect>)`](Effect::effect)                                                                                                    | effect<br/>(including underline effects) |
+//! | [`underline_effect(UnderlineEffect)`](Effect::underline_effect)                                                                                  | underline effect |
 //! | [`fg(impl Into<Color>)`](Effect::fg)<br/>[`bg(impl Into<Color>)`](Effect::bg)<br/>[`underline_color(impl Into<Color>)`](Effect::underline_color) | color |
 //! | [`color(TargetedColor)`](Effect::color)                                                                                                          | color | See note \[1] below. |
 //! | [`color(impl Into<Color>)`](Effect::color)                                                                                                       | foreground color | See note \[1] below. |
 //! | [`add(Effect)`](Effect::add)                                                                                                                     | effect | See note \[2] below. |
-//! | [`add(UnderlineStyle)`](Effect::add)                                                                                                             | underline style | See note \[2] below. |
+//! | [`add(UnderlineEffect)`](Effect::add)                                                                                                            | underline effect | See note \[2] below. |
 //! | [`add(TargetedColor)`](Effect::add)                                                                                                              | color | See note \[2] below. |
 //! | [`add(impl Into<Color>)`](Effect::add)                                                                                                           | foreground color | See note \[2] below. |
 //! | [`applied_to(impl Display)`](Effect::applied_to)                                                                                                 | content | See note \[3] below. |
@@ -233,17 +233,17 @@
 //!
 //! | Method | To modify what | Note |
 //! |--------|----------------|------|
-//! | [`set_effect(impl Into<Effect>, bool)`](Style::set_effect)                  | effect (including underline styles) |
-//! | [`set_underline_style(Option<UnderlineStyle>)`](Style::set_underline_style) | underline style |
-//! | [`set_color(ColorTarget, Option<impl Into<Color>>)`](Style::set_color)      | color | See note \[1] below. |
-//! | [`set(Effect, bool)`](Style::set)                                           | effect | See note \[2] below. |
-//! | [`set(UnderlineStyle, bool)`](Style::set)                                   | underline style | See note \[2] below. |
-//! | [`set(Underline, Option<UnderlineStyle>)`](Style::set)                      | underline style | See note \[2] below. |
-//! | [`set(ColorTarget, Option<Color>)`](Style::set)                             | color | See note \[2] below. |
-//! | [`unset(Effect)`](Style::unset)                                             | effect | See note \[3] below. |
-//! | [`unset(UnderlineStyle)`](Style::unset)                                     | underline style | See note \[3] below. |
-//! | [`unset(Underline)`](Style::unset)                                          | underline style | See note \[3] below. |
-//! | [`unset(ColorTarget)`](Style::unset)                                        | color | See note \[3] below. |
+//! | [`set_effect(impl Into<Effect>, bool)`](Style::set_effect)                     | effect (including underline effects) |
+//! | [`set_underline_effect(Option<UnderlineEffect>)`](Style::set_underline_effect) | underline effect |
+//! | [`set_color(ColorTarget, Option<impl Into<Color>>)`](Style::set_color)         | color | See note \[1] below. |
+//! | [`set(Effect, bool)`](Style::set)                                              | effect | See note \[2] below. |
+//! | [`set(UnderlineEffect, bool)`](Style::set)                                     | underline effect | See note \[2] below. |
+//! | [`set(Underline, Option<UnderlineEffect>)`](Style::set)                        | underline effect | See note \[2] below. |
+//! | [`set(ColorTarget, Option<Color>)`](Style::set)                                | color | See note \[2] below. |
+//! | [`unset(Effect)`](Style::unset)                                                | effect | See note \[3] below. |
+//! | [`unset(UnderlineEffect)`](Style::unset)                                       | underline effect | See note \[3] below. |
+//! | [`unset(Underline)`](Style::unset)                                             | underline effect | See note \[3] below. |
+//! | [`unset(ColorTarget)`](Style::unset)                                           | color | See note \[3] below. |
 //!
 //! *Note* \[1]: to clear a color with [`set_color()`](Style::set_color), the color type must be specified in the `None` value.
 //! To help with that, the [`Color::none()`](color::Color::none) method can be used:
@@ -274,14 +274,14 @@
 //!
 //! | Method | To query what | Note |
 //! |--------|---------------|------|
-//! | [`get_effect(impl Into<Effect>) -> bool`](Style::get_effect)                    | effect (including underline styles) |
-//! | [`get_underline_style() -> Option<UnderlineStyle>`](Style::get_underline_style) | underline style |
-//! | [`get_effects() -> GetEffects`](Style::get_effects)                             | effect | Returns an iterator on the effects that are currently set. |
-//! | [`get_color(ColorTarget) -> Option<Color>`](Style::get_color)                   | color |
-//! | [`get(Effect) -> bool`](Style::get)                                             | effect | See note below. |
-//! | [`get(UnderlineStyle) -> bool`](Style::get)                                     | underline style | See note below. |
-//! | [`get(Underline) -> Option<UnderlineStyle>`](Style::get)                        | underline style | See note below. |
-//! | [`get(ColorTarget) -> Option<Color>`](Style::get)                               | color | See note below. |
+//! | [`get_effect(impl Into<Effect>) -> bool`](Style::get_effect)                       | effect (including underline effects) |
+//! | [`get_underline_effect() -> Option<UnderlineEffect>`](Style::get_underline_effect) | underline effect |
+//! | [`get_effects() -> GetEffects`](Style::get_effects)                                | effect | Returns an iterator on the effects that are currently set. |
+//! | [`get_color(ColorTarget) -> Option<Color>`](Style::get_color)                      | color |
+//! | [`get(Effect) -> bool`](Style::get)                                                | effect | See note below. |
+//! | [`get(UnderlineEffect) -> bool`](Style::get)                                       | underline effect | See note below. |
+//! | [`get(Underline) -> Option<UnderlineEffect>`](Style::get)                          | underline effect | See note below. |
+//! | [`get(ColorTarget) -> Option<Color>`](Style::get)                                  | color | See note below. |
 //!
 //! *Note*: each composed styling type has in fact a single [`get()`](Style::get) method that is based on the [`StylingAttribute`] trait.
 //!
@@ -375,6 +375,6 @@ pub mod prelude {
     //! ```
 
     pub use crate::Effect;
-    pub use crate::UnderlineStyle;
+    pub use crate::UnderlineEffect;
     pub use crate::color::Color;
 }

@@ -5,44 +5,44 @@ use common::*;
 mod common;
 
 test_fluent_type![
-    solid { UnderlineStyle::Solid, Style::new().underline() },
-    curly { UnderlineStyle::Curly, Style::new().curly_underline() },
+    solid { UnderlineEffect::Solid, Style::new().underline() },
+    curly { UnderlineEffect::Curly, Style::new().curly_underline() },
 ];
 
 #[test]
 fn to_effect() {
     assert_from_to!(
         to_effect, Effect;
-        UnderlineStyle::Solid,
+        UnderlineEffect::Solid,
         Effect::Underline
     );
     assert_from_to!(
         to_effect, Effect;
-        UnderlineStyle::Curly,
+        UnderlineEffect::Curly,
         Effect::CurlyUnderline
     );
     assert_from_to!(
         to_effect, Effect;
-        UnderlineStyle::Dotted,
+        UnderlineEffect::Dotted,
         Effect::DottedUnderline
     );
     assert_from_to!(
         to_effect, Effect;
-        UnderlineStyle::Dashed,
+        UnderlineEffect::Dashed,
         Effect::DashedUnderline
     );
     assert_from_to!(
         to_effect, Effect;
-        UnderlineStyle::Double,
+        UnderlineEffect::Double,
         Effect::DoubleUnderline
     );
 }
 
 #[test]
 fn display() {
-    assert_display!(UnderlineStyle::Solid, "\x1b[4m");
-    assert_display!(UnderlineStyle::Curly, "\x1b[4:3m");
-    assert_display!(UnderlineStyle::Dotted, "\x1b[4:4m");
-    assert_display!(UnderlineStyle::Dashed, "\x1b[4:5m");
-    assert_display!(UnderlineStyle::Double, "\x1b[21m");
+    assert_display!(UnderlineEffect::Solid, "\x1b[4m");
+    assert_display!(UnderlineEffect::Curly, "\x1b[4:3m");
+    assert_display!(UnderlineEffect::Dotted, "\x1b[4:4m");
+    assert_display!(UnderlineEffect::Dashed, "\x1b[4:5m");
+    assert_display!(UnderlineEffect::Double, "\x1b[21m");
 }

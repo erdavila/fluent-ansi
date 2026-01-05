@@ -117,10 +117,10 @@ macro_rules! impl_fluent_methods {
             self.to_composed_styling().set_effect(effect, true)
         }
 
-        /// Sets the underline style.
+        /// Sets the underline effect.
         #[must_use]
-        pub fn underline_style(self, underline_style: $crate::UnderlineStyle) -> $composed_styling_type {
-            self.effect(underline_style)
+        pub fn underline_effect(self, underline_effect: $crate::UnderlineEffect) -> $composed_styling_type {
+            self.effect(underline_effect)
         }
 
         /// Sets the foreground color.

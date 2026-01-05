@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Effect, GetEffects, Style, UnderlineStyle,
+    Effect, GetEffects, Style, UnderlineEffect,
     impl_macros::{composed_styling::impl_composed_styling_methods, fluent::impl_fluent_methods},
     prelude::Color,
 };
@@ -63,7 +63,7 @@ impl<C: Display> Styled<C> {
     }
 
     impl_composed_styling_methods! {
-        args: [self, effect, underline_style, target, color, value];
+        args: [self, effect, underline_effect, target, color, value];
         example_variable: r"styled";
 
         set_effect: {
@@ -78,12 +78,12 @@ impl<C: Display> Styled<C> {
             self.style.get_effects()
         }
 
-        set_underline_style: {
-            self.modify_style(|style| style.set_underline_style(underline_style))
+        set_underline_effect: {
+            self.modify_style(|style| style.set_underline_effect(underline_effect))
         }
 
-        get_underline_style: {
-            self.style.get_underline_style()
+        get_underline_effect: {
+            self.style.get_underline_effect()
         }
 
         set_color: {

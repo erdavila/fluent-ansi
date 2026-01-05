@@ -99,42 +99,42 @@ macro_rules! test_fluent_methods {
         }
 
         #[test]
-        fn underline_styles() {
+        fn underline_effects() {
             use fluent_ansi::*;
 
             macro_rules! assert_effect_method {
-                ($underline_style:expr, $method:ident) => {{
+                ($underline_effect:expr, $method:ident) => {{
                     let expected_style = $as_composed_styling.$method();
 
                     assert_eq!(
-                        $value.underline_style($underline_style),
+                        $value.underline_effect($underline_effect),
                         expected_style,
-                        "{:?}.underline_style({:?})",
+                        "{:?}.underline_effect({:?})",
                         $value,
-                        $underline_style
+                        $underline_effect
                     );
                     assert_eq!(
-                        $value.effect($underline_style),
+                        $value.effect($underline_effect),
                         expected_style,
                         "{:?}.effect({:?})",
                         $value,
-                        $underline_style
+                        $underline_effect
                     );
                     assert_eq!(
-                        $value.add($underline_style),
+                        $value.add($underline_effect),
                         expected_style,
                         "{:?}.add({:?})",
                         $value,
-                        $underline_style
+                        $underline_effect
                     );
                 }};
             }
 
-            assert_effect_method!(UnderlineStyle::Solid, underline);
-            assert_effect_method!(UnderlineStyle::Curly, curly_underline);
-            assert_effect_method!(UnderlineStyle::Dotted, dotted_underline);
-            assert_effect_method!(UnderlineStyle::Dashed, dashed_underline);
-            assert_effect_method!(UnderlineStyle::Double, double_underline);
+            assert_effect_method!(UnderlineEffect::Solid, underline);
+            assert_effect_method!(UnderlineEffect::Curly, curly_underline);
+            assert_effect_method!(UnderlineEffect::Dotted, dotted_underline);
+            assert_effect_method!(UnderlineEffect::Dashed, dashed_underline);
+            assert_effect_method!(UnderlineEffect::Double, double_underline);
         }
 
         #[test]

@@ -8,13 +8,13 @@ use crate::{
     impl_styling_atribute_for, impl_styling_element_for,
 };
 
-pub(crate) type AllUnderlineStyles = enum_iterator::All<UnderlineStyle>;
+pub(crate) type AllUnderlineEffects = enum_iterator::All<UnderlineEffect>;
 
-/// An enumeration of all supported underline styles.
+/// An enumeration of all supported underline effects.
 ///
 /// The values correspond to a subset of [`Effect`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Sequence)]
-pub enum UnderlineStyle {
+pub enum UnderlineEffect {
     /// Solid underline styling.
     #[default]
     Solid,
@@ -28,45 +28,45 @@ pub enum UnderlineStyle {
     Double,
 }
 
-impl UnderlineStyle {
+impl UnderlineEffect {
     #[must_use]
-    pub(crate) fn all() -> AllUnderlineStyles {
+    pub(crate) fn all() -> AllUnderlineEffects {
         enum_iterator::all()
     }
 }
 
-impl_fluent_type!(UnderlineStyle {
+impl_fluent_type!(UnderlineEffect {
     args: [self];
     to_style: { self.to_effect().to_style() }
 });
 
 impl_from_to!(
     #[doc = r"Converts the type into an [`Effect`]."]
-    fn to_effect(self: UnderlineStyle) -> Effect {
+    fn to_effect(self: UnderlineEffect) -> Effect {
         match self {
-            UnderlineStyle::Solid => Effect::Underline,
-            UnderlineStyle::Curly => Effect::CurlyUnderline,
-            UnderlineStyle::Dotted => Effect::DottedUnderline,
-            UnderlineStyle::Dashed => Effect::DashedUnderline,
-            UnderlineStyle::Double => Effect::DoubleUnderline,
+            UnderlineEffect::Solid => Effect::Underline,
+            UnderlineEffect::Curly => Effect::CurlyUnderline,
+            UnderlineEffect::Dotted => Effect::DottedUnderline,
+            UnderlineEffect::Dashed => Effect::DashedUnderline,
+            UnderlineEffect::Double => Effect::DoubleUnderline,
         }
     }
 );
 
-impl Display for UnderlineStyle {
+impl Display for UnderlineEffect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         self.to_effect().fmt(f)
     }
 }
 
-impl_styling_element_for! { UnderlineStyle {
+impl_styling_element_for! { UnderlineEffect {
     args: [self, composed_styling];
     add_to: {
-        composed_styling.set_underline_style(Some(self))
+        composed_styling.set_underline_effect(Some(self))
     }
 }}
 
-impl_styling_atribute_for! { UnderlineStyle {
+impl_styling_atribute_for! { UnderlineEffect {
     type Value = bool;
     args: [self, composed_styling, value];
 
@@ -88,14 +88,14 @@ impl_styling_atribute_for! { UnderlineStyle {
 pub struct Underline;
 
 impl_styling_atribute_for! { Underline {
-    type Value = Option<UnderlineStyle>;
+    type Value = Option<UnderlineEffect>;
     args: [self, composed_styling, value];
 
     set_in: {
-        composed_styling.set_underline_style(value)
+        composed_styling.set_underline_effect(value)
     }
 
     get_from: {
-        composed_styling.get_underline_style()
+        composed_styling.get_underline_effect()
     }
 }}

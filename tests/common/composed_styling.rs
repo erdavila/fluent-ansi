@@ -50,94 +50,111 @@ macro_rules! test_composed_styling_type {
             }
 
             #[test]
-            fn underline_styles() {
+            fn underline_effects() {
                 let composed_styling = $empty_composed_styling;
-                assert_eq!(composed_styling.get_underline_style(), None);
+                assert_eq!(composed_styling.get_underline_effect(), None);
                 assert_eq!(composed_styling.get(Underline), None);
 
                 {
                     let composed_styling =
-                        $empty_composed_styling.set_underline_style(Some(UnderlineStyle::Solid));
+                        $empty_composed_styling.set_underline_effect(Some(UnderlineEffect::Solid));
                     assert_eq!(composed_styling, $empty_composed_styling.underline());
                     assert_eq!(
-                        composed_styling.get_underline_style(),
-                        Some(UnderlineStyle::Solid)
+                        composed_styling.get_underline_effect(),
+                        Some(UnderlineEffect::Solid)
                     );
-                    assert_eq!(composed_styling.get(Underline), Some(UnderlineStyle::Solid));
+                    assert_eq!(
+                        composed_styling.get(Underline),
+                        Some(UnderlineEffect::Solid)
+                    );
 
-                    let composed_styling = composed_styling.set_underline_style(None);
+                    let composed_styling = composed_styling.set_underline_effect(None);
                     assert_eq!(composed_styling, $empty_composed_styling);
-                    assert_eq!(composed_styling.get_underline_style(), None);
+                    assert_eq!(composed_styling.get_underline_effect(), None);
                     assert_eq!(composed_styling.get(Underline), None);
                 }
 
                 {
                     let composed_styling =
-                        $empty_composed_styling.set(Underline, Some(UnderlineStyle::Solid));
+                        $empty_composed_styling.set(Underline, Some(UnderlineEffect::Solid));
                     assert_eq!(composed_styling, $empty_composed_styling.underline());
                     assert_eq!(
-                        composed_styling.get_underline_style(),
-                        Some(UnderlineStyle::Solid)
+                        composed_styling.get_underline_effect(),
+                        Some(UnderlineEffect::Solid)
                     );
-                    assert_eq!(composed_styling.get(Underline), Some(UnderlineStyle::Solid));
+                    assert_eq!(
+                        composed_styling.get(Underline),
+                        Some(UnderlineEffect::Solid)
+                    );
 
                     let composed_styling = composed_styling.unset(Underline);
                     assert_eq!(composed_styling, $empty_composed_styling);
-                    assert_eq!(composed_styling.get_underline_style(), None);
+                    assert_eq!(composed_styling.get_underline_effect(), None);
                     assert_eq!(composed_styling.get(Underline), None);
-                }
-
-                {
-                    let composed_styling = $empty_composed_styling.set(UnderlineStyle::Solid, true);
-                    assert_eq!(composed_styling, $empty_composed_styling.underline());
-                    assert_eq!(
-                        composed_styling.get_underline_style(),
-                        Some(UnderlineStyle::Solid)
-                    );
-                    assert_eq!(composed_styling.get(Underline), Some(UnderlineStyle::Solid));
-                    assert_eq!(composed_styling.get(UnderlineStyle::Solid), true);
-
-                    let composed_styling = composed_styling.unset(UnderlineStyle::Solid);
-                    assert_eq!(composed_styling, $empty_composed_styling);
-                    assert_eq!(composed_styling.get_underline_style(), None);
-                    assert_eq!(composed_styling.get(Underline), None);
-                    assert_eq!(composed_styling.get(UnderlineStyle::Solid), false);
-                }
-
-                {
-                    let composed_styling = $empty_composed_styling.set(UnderlineStyle::Solid, true);
-                    assert_eq!(composed_styling, $empty_composed_styling.underline());
-                    assert_eq!(
-                        composed_styling.get_underline_style(),
-                        Some(UnderlineStyle::Solid)
-                    );
-                    assert_eq!(composed_styling.get(Underline), Some(UnderlineStyle::Solid));
-                    assert_eq!(composed_styling.get(UnderlineStyle::Solid), true);
-
-                    let composed_styling = composed_styling.set(UnderlineStyle::Solid, false);
-                    assert_eq!(composed_styling, $empty_composed_styling);
-                    assert_eq!(composed_styling.get_underline_style(), None);
-                    assert_eq!(composed_styling.get(Underline), None);
-                    assert_eq!(composed_styling.get(UnderlineStyle::Solid), false);
                 }
 
                 {
                     let composed_styling =
-                        $empty_composed_styling.set_effect(UnderlineStyle::Solid, true);
+                        $empty_composed_styling.set(UnderlineEffect::Solid, true);
                     assert_eq!(composed_styling, $empty_composed_styling.underline());
                     assert_eq!(
-                        composed_styling.get_underline_style(),
-                        Some(UnderlineStyle::Solid)
+                        composed_styling.get_underline_effect(),
+                        Some(UnderlineEffect::Solid)
                     );
-                    assert_eq!(composed_styling.get(Underline), Some(UnderlineStyle::Solid));
-                    assert_eq!(composed_styling.get_effect(UnderlineStyle::Solid), true);
+                    assert_eq!(
+                        composed_styling.get(Underline),
+                        Some(UnderlineEffect::Solid)
+                    );
+                    assert_eq!(composed_styling.get(UnderlineEffect::Solid), true);
+
+                    let composed_styling = composed_styling.unset(UnderlineEffect::Solid);
+                    assert_eq!(composed_styling, $empty_composed_styling);
+                    assert_eq!(composed_styling.get_underline_effect(), None);
+                    assert_eq!(composed_styling.get(Underline), None);
+                    assert_eq!(composed_styling.get(UnderlineEffect::Solid), false);
+                }
+
+                {
+                    let composed_styling =
+                        $empty_composed_styling.set(UnderlineEffect::Solid, true);
+                    assert_eq!(composed_styling, $empty_composed_styling.underline());
+                    assert_eq!(
+                        composed_styling.get_underline_effect(),
+                        Some(UnderlineEffect::Solid)
+                    );
+                    assert_eq!(
+                        composed_styling.get(Underline),
+                        Some(UnderlineEffect::Solid)
+                    );
+                    assert_eq!(composed_styling.get(UnderlineEffect::Solid), true);
+
+                    let composed_styling = composed_styling.set(UnderlineEffect::Solid, false);
+                    assert_eq!(composed_styling, $empty_composed_styling);
+                    assert_eq!(composed_styling.get_underline_effect(), None);
+                    assert_eq!(composed_styling.get(Underline), None);
+                    assert_eq!(composed_styling.get(UnderlineEffect::Solid), false);
+                }
+
+                {
+                    let composed_styling =
+                        $empty_composed_styling.set_effect(UnderlineEffect::Solid, true);
+                    assert_eq!(composed_styling, $empty_composed_styling.underline());
+                    assert_eq!(
+                        composed_styling.get_underline_effect(),
+                        Some(UnderlineEffect::Solid)
+                    );
+                    assert_eq!(
+                        composed_styling.get(Underline),
+                        Some(UnderlineEffect::Solid)
+                    );
+                    assert_eq!(composed_styling.get_effect(UnderlineEffect::Solid), true);
 
                     let composed_styling =
-                        composed_styling.set_effect(UnderlineStyle::Solid, false);
+                        composed_styling.set_effect(UnderlineEffect::Solid, false);
                     assert_eq!(composed_styling, $empty_composed_styling);
-                    assert_eq!(composed_styling.get_underline_style(), None);
+                    assert_eq!(composed_styling.get_underline_effect(), None);
                     assert_eq!(composed_styling.get(Underline), None);
-                    assert_eq!(composed_styling.get_effect(UnderlineStyle::Solid), false);
+                    assert_eq!(composed_styling.get_effect(UnderlineEffect::Solid), false);
                 }
             }
 

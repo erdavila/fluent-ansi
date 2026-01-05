@@ -49,13 +49,13 @@ fn effects() {
 }
 
 fn underline() {
-    print_title("Underline Styles and Colors");
-    let styles = [
-        (UnderlineStyle::Solid, "Solid"),
-        (UnderlineStyle::Curly, "Curly"),
-        (UnderlineStyle::Dotted, "Dotted"),
-        (UnderlineStyle::Dashed, "Dashed"),
-        (UnderlineStyle::Double, "Double"),
+    print_title("Underline Effects and Colors");
+    let effects = [
+        (UnderlineEffect::Solid, "Solid"),
+        (UnderlineEffect::Curly, "Curly"),
+        (UnderlineEffect::Dotted, "Dotted"),
+        (UnderlineEffect::Dashed, "Dashed"),
+        (UnderlineEffect::Double, "Double"),
     ];
     let colors = [
         (Color::BLACK, "Black"),
@@ -69,8 +69,11 @@ fn underline() {
     ];
 
     for (color, color_name) in colors {
-        for (style, style_name) in styles {
-            print!(" {} |", style.underline_color(color).applied_to(style_name));
+        for (effect, effect_name) in effects {
+            print!(
+                " {} |",
+                effect.underline_color(color).applied_to(effect_name)
+            );
         }
         println!(" {color_name}");
     }

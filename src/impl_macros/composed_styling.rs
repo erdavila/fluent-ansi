@@ -1,13 +1,13 @@
 macro_rules! impl_composed_styling_methods {
     {
-        args: [$self:ident, $effect:ident, $underline_style:ident, $target:ident, $color:ident, $value:ident];
+        args: [$self:ident, $effect:ident, $underline_effect:ident, $target:ident, $color:ident, $value:ident];
         example_variable: $example_variable:literal;
 
         set_effect: $set_effect:block
         get_effect: $get_effect:block
         get_effects: $get_effects:block
-        set_underline_style: $set_underline_style:block
-        get_underline_style: $get_underline_style:block
+        set_underline_effect: $set_underline_effect:block
+        get_underline_effect: $get_underline_effect:block
         set_color: $set_color:block
         get_color: $get_color:block
     } => {
@@ -29,15 +29,15 @@ macro_rules! impl_composed_styling_methods {
             $get_effects
         }
 
-        /// Sets the underline style.
+        /// Sets the underline effect.
         #[must_use]
-        pub fn set_underline_style($self, $underline_style: Option<UnderlineStyle>) -> Self
-            $set_underline_style
+        pub fn set_underline_effect($self, $underline_effect: Option<UnderlineEffect>) -> Self
+            $set_underline_effect
 
-        /// Gets the underline style.
+        /// Gets the underline effect.
         #[must_use]
-        pub fn get_underline_style(&$self) -> Option<UnderlineStyle> {
-            $get_underline_style
+        pub fn get_underline_effect(&$self) -> Option<UnderlineEffect> {
+            $get_underline_effect
         }
 
         /// Sets the color for the given color target.

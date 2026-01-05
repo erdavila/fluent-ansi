@@ -1,7 +1,7 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    ColorTarget, Effect, Reset, UnderlineStyle,
+    ColorTarget, Effect, Reset, UnderlineEffect,
     colors::{Color, WriteColorCodes as _},
     impl_macros::{composed_styling::impl_composed_styling_methods, fluent::impl_fluent_type},
     style::encoded_effects::EncodedEffects,
@@ -33,7 +33,7 @@ impl Style {
     }
 
     impl_composed_styling_methods! {
-        args: [self, effect, underline_style, target, color, value];
+        args: [self, effect, underline_effect, target, color, value];
         example_variable: r"style";
 
         set_effect: {
@@ -54,16 +54,16 @@ impl Style {
             self.encoded_effects.get_effects()
         }
 
-        set_underline_style: {
-            let encoded_effects = self.encoded_effects.set_underline(underline_style);
+        set_underline_effect: {
+            let encoded_effects = self.encoded_effects.set_underline(underline_effect);
             Self {
                 encoded_effects,
                 ..self
             }
         }
 
-        get_underline_style: {
-            UnderlineStyle::all().find(|&underline_style| self.get_effect(underline_style))
+        get_underline_effect: {
+            UnderlineEffect::all().find(|&underline_effect| self.get_effect(underline_effect))
         }
 
         set_color: {

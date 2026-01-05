@@ -1,4 +1,4 @@
-use crate::{AllEffects, Effect, UnderlineStyle};
+use crate::{AllEffects, Effect, UnderlineEffect};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub(crate) struct EncodedEffects(u16);
@@ -20,9 +20,9 @@ impl EncodedEffects {
 
     #[must_use]
     fn add(self, effect: Effect) -> Self {
-        let underline_style = UnderlineStyle::all().find(|t| t.to_effect() == effect);
-        if let Some(underline_style) = underline_style {
-            self.set_underline(Some(underline_style))
+        let underline_effect = UnderlineEffect::all().find(|t| t.to_effect() == effect);
+        if let Some(underline_effect) = underline_effect {
+            self.set_underline(Some(underline_effect))
         } else {
             self.set_bit(effect)
         }
@@ -34,10 +34,10 @@ impl EncodedEffects {
     }
 
     #[must_use]
-    pub(crate) fn set_underline(self, underline_style: Option<UnderlineStyle>) -> Self {
+    pub(crate) fn set_underline(self, underline_effect: Option<UnderlineEffect>) -> Self {
         let encoded_effects = self.remove_underline();
-        if let Some(underline_style) = underline_style {
-            encoded_effects.set_bit(underline_style.to_effect())
+        if let Some(underline_effect) = underline_effect {
+            encoded_effects.set_bit(underline_effect.to_effect())
         } else {
             encoded_effects
         }
@@ -46,8 +46,8 @@ impl EncodedEffects {
     #[must_use]
     fn remove_underline(self) -> Self {
         let mut encoded_effects = self;
-        for underline_style in UnderlineStyle::all() {
-            encoded_effects = encoded_effects.clear_bit(underline_style.to_effect());
+        for underline_effect in UnderlineEffect::all() {
+            encoded_effects = encoded_effects.clear_bit(underline_effect.to_effect());
         }
         encoded_effects
     }
@@ -105,7 +105,7 @@ mod tests {
     use super::*;
 
     fn underline_effects() -> impl Iterator<Item = Effect> {
-        UnderlineStyle::all().map(UnderlineStyle::to_effect)
+        UnderlineEffect::all().map(UnderlineEffect::to_effect)
     }
 
     #[test]
@@ -176,26 +176,26 @@ mod tests {
 
     #[test]
     fn set_underline_some() {
-        for initial_style in UnderlineStyle::all() {
+        for initial_effect in UnderlineEffect::all() {
             // Add some effect
-            let encoded_effects = EncodedEffects::default().set(initial_style.to_effect(), true);
+            let encoded_effects = EncodedEffects::default().set(initial_effect.to_effect(), true);
 
-            for other_style in UnderlineStyle::all() {
-                if other_style == initial_style {
+            for other_effect in UnderlineEffect::all() {
+                if other_effect == initial_effect {
                     continue;
                 }
 
                 // Add other effect
-                let encoded_effects = encoded_effects.set_underline(Some(other_style));
+                let encoded_effects = encoded_effects.set_underline(Some(other_effect));
 
                 // Only the most recently added effect should be set
                 assert!(
-                    !encoded_effects.get(initial_style.to_effect()),
-                    "{initial_style:?} should not be set"
+                    !encoded_effects.get(initial_effect.to_effect()),
+                    "{initial_effect:?} should not be set"
                 );
                 assert!(
-                    encoded_effects.get(other_style.to_effect()),
-                    "{other_style:?} should be set"
+                    encoded_effects.get(other_effect.to_effect()),
+                    "{other_effect:?} should be set"
                 );
             }
         }
@@ -203,17 +203,17 @@ mod tests {
 
     macro_rules! test_clear_underline {
         ($method:ident ( $( $arg:expr )?) ) => {
-            for initial_style in UnderlineStyle::all() {
+            for initial_effect in UnderlineEffect::all() {
                 // Add some effect
-                let encoded_effects = EncodedEffects::default().set(initial_style.to_effect(), true);
+                let encoded_effects = EncodedEffects::default().set(initial_effect.to_effect(), true);
 
                 // Clear underline effect
                 let encoded_effects = encoded_effects.$method( $( $arg )? );
 
-                for checked_style in UnderlineStyle::all() {
+                for checked_effect in UnderlineEffect::all() {
                     assert!(
-                        !encoded_effects.get(checked_style.to_effect()),
-                        "{initial_style:?} should not be set"
+                        !encoded_effects.get(checked_effect.to_effect()),
+                        "{initial_effect:?} should not be set"
                     );
                 }
             }
