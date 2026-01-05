@@ -3,7 +3,6 @@
     - Implement what is possible in `main`, and the remaining in a branch.
 - `Style` merge
 - Rename `unset` -> `remove`
-- Rename `Underline` -> `UnderlineStyle`
 - trait to apply methods in any content that implements `Display`
   - Example: `"Some content".bold().underline()`
   - with method `with_style(Style)`

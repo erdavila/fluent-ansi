@@ -12,6 +12,6 @@ It includes blanket implementations.
 | `BasicColor`<br/>`SimpleColor`<br/>`IndexedColor`<br/>`RGBColor`<br/>`Color` | | X | X | X | X | X | |
 | `Reset` | | | | X | | | |
 | `ColorTarget` | | | | | | | X |
-| `Underline` | | | | | | | X |
+| `UnderlineStyle` | | | | | | | X |
 
 Fluent type = Fluent methods + `applied_to` method + `to_style` method

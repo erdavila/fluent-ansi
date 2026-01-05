@@ -238,11 +238,11 @@
 //! | [`set_color(ColorTarget, Option<impl Into<Color>>)`](Style::set_color)         | color | See note \[1] below. |
 //! | [`set(Effect, bool)`](Style::set)                                              | effect | See note \[2] below. |
 //! | [`set(UnderlineEffect, bool)`](Style::set)                                     | underline effect | See note \[2] below. |
-//! | [`set(Underline, Option<UnderlineEffect>)`](Style::set)                        | underline effect | See note \[2] below. |
+//! | [`set(UnderlineStyle, Option<UnderlineEffect>)`](Style::set)                   | underline effect | See note \[2] below. |
 //! | [`set(ColorTarget, Option<Color>)`](Style::set)                                | color | See note \[2] below. |
 //! | [`unset(Effect)`](Style::unset)                                                | effect | See note \[3] below. |
 //! | [`unset(UnderlineEffect)`](Style::unset)                                       | underline effect | See note \[3] below. |
-//! | [`unset(Underline)`](Style::unset)                                             | underline effect | See note \[3] below. |
+//! | [`unset(UnderlineStyle)`](Style::unset)                                        | underline effect | See note \[3] below. |
 //! | [`unset(ColorTarget)`](Style::unset)                                           | color | See note \[3] below. |
 //!
 //! *Note* \[1]: to clear a color with [`set_color()`](Style::set_color), the color type must be specified in the `None` value.
@@ -280,7 +280,7 @@
 //! | [`get_color(ColorTarget) -> Option<Color>`](Style::get_color)                      | color |
 //! | [`get(Effect) -> bool`](Style::get)                                                | effect | See note below. |
 //! | [`get(UnderlineEffect) -> bool`](Style::get)                                       | underline effect | See note below. |
-//! | [`get(Underline) -> Option<UnderlineEffect>`](Style::get)                          | underline effect | See note below. |
+//! | [`get(UnderlineStyle) -> Option<UnderlineEffect>`](Style::get)                     | underline effect | See note below. |
 //! | [`get(ColorTarget) -> Option<Color>`](Style::get)                                  | color | See note below. |
 //!
 //! *Note*: each composed styling type has in fact a single [`get()`](Style::get) method that is based on the [`StylingAttribute`] trait.

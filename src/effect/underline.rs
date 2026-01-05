@@ -85,9 +85,9 @@ impl_styling_atribute_for! { UnderlineEffect {
 /// [`Style::set`](crate::Style::set)/[`Styled::set`](crate::Styled::set) and
 /// [`Style::get`](crate::Style::get)/[`Styled::get`](crate::Styled::get) methods.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Underline;
+pub struct UnderlineStyle;
 
-impl_styling_atribute_for! { Underline {
+impl_styling_atribute_for! { UnderlineStyle {
     type Value = Option<UnderlineEffect>;
     args: [self, composed_styling, value];
 
