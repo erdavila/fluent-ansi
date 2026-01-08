@@ -1,6 +1,6 @@
 use core::fmt::{Display, Formatter, Result};
 
-use crate::{Style, ToStyle};
+use crate::{Style, impl_macros::from_to::impl_from_to};
 
 /// A type that represents the reset of all styling.
 ///
@@ -12,6 +12,13 @@ use crate::{Style, ToStyle};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct Reset;
 
+impl_from_to!(
+    #[doc = r"Converts the type into a [`Style`]."]
+    fn to_style(self: Reset) -> Style {
+        Style::new()
+    }
+);
+
 impl Display for Reset {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         write!(f, "{}", Style::new())
@@ -21,37 +28,5 @@ impl Display for Reset {
 impl PartialEq<Style> for Reset {
     fn eq(&self, other: &Style) -> bool {
         self.to_style() == *other
-    }
-}
-
-impl ToStyle for Reset {
-    fn to_style(self) -> Style {
-        self.into()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::{ToStyleSet as _, assert_display};
-
-    use super::*;
-
-    #[test]
-    fn reset() {
-        assert_display!(Reset, "\x1b[0m");
-    }
-
-    #[test]
-    fn eq() {
-        assert_eq!(Reset, Reset);
-        assert_eq!(Reset, Style::new());
-        assert_ne!(Reset, Style::new().bold());
-        assert_eq!(Style::new(), Reset);
-        assert_ne!(Style::new().bold(), Reset);
-    }
-
-    #[test]
-    fn to_style() {
-        assert_eq!(Reset.to_style(), Style::new());
     }
 }

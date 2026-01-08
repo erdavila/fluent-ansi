@@ -1,18 +1,33 @@
-- Move fluent-ansi-demo here
-- const everywhere - allow defining styles at compile time
-  - Eliminate traits? Use macros to add methods to types?
+- `const` everywhere - allow defining styles at compile time
   - Complete implementation requires experimental feature (`const_trait_impl`) and nightly compiler
     - Implement what is possible in `main`, and the remaining in a branch.
-- Style merge
-- Rename unset -> remove
-- Document views
-  - fluent methods
-  - StyleElement
-  - StyleAttributes
-- trait to apply methods in any content that implements `Display`
-  - Example: `"Some content".bold().underline()`
+- `Style` merge:
+  ```rust
+  impl Style {
+      pub fn merge(self, other: Style) -> Self {
+          self.merge_style(other)
+      }
+
+      pub fn merge_style(self, other: Style) -> Self {
+          ...
+      }
+  }
+
+  impl<C: Display> Styled<C> {
+      pub fn merge_style(self, other: Style) -> Self {
+          self.modify_style(|style| style.merge_style(other))
+      }
+  }
+  ```
+- Color target-related aliases:
+  - "fg" <-> "foreground"
+  - "bg" <-> "background"
+- `ColorTarget::for_color(self, impl Into<Color>) -> TargetedColor`
+- Trait to apply methods in any content that implements `Display`
+  - Example: `"Some content".bold().solid_underline()`
   - with method `with_style(Style)`
 - Handle nesting. How?!
   - Ideas:
     - https://crates.io/crates/ansiconst
     - https://doc.rust-lang.org/nightly/core/macro.format_args.html
+- Consider implementing the `Add` trait instead of defining the `add` method in fluent types.

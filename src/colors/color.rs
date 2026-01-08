@@ -1,0 +1,73 @@
+use core::fmt::Result;
+
+use crate::{
+    CodeWriter, ColorTarget,
+    colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, WriteColorCodes},
+    impl_macros::color_type::impl_color_type,
+};
+
+/// An enum representing all supported color types.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum Color {
+    /// A simple color (16 colors).
+    Simple(SimpleColor),
+    /// An 8-bit color (256 colors).
+    Indexed(IndexedColor),
+    /// An RGB color (24-bit/true color).
+    RGB(RGBColor),
+}
+
+impl Color {
+    /// Constant for the basic color black.
+    pub const BLACK: BasicColor = BasicColor::Black;
+    /// Constant for the basic color red.
+    pub const RED: BasicColor = BasicColor::Red;
+    /// Constant for the basic color green.
+    pub const GREEN: BasicColor = BasicColor::Green;
+    /// Constant for the basic color yellow.
+    pub const YELLOW: BasicColor = BasicColor::Yellow;
+    /// Constant for the basic color blue.
+    pub const BLUE: BasicColor = BasicColor::Blue;
+    /// Constant for the basic color magenta.
+    pub const MAGENTA: BasicColor = BasicColor::Magenta;
+    /// Constant for the basic color cyan.
+    pub const CYAN: BasicColor = BasicColor::Cyan;
+    /// Constant for the basic color white.
+    pub const WHITE: BasicColor = BasicColor::White;
+
+    /// Create an 8-bit color from the given value.
+    #[must_use]
+    pub const fn indexed(value: u8) -> IndexedColor {
+        IndexedColor::new(value)
+    }
+
+    /// Create an RGB color from the given red, green, and blue components.
+    #[must_use]
+    pub const fn rgb(r: u8, g: u8, b: u8) -> RGBColor {
+        RGBColor::new(r, g, b)
+    }
+
+    /// Helper method to return a [`None`] value.
+    ///
+    /// Use it to clear the color for some target with [`Style::set_color()`](crate::Style::set_color)
+    /// or [`Styled<C>::set_color()`](crate::Styled<C>::set_color).
+    #[must_use]
+    pub const fn none() -> Option<Color> {
+        None
+    }
+}
+
+impl_color_type!(Color {
+    args: [self];
+    to_color: SELF
+});
+
+impl WriteColorCodes for Color {
+    fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
+        match self {
+            Color::Simple(simple) => simple.write_color_codes(target, writer),
+            Color::Indexed(indexed) => indexed.write_color_codes(target, writer),
+            Color::RGB(rgb) => rgb.write_color_codes(target, writer),
+        }
+    }
+}

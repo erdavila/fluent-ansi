@@ -1,6 +1,10 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, ColorTarget, color::WriteColorCodes};
+use crate::{
+    CodeWriter, ColorTarget, color::WriteColorCodes, impl_macros::color_type::impl_color_type,
+};
+
+use super::Color;
 
 /// An 8-bit color type representing colors in the 256-color ANSI palette.
 ///
@@ -30,6 +34,11 @@ impl IndexedColor {
     }
 }
 
+impl_color_type!(IndexedColor {
+    args: [self];
+    to_color: { Color::Indexed(self) }
+});
+
 impl WriteColorCodes for IndexedColor {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
         let target_code = match target {
@@ -42,46 +51,5 @@ impl WriteColorCodes for IndexedColor {
         writer.write_code(5)?;
         writer.write_code(self.0)?;
         Ok(())
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::{
-        AppliedTo as _, Style, ToStyle as _, ToStyleSet as _, test_color_kind_methods,
-        test_to_style_set_methods_with_foreground_assumed,
-    };
-
-    use super::*;
-
-    test_color_kind_methods!(IndexedColor(7), Color::Indexed(IndexedColor(7)));
-
-    test_to_style_set_methods_with_foreground_assumed!(IndexedColor(7));
-
-    #[test]
-    fn indexed() {
-        let color_1 = IndexedColor(7);
-        assert_eq!(color_1.get_index(), 7u8);
-
-        let color_2 = IndexedColor::new(7);
-        assert_eq!(color_2.get_index(), 7u8);
-
-        assert_eq!(color_1, color_2);
-    }
-
-    #[test]
-    fn applied_to() {
-        let stld = IndexedColor(42).applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().fg(IndexedColor(42)));
-    }
-
-    #[test]
-    fn to_style() {
-        assert_eq!(
-            IndexedColor(42).to_style(),
-            Style::new().fg(IndexedColor(42))
-        );
     }
 }

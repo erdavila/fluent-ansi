@@ -1,9 +1,12 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    AppliedTo, ColorTarget, Effect, Reset, StyleAttribute, StyleElement, StyleSet, Styled,
-    TargetedColor, ToStyle, ToStyleSet, UnderlineStyle,
-    color::{Color, ColorKind, WriteColorCodes as _},
+    ColorTarget, Effect, Reset, UnderlineEffect,
+    colors::{Color, WriteColorCodes as _},
+    impl_macros::{
+        additive_styling::impl_additive_styling_type,
+        composed_styling::impl_composed_styling_methods,
+    },
     style::encoded_effects::EncodedEffects,
 };
 
@@ -14,10 +17,10 @@ mod encoded_effects;
 /// A structure representing text styling with effects and colors.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Style {
-    pub(crate) encoded_effects: EncodedEffects,
-    pub(crate) fg: Option<Color>,
-    pub(crate) bg: Option<Color>,
-    pub(crate) underline_color: Option<Color>,
+    encoded_effects: EncodedEffects,
+    fg: Option<Color>,
+    bg: Option<Color>,
+    underline_color: Option<Color>,
 }
 
 impl Style {
@@ -31,45 +34,67 @@ impl Style {
             underline_color: None,
         }
     }
+
+    impl_composed_styling_methods! {
+        args: [self, effect, underline_effect, target, color, value];
+        example_variable: r"style";
+
+        set_effect: {
+            let effect = effect.into();
+            let encoded_effects = self.encoded_effects.set(effect, value);
+            Self {
+                encoded_effects,
+                ..self
+            }
+        }
+
+        get_effect: {
+            let effect = effect.into();
+            self.encoded_effects.get(effect)
+        }
+
+        get_effects: {
+            self.encoded_effects.get_effects()
+        }
+
+        set_underline_effect: {
+            let encoded_effects = self.encoded_effects.set_underline(underline_effect);
+            Self {
+                encoded_effects,
+                ..self
+            }
+        }
+
+        get_underline_effect: {
+            UnderlineEffect::all().find(|&underline_effect| self.get_effect(underline_effect))
+        }
+
+        set_color: {
+            let color = color.map(Into::into);
+            match target {
+                ColorTarget::Foreground => Self { fg: color, ..self },
+                ColorTarget::Background => Self { bg: color, ..self },
+                ColorTarget::Underline => Self {
+                    underline_color: color,
+                    ..self
+                },
+            }
+        }
+
+        get_color: {
+            match target {
+                ColorTarget::Foreground => self.fg,
+                ColorTarget::Background => self.bg,
+                ColorTarget::Underline => self.underline_color,
+            }
+        }
+    }
 }
 
-impl ToStyleSet for Style {
-    type StyleSet = Self;
-
-    fn add(self, element: impl StyleElement) -> Self::StyleSet {
-        element.add_to_style(self)
-    }
-
-    fn to_style_set(self) -> Self::StyleSet {
-        self
-    }
-}
-
-impl ToStyle for Style {
-    fn to_style(self) -> Style {
-        self
-    }
-}
-
-impl AppliedTo for Style {
-    fn applied_to<C: Display>(self, content: C) -> Styled<C> {
-        Styled::new(content).with_style(self)
-    }
-}
-
-impl StyleSet for Style {
-    fn get_effects(&self) -> GetEffects {
-        self.encoded_effects.get_effects()
-    }
-
-    fn set<A: StyleAttribute>(self, attr: A, value: A::Value) -> Self {
-        attr.set_in_style(self, value)
-    }
-
-    fn get<A: StyleAttribute>(&self, attr: A) -> A::Value {
-        attr.get_from_style(self)
-    }
-}
+impl_additive_styling_type!(Style {
+    args: [self];
+    to_style: SELF
+});
 
 impl Display for Style {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
@@ -103,36 +128,6 @@ impl Display for Style {
     }
 }
 
-impl From<Effect> for Style {
-    fn from(effect: Effect) -> Self {
-        Style::new().effect(effect)
-    }
-}
-
-impl From<UnderlineStyle> for Style {
-    fn from(underline_style: UnderlineStyle) -> Self {
-        Style::new().underline_style(underline_style)
-    }
-}
-
-impl From<TargetedColor> for Style {
-    fn from(targeted_color: TargetedColor) -> Self {
-        Style::new().color(targeted_color)
-    }
-}
-
-impl<CK: ColorKind> From<CK> for Style {
-    fn from(color: CK) -> Self {
-        Style::new().fg(color)
-    }
-}
-
-impl From<Reset> for Style {
-    fn from(_: Reset) -> Self {
-        Style::new()
-    }
-}
-
 impl PartialEq<Reset> for Style {
     fn eq(&self, other: &Reset) -> bool {
         *self == other.to_style()
@@ -157,113 +152,4 @@ impl CodeWriter<'_, '_> {
 
 fn write_escape_sequence(f: &mut impl Write, codes: impl Display) -> Result {
     write!(f, "\x1b[{codes}m")
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::{
-        assert_display,
-        color::{BasicColor, IndexedColor, RGBColor, SimpleColor},
-        test_style_set_methods, test_to_style_set_methods,
-    };
-
-    use super::*;
-
-    test_to_style_set_methods!(Style::new(), Style::new());
-    test_style_set_methods!(Style::new());
-
-    #[test]
-    fn effects_display() {
-        let stl = Style::new();
-
-        assert_display!(stl, "\x1b[0m");
-        assert_display!(stl.bold(), "\x1b[1m");
-        assert_display!(stl.faint(), "\x1b[2m");
-        assert_display!(stl.italic(), "\x1b[3m");
-        assert_display!(stl.underline(), "\x1b[4m");
-        assert_display!(stl.curly_underline(), "\x1b[4:3m");
-        assert_display!(stl.dotted_underline(), "\x1b[4:4m");
-        assert_display!(stl.dashed_underline(), "\x1b[4:5m");
-        assert_display!(stl.blink(), "\x1b[5m");
-        assert_display!(stl.reverse(), "\x1b[7m");
-        assert_display!(stl.conceal(), "\x1b[8m");
-        assert_display!(stl.strikethrough(), "\x1b[9m");
-        assert_display!(stl.double_underline(), "\x1b[21m");
-        assert_display!(stl.overline(), "\x1b[53m");
-    }
-
-    #[test]
-    fn colors_display() {
-        let stl = Style::new();
-
-        assert_display!(stl.fg(BasicColor::Red), "\x1b[31m");
-        assert_display!(stl.bg(BasicColor::Red), "\x1b[41m");
-    }
-
-    #[test]
-    fn combined_display() {
-        let stl = Style::new()
-            .bold()
-            .fg(BasicColor::Red)
-            .underline()
-            .bg(BasicColor::Green);
-        assert_display!(stl, "\x1b[1;4;31;42m");
-    }
-
-    #[test]
-    fn applied_to() {
-        let stld = Style::new().bold().applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().bold());
-    }
-
-    #[test]
-    fn default() {
-        assert_display!(Style::default(), "\x1b[0m");
-    }
-
-    #[test]
-    fn to_style() {
-        let stl = Style::new().bold().fg(BasicColor::Red);
-        assert_eq!(stl.to_style(), stl);
-    }
-
-    #[test]
-    fn from_effect() {
-        assert_eq!(Style::from(Effect::Bold), Style::new().bold());
-    }
-
-    #[test]
-    fn from_targeted_color() {
-        assert_eq!(
-            Style::from(BasicColor::Red.for_fg()),
-            Style::new().color(BasicColor::Red.for_fg())
-        );
-    }
-
-    #[test]
-    fn from_color() {
-        assert_eq!(
-            Style::from(BasicColor::Red),
-            Style::new().color(BasicColor::Red.for_fg())
-        );
-        assert_eq!(
-            Style::from(SimpleColor::new(BasicColor::Red)),
-            Style::new().color(SimpleColor::new(BasicColor::Red).for_fg())
-        );
-        assert_eq!(
-            Style::from(IndexedColor(42)),
-            Style::new().color(IndexedColor(42).for_fg())
-        );
-        assert_eq!(
-            Style::from(RGBColor::new(0, 128, 255)),
-            Style::new().color(RGBColor::new(0, 128, 255).for_fg())
-        );
-    }
-
-    #[test]
-    fn from_reset() {
-        assert_eq!(Style::from(Reset), Style::new());
-    }
 }

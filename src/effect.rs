@@ -3,7 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    AppliedTo, CodeWriter, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    CodeWriter, Style, impl_macros::additive_styling::impl_additive_styling_type,
+    impl_styling_atribute_for, impl_styling_element_for,
 };
 pub use underline::*;
 
@@ -21,7 +22,7 @@ pub enum Effect {
     /// Italic styling.
     Italic,
     /// Solid underline styling.
-    Underline,
+    SolidUnderline,
     /// Curly underline styling.
     CurlyUnderline,
     /// Dotted underline styling.
@@ -43,6 +44,9 @@ pub enum Effect {
 }
 
 impl Effect {
+    /// An alias for [`Effect::SolidUnderline`].
+    pub const UNDERLINE: Effect = Effect::SolidUnderline;
+
     #[must_use]
     pub(crate) fn all() -> AllEffects {
         enum_iterator::all()
@@ -53,7 +57,7 @@ impl Effect {
             Effect::Bold => "1",
             Effect::Faint => "2",
             Effect::Italic => "3",
-            Effect::Underline => "4",
+            Effect::SolidUnderline => "4",
             Effect::CurlyUnderline => "4:3",
             Effect::DottedUnderline => "4:4",
             Effect::DashedUnderline => "4:5",
@@ -68,98 +72,33 @@ impl Effect {
     }
 }
 
-impl StyleElement for Effect {
-    fn add_to_style(self, style: Style) -> Style {
-        style.set_effect(self, true)
-    }
-}
+impl_additive_styling_type!(Effect {
+    args: [self];
+    to_style: { Style::new().effect(self) }
+});
 
-impl StyleAttribute for Effect {
+impl_styling_element_for! { Effect {
+    args: [self, composed_styling];
+    add_to: {
+        composed_styling.set_effect(self, true)
+    }
+}}
+
+impl_styling_atribute_for! { Effect {
     type Value = bool;
+    args: [self, composed_styling, value];
 
-    fn set_in_style(self, style: Style, value: Self::Value) -> Style {
-        let encoded_effects = style.encoded_effects.set(self, value);
-        Style {
-            encoded_effects,
-            ..style
-        }
+    set_in: {
+        composed_styling.set_effect(self, value)
     }
 
-    fn get_from_style(self, style: &Style) -> Self::Value {
-        style.encoded_effects.get(self)
+    get_from: {
+        composed_styling.get_effect(self)
     }
-}
-
-impl ToStyleSet for Effect {
-    type StyleSet = Style;
-
-    fn to_style_set(self) -> Self::StyleSet {
-        self.to_style()
-    }
-}
-
-impl ToStyle for Effect {
-    fn to_style(self) -> Style {
-        self.into()
-    }
-}
-
-impl AppliedTo for Effect {}
+}}
 
 impl Display for Effect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         self.to_style().fmt(f)
-    }
-}
-
-impl From<UnderlineStyle> for Effect {
-    fn from(value: UnderlineStyle) -> Self {
-        match value {
-            UnderlineStyle::Solid => Effect::Underline,
-            UnderlineStyle::Curly => Effect::CurlyUnderline,
-            UnderlineStyle::Dotted => Effect::DottedUnderline,
-            UnderlineStyle::Dashed => Effect::DashedUnderline,
-            UnderlineStyle::Double => Effect::DoubleUnderline,
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::{ToStyleSet as _, assert_display, test_to_style_set_methods};
-
-    use super::*;
-
-    test_to_style_set_methods!(bold; Effect::Bold, Style::new().bold());
-    test_to_style_set_methods!(italic; Effect::Italic, Style::new().italic());
-
-    #[test]
-    fn applied_to() {
-        let stld = Effect::Bold.applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().bold());
-    }
-
-    #[test]
-    fn to_style() {
-        assert_eq!(Effect::Bold.to_style(), Style::new().bold());
-    }
-
-    #[test]
-    fn display() {
-        assert_display!(Effect::Bold, "\x1b[1m");
-        assert_display!(Effect::Faint, "\x1b[2m");
-        assert_display!(Effect::Italic, "\x1b[3m");
-        assert_display!(Effect::Underline, "\x1b[4m");
-        assert_display!(Effect::CurlyUnderline, "\x1b[4:3m");
-        assert_display!(Effect::DottedUnderline, "\x1b[4:4m");
-        assert_display!(Effect::DashedUnderline, "\x1b[4:5m");
-        assert_display!(Effect::Blink, "\x1b[5m");
-        assert_display!(Effect::Reverse, "\x1b[7m");
-        assert_display!(Effect::Conceal, "\x1b[8m");
-        assert_display!(Effect::Strikethrough, "\x1b[9m");
-        assert_display!(Effect::DoubleUnderline, "\x1b[21m");
-        assert_display!(Effect::Overline, "\x1b[53m");
     }
 }

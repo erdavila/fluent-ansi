@@ -44,13 +44,13 @@ There are several ways to reach the same result, depending on your preference:
 ```rust
 use fluent_ansi::{prelude::*, ColorTarget, Style, TargetedColor};
 
-let stl: Style = Style::new().set(Effect::Bold, true).set(ColorTarget::Foreground, Some(Color::RED.to_color()));
-let stl: Style = Style::new().set_effect(Effect::Bold, true).set_color(ColorTarget::Foreground, Some(Color::RED));
-let stl: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RED, ColorTarget::Foreground));
-let stl: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
-let stl: Style = Style::new().bold().fg(Color::RED);
-let stl: Style = Effect::Bold.fg(Color::RED);
-let stl: Style = Color::RED.bold();
+let style: Style = Style::new().set(Effect::Bold, true).set(ColorTarget::Foreground, Some(Color::RED.to_color()));
+let style: Style = Style::new().set_effect(Effect::Bold, true).set_color(ColorTarget::Foreground, Some(Color::RED));
+let style: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RED, ColorTarget::Foreground));
+let style: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
+let style: Style = Style::new().bold().fg(Color::RED);
+let style: Style = Effect::Bold.fg(Color::RED);
+let style: Style = Color::RED.bold();
 ```
 
 ### Styling Elements
@@ -66,9 +66,9 @@ assert_eq!(format!("{}", Effect::Bold), "\x1b[1m");
 assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 ```
 
-#### Underline Styles
+#### Underline Effects
 
-In addition to standard effects, specific underline styles are supported (and are mutually exclusive):
+In addition to standard effects, specific underline effects are supported (and are mutually exclusive):
 
 ```rust
 use fluent_ansi::prelude::*;
@@ -95,7 +95,25 @@ assert_eq!(format!("{blue_background}"), "\x1b[44m");
 assert_eq!(format!("{}", blue_background.applied_to("Some content")), "\x1b[44mSome content\x1b[0m");
 ```
 
+## Demo
+
+Execute this to see a demo of ANSI formatting in action:
+
+```bash
+cargo run --example demo
+```
+
+Its source is in [`examples/demo`](./examples/demo) if you want to check it.
+
 ## Changelog
+
+### v0.4.0
+
+* Huge refactor to define common methods with macros instead of traits
+* Add demo application as example
+* Breaking change: rename UnderlineStyle to UnderlineEffect and the Underline singleton to UnderlineStyle
+* Breaking change: make the underline effects names uniform regarding the solid variant
+* Breaking change: rename the unset() method to remove() and review method groups and docs
 
 ### v0.3.0
 

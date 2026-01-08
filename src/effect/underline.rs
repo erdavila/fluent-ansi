@@ -3,16 +3,18 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    AppliedTo, Effect, Style, StyleAttribute, StyleElement, StyleSet, ToStyle, ToStyleSet,
+    Effect,
+    impl_macros::{additive_styling::impl_additive_styling_type, from_to::impl_from_to},
+    impl_styling_atribute_for, impl_styling_element_for,
 };
 
-pub(crate) type AllUnderlineStyles = enum_iterator::All<UnderlineStyle>;
+pub(crate) type AllUnderlineEffects = enum_iterator::All<UnderlineEffect>;
 
-/// An enumeration of all supported underline styles.
+/// An enumeration of all supported underline effects.
 ///
 /// The values correspond to a subset of [`Effect`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Sequence)]
-pub enum UnderlineStyle {
+pub enum UnderlineEffect {
     /// Solid underline styling.
     #[default]
     Solid,
@@ -26,134 +28,74 @@ pub enum UnderlineStyle {
     Double,
 }
 
-impl UnderlineStyle {
+impl UnderlineEffect {
     #[must_use]
-    pub(crate) fn all() -> AllUnderlineStyles {
+    pub(crate) fn all() -> AllUnderlineEffects {
         enum_iterator::all()
-    }
-
-    #[must_use]
-    pub(crate) fn to_effect(self) -> Effect {
-        self.into()
     }
 }
 
-impl AppliedTo for UnderlineStyle {}
+impl_additive_styling_type!(UnderlineEffect {
+    args: [self];
+    to_style: { self.to_effect().to_style() }
+});
 
-impl Display for UnderlineStyle {
+impl_from_to!(
+    #[doc = r"Converts the type into an [`Effect`]."]
+    fn to_effect(self: UnderlineEffect) -> Effect {
+        match self {
+            UnderlineEffect::Solid => Effect::SolidUnderline,
+            UnderlineEffect::Curly => Effect::CurlyUnderline,
+            UnderlineEffect::Dotted => Effect::DottedUnderline,
+            UnderlineEffect::Dashed => Effect::DashedUnderline,
+            UnderlineEffect::Double => Effect::DoubleUnderline,
+        }
+    }
+);
+
+impl Display for UnderlineEffect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         self.to_effect().fmt(f)
     }
 }
 
-impl ToStyleSet for UnderlineStyle {
-    type StyleSet = Style;
-
-    fn to_style_set(self) -> Self::StyleSet {
-        self.to_style()
+impl_styling_element_for! { UnderlineEffect {
+    args: [self, composed_styling];
+    add_to: {
+        composed_styling.set_underline_effect(Some(self))
     }
-}
+}}
 
-impl ToStyle for UnderlineStyle {
-    fn to_style(self) -> Style {
-        self.into()
-    }
-}
-
-impl StyleElement for UnderlineStyle {
-    fn add_to_style(self, style: Style) -> Style {
-        style.set_underline_style(Some(self))
-    }
-}
-
-impl StyleAttribute for UnderlineStyle {
+impl_styling_atribute_for! { UnderlineEffect {
     type Value = bool;
+    args: [self, composed_styling, value];
 
-    fn set_in_style(self, style: Style, value: Self::Value) -> Style {
-        style.set_effect(self.to_effect(), value)
+    set_in: {
+        composed_styling.set_effect(self.to_effect(), value)
     }
 
-    fn get_from_style(self, style: &Style) -> Self::Value {
-        style.get_effect(self.to_effect())
+    get_from: {
+        composed_styling.get_effect(self.to_effect())
     }
-}
+}}
 
 /// The underline attribute.
 ///
-/// Usable in the [`StyleSet::set`] and [`StyleSet::get`] methods.
+/// Usable in the
+/// [`Style::set`](crate::Style::set)/[`Styled::set`](crate::Styled::set) and
+/// [`Style::get`](crate::Style::get)/[`Styled::get`](crate::Styled::get) methods.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Underline;
+pub struct UnderlineStyle;
 
-impl StyleAttribute for Underline {
-    type Value = Option<UnderlineStyle>;
+impl_styling_atribute_for! { UnderlineStyle {
+    type Value = Option<UnderlineEffect>;
+    args: [self, composed_styling, value];
 
-    fn set_in_style(self, style: Style, value: Self::Value) -> Style {
-        let encoded_effects = style.encoded_effects.set_underline(value);
-        Style {
-            encoded_effects,
-            ..style
-        }
+    set_in: {
+        composed_styling.set_underline_effect(value)
     }
 
-    fn get_from_style(self, style: &Style) -> Self::Value {
-        UnderlineStyle::all()
-            .find(|&underline_style| style.encoded_effects.get(underline_style.to_effect()))
+    get_from: {
+        composed_styling.get_underline_effect()
     }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::{assert_display, test_to_style_set_methods};
-
-    use super::*;
-
-    test_to_style_set_methods!(solid; UnderlineStyle::Solid, Style::new().underline());
-    test_to_style_set_methods!(curly; UnderlineStyle::Curly, Style::new().curly_underline());
-
-    #[test]
-    fn applied_to() {
-        let stld = UnderlineStyle::Curly.applied_to("CONTENT");
-
-        assert_eq!(stld.get_content(), &"CONTENT");
-        assert_eq!(stld.get_style(), Style::new().curly_underline());
-    }
-
-    #[test]
-    fn to_effect() {
-        assert_eq!(UnderlineStyle::Solid.to_effect(), Effect::Underline);
-        assert_eq!(UnderlineStyle::Curly.to_effect(), Effect::CurlyUnderline);
-        assert_eq!(UnderlineStyle::Dotted.to_effect(), Effect::DottedUnderline);
-        assert_eq!(UnderlineStyle::Dashed.to_effect(), Effect::DashedUnderline);
-        assert_eq!(UnderlineStyle::Double.to_effect(), Effect::DoubleUnderline);
-    }
-
-    #[test]
-    fn to_style() {
-        assert_eq!(UnderlineStyle::Solid.to_style(), Style::new().underline());
-        assert_eq!(
-            UnderlineStyle::Curly.to_style(),
-            Style::new().curly_underline()
-        );
-        assert_eq!(
-            UnderlineStyle::Dotted.to_style(),
-            Style::new().dotted_underline()
-        );
-        assert_eq!(
-            UnderlineStyle::Dashed.to_style(),
-            Style::new().dashed_underline()
-        );
-        assert_eq!(
-            UnderlineStyle::Double.to_style(),
-            Style::new().double_underline()
-        );
-    }
-
-    #[test]
-    fn display() {
-        assert_display!(UnderlineStyle::Solid, "\x1b[4m");
-        assert_display!(UnderlineStyle::Curly, "\x1b[4:3m");
-        assert_display!(UnderlineStyle::Dotted, "\x1b[4:4m");
-        assert_display!(UnderlineStyle::Dashed, "\x1b[4:5m");
-        assert_display!(UnderlineStyle::Double, "\x1b[21m");
-    }
-}
+}}
