@@ -228,6 +228,70 @@ macro_rules! test_composed_styling_type {
             fn underline_color() {
                 assert_targeted_color!(ColorTarget::Underline, underline_color);
             }
+
+            #[test]
+            fn merge_style() {
+                macro_rules! assert_merge_style {
+                    ($initial:expr, $style:expr; $expected:expr) => {{
+                        let merged = $initial.merge_style($style);
+                        assert_eq!(merged, $expected);
+                    }};
+                }
+
+                assert_merge_style!(
+                    $empty_composed_styling,
+                    Style::new();
+                    $empty_composed_styling
+                );
+
+                assert_merge_style!(
+                    $empty_composed_styling
+                        .bold()
+                        .solid_underline()
+                        .foreground(Color::RED)
+                        .background(Color::GREEN),
+                    Style::new();
+                    $empty_composed_styling
+                        .bold()
+                        .solid_underline()
+                        .foreground(Color::RED)
+                        .background(Color::GREEN)
+                );
+
+                assert_merge_style!(
+                    $empty_composed_styling,
+                    Style::new()
+                        .italic()
+                        .dashed_underline()
+                        .background(Color::BLUE)
+                        .underline_color(Color::YELLOW);
+                    $empty_composed_styling
+                        .italic()
+                        .dashed_underline()
+                        .background(Color::BLUE)
+                        .underline_color(Color::YELLOW)
+                );
+
+                assert_merge_style!(
+                    $empty_composed_styling
+                        .bold()
+                        .solid_underline()
+                        .foreground(Color::RED)
+                        .background(Color::GREEN),
+                    Style::new()
+                        .italic()
+                        .dashed_underline()  // overrides the solid underline
+                        .background(Color::BLUE)  // overrides the green background
+                        .underline_color(Color::YELLOW);
+                    $empty_composed_styling
+                        .bold()
+                        .italic()
+                        .dashed_underline()
+                        .foreground(Color::RED)
+                        .background(Color::BLUE)
+                        .underline_color(Color::YELLOW)
+                );
+            }
         }
     };
 }

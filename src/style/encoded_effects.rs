@@ -66,6 +66,19 @@ impl EncodedEffects {
     }
 
     #[must_use]
+    pub(crate) fn merge(self, other: Self) -> Self {
+        let encoded_effects = Self(self.0 | other.0);
+
+        for underline_effect in UnderlineEffect::all() {
+            if other.get(underline_effect.to_effect()) {
+                return encoded_effects.set_underline(Some(underline_effect));
+            }
+        }
+
+        encoded_effects
+    }
+
+    #[must_use]
     fn set_bit(self, effect: Effect) -> Self {
         let bits = self.0 | Self::bit_mask(effect);
         Self(bits)

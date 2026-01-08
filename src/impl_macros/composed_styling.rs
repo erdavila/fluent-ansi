@@ -1,6 +1,6 @@
 macro_rules! impl_composed_styling_methods {
     {
-        args: [$self:ident, $effect:ident, $underline_effect:ident, $target:ident, $color:ident, $value:ident];
+        args: [$self:ident, $effect:ident, $underline_effect:ident, $target:ident, $color:ident, $value:ident, $other:ident];
         example_variable: $example_variable:literal;
 
         set_effect: $set_effect:block
@@ -10,6 +10,7 @@ macro_rules! impl_composed_styling_methods {
         get_underline_effect: $get_underline_effect:block
         set_color: $set_color:block
         get_color: $get_color:block
+        merge_style: $merge_style:block
     } => {
         /// Sets the given effect to the specified value.
         #[must_use]
@@ -82,6 +83,12 @@ macro_rules! impl_composed_styling_methods {
         #[must_use]
         pub fn remove<A: $crate::StylingAttribute<Self>>(self, attr: A) -> Self {
             attr.set_in(self, A::Value::default())
+        }
+
+        /// Merge styling from the `Style` argument.
+        #[must_use]
+        pub fn merge_style($self, $other: Style) -> Self {
+            $merge_style
         }
     };
 }

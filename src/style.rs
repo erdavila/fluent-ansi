@@ -36,7 +36,7 @@ impl Style {
     }
 
     impl_composed_styling_methods! {
-        args: [self, effect, underline_effect, target, color, value];
+        args: [self, effect, underline_effect, target, color, value, other];
         example_variable: r"style";
 
         set_effect: {
@@ -86,6 +86,15 @@ impl Style {
                 ColorTarget::Foreground => self.foreground_color,
                 ColorTarget::Background => self.background_color,
                 ColorTarget::Underline => self.underline_color,
+            }
+        }
+
+        merge_style: {
+            Self {
+                encoded_effects: self.encoded_effects.merge(other.encoded_effects),
+                foreground_color: other.foreground_color.or(self.foreground_color),
+                background_color: other.background_color.or(self.background_color),
+                underline_color: other.underline_color.or(self.underline_color),
             }
         }
     }

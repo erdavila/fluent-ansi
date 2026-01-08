@@ -66,7 +66,7 @@ impl<C: Display> Styled<C> {
     }
 
     impl_composed_styling_methods! {
-        args: [self, effect, underline_effect, target, color, value];
+        args: [self, effect, underline_effect, target, color, value, other];
         example_variable: r"styled";
 
         set_effect: {
@@ -95,6 +95,10 @@ impl<C: Display> Styled<C> {
 
         get_color: {
             self.style.get_color(target)
+        }
+
+        merge_style: {
+            self.modify_style(|style| style.merge_style(other))
         }
     }
 
