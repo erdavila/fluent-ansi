@@ -26,8 +26,9 @@
 //! let style: Style = Style::new().set_effect(Effect::Bold, true).set_color(ColorTarget::Foreground, Some(Color::RED));
 //! let style: Style = Style::new().add(Effect::Bold).add(TargetedColor::new(Color::RED, ColorTarget::Foreground));
 //! let style: Style = Style::new().effect(Effect::Bold).color(TargetedColor::new(Color::RED, ColorTarget::Foreground));
-//! let style: Style = Style::new().bold().fg(Color::RED);
-//! let style: Style = Effect::Bold.fg(Color::RED);
+//! let style: Style = Style::new().bold().foreground(Color::RED);
+//! let style: Style = Effect::Bold.foreground(Color::RED);
+//! let style: Style = Color::RED.for_foreground().bold();
 //! let style: Style = Color::RED.for_fg().bold();
 //! ```
 //!
@@ -60,7 +61,7 @@
 //! use fluent_ansi::prelude::*;
 //!
 //! assert_eq!(format!("{}", Effect::Bold), "\x1b[1m");
-//! assert_eq!(format!("{}", Effect::Bold.fg(Color::RED)), "\x1b[1;31m");
+//! assert_eq!(format!("{}", Effect::Bold.foreground(Color::RED)), "\x1b[1;31m");
 //! assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 //! ```
 //!
@@ -104,10 +105,10 @@
 //! ```
 //! use fluent_ansi::{prelude::*, TargetedColor};
 //!
-//! let red_foreground: TargetedColor = Color::RED.for_fg();
+//! let red_foreground: TargetedColor = Color::RED.for_foreground();
 //! assert_eq!(format!("{}", red_foreground.applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
 //!
-//! let red_background: TargetedColor = Color::RED.for_bg();
+//! let red_background: TargetedColor = Color::RED.for_background();
 //! assert_eq!(format!("{}", red_background.applied_to("Some content")), "\x1b[41mSome content\x1b[0m");
 //!
 //! let red_underline: TargetedColor = Color::RED.for_underline();
@@ -120,7 +121,7 @@
 //! use fluent_ansi::prelude::*;
 //!
 //! let rendered_1 = format!("{}", Color::RED.applied_to("Some content"));
-//! let rendered_2 = format!("{}", Color::RED.for_fg().applied_to("Some content"));
+//! let rendered_2 = format!("{}", Color::RED.for_foreground().applied_to("Some content"));
 //! assert_eq!(rendered_1, rendered_2);
 //! assert_eq!(rendered_1, "\x1b[31mSome content\x1b[0m");
 //! ```
@@ -138,7 +139,7 @@
 //!
 //! // Both foreground and underline colors are set
 //! let style = Effect::Bold
-//!     .add(Color::RED.for_fg())
+//!     .add(Color::RED.for_foreground())
 //!     .add(Color::indexed(42).for_underline());
 //! let rendered = format!("{}", style.applied_to("Some content"));
 //! assert_eq!(rendered, "\x1b[1;31;58;5;42mSome content\x1b[0m");
@@ -152,7 +153,7 @@
 //! ```
 //! use fluent_ansi::{prelude::*, Style};
 //!
-//! let style: Style = Effect::Bold.fg(Color::RED);
+//! let style: Style = Effect::Bold.foreground(Color::RED);
 //! assert_eq!(format!("{style}"), "\x1b[1;31m");
 //!
 //! let style: Style = style.effect(Effect::SolidUnderline);
@@ -175,7 +176,7 @@
 //! assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Color::RED.applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Color::RED.bold().applied_to("Some content")), "\x1b[1;31mSome content\x1b[0m");
-//! assert_eq!(format!("{}", Styled::new("Some content").bold().fg(Color::RED)), "\x1b[1;31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", Styled::new("Some content").bold().foreground(Color::RED)), "\x1b[1;31mSome content\x1b[0m");
 //! ```
 //!
 //! # Styling methods
@@ -211,13 +212,13 @@
 //!
 //! | Method | To set what |
 //! |--------|-------------|
-//! | [`bold()`](Style::bold),<br/>[`italic()`](Style::italic),<br/>[`solid_underline()`](Style::solid_underline),<br/>etc.                         | effect |
-//! | [`effect(impl Into<Effect>)`](Style::effect)                                                                                                  | effect<br/>(including underline effects) |
-//! | [`underline_effect(UnderlineEffect)`](Style::underline_effect)                                                                                | underline effect |
-//! | [`fg(impl Into<Color>)`](Style::fg)<br/>[`bg(impl Into<Color>)`](Style::bg)<br/>[`underline_color(impl Into<Color>)`](Style::underline_color) | color |
-//! | [`color(TargetedColor)`](Style::color)                                                                                                        | color |
-//! | [`color(impl Into<Color>)`](Style::color)                                                                                                     | foreground color |
-//! | [`applied_to(impl Display)`](Style::applied_to) [^applied-to-method]                                                                                                 | content | See note \[3] below. |
+//! | [`bold()`](Style::bold),<br/>[`italic()`](Style::italic),<br/>[`solid_underline()`](Style::solid_underline),<br/>etc.                                                                                                                                 | effect |
+//! | [`effect(impl Into<Effect>)`](Style::effect)                                                                                                                                                                                                          | effect<br/>(including underline effects) |
+//! | [`underline_effect(UnderlineEffect)`](Style::underline_effect)                                                                                                                                                                                        | underline effect |
+//! | [`foreground(impl Into<Color>)`](Style::foreground)/[`fg(impl Into<Color>)`](Style::fg)<br/>[`background(impl Into<Color>)`](Style::background)/[`bg(impl Into<Color>)`](Style::bg)<br/>[`underline_color(impl Into<Color>)`](Style::underline_color) | color |
+//! | [`color(TargetedColor)`](Style::color)                                                                                                                                                                                                                | color |
+//! | [`color(impl Into<Color>)`](Style::color)                                                                                                                                                                                                             | foreground color |
+//! | [`applied_to(impl Display)`](Style::applied_to) [^applied-to-method]                                                                                                                                                                                  | content |
 //!
 //!
 //! ## Methods for elements and sets
@@ -265,7 +266,7 @@
 //! let altered_styled = styled
 //!     .remove(UnderlineStyle)
 //!     .remove(ColorTarget::Underline)
-//!     .add(Color::indexed(42).for_bg());
+//!     .add(Color::indexed(42).for_background());
 //! assert_eq!(format!("{altered_styled}"), "\x1b[1;48;5;42mSome content\x1b[0m");
 //! ```
 //!
@@ -392,15 +393,15 @@ pub mod color {
     //!
     //! let style = Style::new();
     //!
-    //! let _ = style.fg(BasicColor::Red);
-    //! let _ = style.fg(SimpleColor::new_bright(BasicColor::Red));
-    //! let _ = style.fg(IndexedColor::new(128));
-    //! let _ = style.fg(RGBColor::new(0, 128, 255));
+    //! let _ = style.foreground(BasicColor::Red);
+    //! let _ = style.foreground(SimpleColor::new_bright(BasicColor::Red));
+    //! let _ = style.foreground(IndexedColor::new(128));
+    //! let _ = style.foreground(RGBColor::new(0, 128, 255));
     //!
-    //! let _ = style.bg(BasicColor::Red);
-    //! let _ = style.bg(SimpleColor::new_bright(BasicColor::Red));
-    //! let _ = style.bg(IndexedColor::new(128));
-    //! let _ = style.bg(RGBColor::new(0, 128, 255));
+    //! let _ = style.background(BasicColor::Red);
+    //! let _ = style.background(SimpleColor::new_bright(BasicColor::Red));
+    //! let _ = style.background(IndexedColor::new(128));
+    //! let _ = style.background(RGBColor::new(0, 128, 255));
     //!
     //! let _ = style.set_color(ColorTarget::Foreground, Some(BasicColor::Red));
     //! let _ = style.set_color(ColorTarget::Background, Some(SimpleColor::new_bright(BasicColor::Red)));
@@ -420,7 +421,7 @@ pub mod prelude {
     //! ```
     //! use fluent_ansi::prelude::*;
     //!
-    //! let styled = Color::RED.for_bg().bold().applied_to("Some content");
+    //! let styled = Color::RED.for_background().bold().applied_to("Some content");
     //! ```
 
     pub use crate::Effect;

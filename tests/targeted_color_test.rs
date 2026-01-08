@@ -4,11 +4,23 @@ use crate::common::*;
 
 mod common;
 
+#[test]
+fn color_target() {
+    assert_eq!(ColorTarget::FG, ColorTarget::Foreground);
+    assert_eq!(ColorTarget::BG, ColorTarget::Background);
+}
+
 test_additive_styling_type![
+    red_foreground { TargetedColor::new_for_foreground(Color::RED), Style::new().fg(Color::RED) },
     red_fg { TargetedColor::new_for_fg(Color::RED), Style::new().fg(Color::RED) },
+    green_foreground { TargetedColor::new_for_foreground(Color::GREEN), Style::new().fg(Color::GREEN) },
     green_fg { TargetedColor::new_for_fg(Color::GREEN), Style::new().fg(Color::GREEN) },
-    red_bg { TargetedColor::new_for_fg(Color::RED), Style::new().fg(Color::RED) },
-    green_bg { TargetedColor::new_for_fg(Color::GREEN), Style::new().fg(Color::GREEN) },
+
+    red_background { TargetedColor::new_for_background(Color::RED), Style::new().bg(Color::RED) },
+    red_bg { TargetedColor::new_for_bg(Color::RED), Style::new().bg(Color::RED) },
+    green_background { TargetedColor::new_for_background(Color::GREEN), Style::new().bg(Color::GREEN) },
+    green_bg { TargetedColor::new_for_bg(Color::GREEN), Style::new().bg(Color::GREEN) },
+
     red_underline { TargetedColor::new_for_underline(Color::RED), Style::new().underline_color(Color::RED) },
     green_underline { TargetedColor::new_for_underline(Color::GREEN), Style::new().underline_color(Color::GREEN) },
 ];

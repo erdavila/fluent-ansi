@@ -22,14 +22,26 @@ impl TargetedColor {
 
     /// Creates a new color for the foreground plane.
     #[must_use]
-    pub fn new_for_fg(color: impl Into<Color>) -> Self {
+    pub fn new_for_foreground(color: impl Into<Color>) -> Self {
         Self::new(color, ColorTarget::Foreground)
+    }
+
+    /// Alias for [`TargetedColor::new_for_foreground`].
+    #[must_use]
+    pub fn new_for_fg(color: impl Into<Color>) -> Self {
+        Self::new_for_foreground(color)
     }
 
     /// Creates a new color for the background plane.
     #[must_use]
-    pub fn new_for_bg(color: impl Into<Color>) -> Self {
+    pub fn new_for_background(color: impl Into<Color>) -> Self {
         Self::new(color, ColorTarget::Background)
+    }
+
+    /// Alias for [`TargetedColor::new_for_background`].
+    #[must_use]
+    pub fn new_for_bg(color: impl Into<Color>) -> Self {
+        Self::new_for_background(color)
     }
 
     /// Creates a new color for the underline effects.
@@ -78,6 +90,14 @@ pub enum ColorTarget {
     Background,
     /// The underline effects.
     Underline,
+}
+
+impl ColorTarget {
+    /// Alias for [`ColorTarget::Foreground`].
+    pub const FG: Self = Self::Foreground;
+
+    /// Alias for [`ColorTarget::Background`].
+    pub const BG: Self = Self::Background;
 }
 
 impl_styling_atribute_for! { ColorTarget {

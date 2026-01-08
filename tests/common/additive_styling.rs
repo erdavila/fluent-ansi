@@ -180,7 +180,9 @@ macro_rules! test_additive_styling_methods {
                 }};
             }
 
+            assert_method_for_color!(foreground);
             assert_method_for_color!(fg);
+            assert_method_for_color!(background);
             assert_method_for_color!(bg);
             assert_method_for_color!(underline_color);
 

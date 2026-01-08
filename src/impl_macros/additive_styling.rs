@@ -133,14 +133,26 @@ macro_rules! impl_additive_styling_methods {
 
         /// Sets the foreground color.
         #[must_use]
-        pub fn fg(self, color: impl Into<$crate::color::Color>) -> $composed_styling_type {
+        pub fn foreground(self, color: impl Into<$crate::color::Color>) -> $composed_styling_type {
             self.color($crate::TargetedColor::new_for_fg(color))
+        }
+
+        /// Alias for [`Self::foreground()`].
+        #[must_use]
+        pub fn fg(self, color: impl Into<$crate::color::Color>) -> $composed_styling_type {
+            self.foreground(color)
         }
 
         /// Sets the background color.
         #[must_use]
-        pub fn bg(self, color: impl Into<$crate::color::Color>) -> $composed_styling_type {
+        pub fn background(self, color: impl Into<$crate::color::Color>) -> $composed_styling_type {
             self.color($crate::TargetedColor::new_for_bg(color))
+        }
+
+        /// Alias for [`Self::background()`].
+        #[must_use]
+        pub fn bg(self, color: impl Into<$crate::color::Color>) -> $composed_styling_type {
+            self.background(color)
         }
 
         /// Sets the underline color.

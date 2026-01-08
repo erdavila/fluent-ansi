@@ -18,8 +18,8 @@ mod encoded_effects;
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
 pub struct Style {
     encoded_effects: EncodedEffects,
-    fg: Option<Color>,
-    bg: Option<Color>,
+    foreground_color: Option<Color>,
+    background_color: Option<Color>,
     underline_color: Option<Color>,
 }
 
@@ -29,8 +29,8 @@ impl Style {
     pub const fn new() -> Self {
         Style {
             encoded_effects: EncodedEffects::new(),
-            fg: None,
-            bg: None,
+            foreground_color: None,
+            background_color: None,
             underline_color: None,
         }
     }
@@ -72,8 +72,8 @@ impl Style {
         set_color: {
             let color = color.map(Into::into);
             match target {
-                ColorTarget::Foreground => Self { fg: color, ..self },
-                ColorTarget::Background => Self { bg: color, ..self },
+                ColorTarget::Foreground => Self { foreground_color: color, ..self },
+                ColorTarget::Background => Self { background_color: color, ..self },
                 ColorTarget::Underline => Self {
                     underline_color: color,
                     ..self
@@ -83,8 +83,8 @@ impl Style {
 
         get_color: {
             match target {
-                ColorTarget::Foreground => self.fg,
-                ColorTarget::Background => self.bg,
+                ColorTarget::Foreground => self.foreground_color,
+                ColorTarget::Background => self.background_color,
                 ColorTarget::Underline => self.underline_color,
             }
         }
@@ -111,10 +111,10 @@ impl Display for Style {
                             effect.write_codes(&mut code_writer)?;
                         }
                     }
-                    if let Some(color) = self.0.fg {
+                    if let Some(color) = self.0.foreground_color {
                         color.write_color_codes(ColorTarget::Foreground, &mut code_writer)?;
                     }
-                    if let Some(color) = self.0.bg {
+                    if let Some(color) = self.0.background_color {
                         color.write_color_codes(ColorTarget::Background, &mut code_writer)?;
                     }
                     if let Some(color) = self.0.underline_color {

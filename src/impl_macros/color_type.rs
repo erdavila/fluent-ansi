@@ -6,14 +6,26 @@ macro_rules! impl_color_type {
         impl $name {
             /// Associate this color with the foreground plane.
             #[must_use]
-            pub fn for_fg(self) -> $crate::TargetedColor {
+            pub fn for_foreground(self) -> $crate::TargetedColor {
                 self.for_target($crate::ColorTarget::Foreground)
+            }
+
+            /// Alias for [`Self::for_foreground()`].
+            #[must_use]
+            pub fn for_fg(self) -> $crate::TargetedColor {
+                self.for_foreground()
             }
 
             /// Associate this color with the background plane.
             #[must_use]
-            pub fn for_bg(self) -> $crate::TargetedColor {
+            pub fn for_background(self) -> $crate::TargetedColor {
                 self.for_target($crate::ColorTarget::Background)
+            }
+
+            /// Alias for [`Self::for_background()`].
+            #[must_use]
+            pub fn for_bg(self) -> $crate::TargetedColor {
+                self.for_background()
             }
 
             /// Associate this color with the underline effect.
