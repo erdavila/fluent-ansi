@@ -19,7 +19,6 @@
       }
   }
   ```
-- `ColorTarget::for_color(self, impl Into<Color>) -> TargetedColor`
 - Trait to apply methods in any content that implements `Display`
   - Example: `"Some content".bold().solid_underline()`
   - with method `with_style(Style)`

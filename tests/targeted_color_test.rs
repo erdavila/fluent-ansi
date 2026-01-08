@@ -10,6 +10,30 @@ fn color_target() {
     assert_eq!(ColorTarget::BG, ColorTarget::Background);
 }
 
+#[test]
+fn color_target_for_color() {
+    macro_rules! assert_for_color {
+        ($target:expr) => {
+            assert_for_color!($target, BasicColor::Red);
+            assert_for_color!($target, SimpleColor::new(BasicColor::Red));
+            assert_for_color!($target, IndexedColor(42));
+            assert_for_color!($target, RGBColor::new(0, 128, 255));
+            assert_for_color!($target, Color::Simple(SimpleColor::new(BasicColor::Red)));
+        };
+
+        ($target:expr, $color:expr) => {
+            assert_eq!(
+                $target.for_color($color),
+                TargetedColor::new($color, $target)
+            );
+        };
+    }
+
+    assert_for_color!(ColorTarget::Foreground);
+    assert_for_color!(ColorTarget::Background);
+    assert_for_color!(ColorTarget::Underline);
+}
+
 test_additive_styling_type![
     red_foreground { TargetedColor::new_for_foreground(Color::RED), Style::new().fg(Color::RED) },
     red_fg { TargetedColor::new_for_fg(Color::RED), Style::new().fg(Color::RED) },

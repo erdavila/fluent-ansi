@@ -98,6 +98,11 @@ impl ColorTarget {
 
     /// Alias for [`ColorTarget::Background`].
     pub const BG: Self = Self::Background;
+
+    /// Creates a [`TargetedColor`] from a color and this color target.
+    pub fn for_color(self, color: impl Into<Color>) -> TargetedColor {
+        TargetedColor::new(color, self)
+    }
 }
 
 impl_styling_atribute_for! { ColorTarget {
