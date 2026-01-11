@@ -113,7 +113,7 @@ mod tests {
         let effects = EncodedEffects::default();
 
         for effect in Effect::all() {
-            assert_eq!(effects.get(effect), false);
+            assert!(!effects.get(effect));
         }
     }
 

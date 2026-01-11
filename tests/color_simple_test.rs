@@ -22,7 +22,7 @@ fn new() {
     let color = SimpleColor::new(BasicColor::Red);
 
     assert_eq!(color.get_basic_color(), BasicColor::Red);
-    assert_eq!(color.is_bright(), false);
+    assert!(!color.is_bright());
 }
 
 #[test]
@@ -30,7 +30,7 @@ fn new_bright() {
     let color = SimpleColor::new_bright(BasicColor::Red);
 
     assert_eq!(color.get_basic_color(), BasicColor::Red);
-    assert_eq!(color.is_bright(), true);
+    assert!(color.is_bright());
 }
 
 #[test]

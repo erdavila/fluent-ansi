@@ -183,6 +183,7 @@ fn rgb() {
 
             #[expect(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
             let range_index = ((n_scaled) as usize).clamp(0, range_count - 1);
+            #[expect(clippy::cast_precision_loss)]
             let range_n = n_scaled - range_index as f64;
 
             let color = {
