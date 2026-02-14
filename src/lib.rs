@@ -171,14 +171,21 @@
 //!
 //! A [`Styled<C>`] instance is obtained with the [`applied_to()`] method available in any [styling element]
 //! and in [`Style`], or with [`Styled<C>::new()`] which creates an instance without any styling.
+//! Additionally, the trait [`ToStyled`](traits::ToStyled) is implemented for all types that implement [`Display`],
+//! providing the method [`styled()`](traits::ToStyled::styled) to create a [`Styled<C>`] value with an empty style,
+//! and the method [`with_style()`](traits::ToStyled::with_style) to create a [`Styled<C>`] value with a given style.
 //!
 //! ```
 //! use fluent_ansi::{prelude::*, Styled};
+//!
+//! let style = Effect::Bold.foreground(Color::RED);
 //!
 //! assert_eq!(format!("{}", Effect::Bold.applied_to("Some content")), "\x1b[1mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Color::RED.applied_to("Some content")), "\x1b[31mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Color::RED.bold().applied_to("Some content")), "\x1b[1;31mSome content\x1b[0m");
 //! assert_eq!(format!("{}", Styled::new("Some content").bold().foreground(Color::RED)), "\x1b[1;31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", "Some content".styled().bold().foreground(Color::RED)), "\x1b[1;31mSome content\x1b[0m");
+//! assert_eq!(format!("{}", "Some content".with_style(style)), "\x1b[1;31mSome content\x1b[0m");
 //! ```
 //!
 //! # Styling methods

@@ -1,9 +1,14 @@
 - `const` everywhere - allow defining styles at compile time
   - Complete implementation requires experimental feature (`const_trait_impl`) and nightly compiler
     - Implement what is possible in `main`, and the remaining in a branch or behind a feature.
-- Trait to apply methods in any content that implements `Display`
-  - Example: `"Some content".bold().solid_underline()`
-  - with method `with_style(Style)`
+- Methods for foreground colors.
+  ```rust
+  let styled = "Hello".styled();
+  styled.red();
+  styled.bright_red();
+  styled.indexed_color(i);
+  styled.rgb(r, g, b);
+  ```
 - Handle nesting. How?!
   - Ideas:
     - https://crates.io/crates/ansiconst
@@ -42,3 +47,14 @@
 
     ```
 - Consider implementing the `Add` and `Sub` traits that delegate to the `add` and `remove` methods.
+  | `+` | `StylingElement` | `Style` | `Styled<C>` |
+  | :--- | :---: | :---: | :---: |
+  | `StylingElement` | `Style`     | `Style`     | `Styled<C>` |
+  | `Style`          | `Style`     | `Style`     | `Styled<C>` |
+  | `Styled<C>`      | `Styled<C>` | `Styled<C>` | -           |
+
+  | `-` | `StylingAttribute`
+  | :--- | :---: |
+  | `Style`     | `Style`     |
+  | `Styled<C>` | `Styled<C>` |
+
