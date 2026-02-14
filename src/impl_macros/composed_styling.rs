@@ -1,6 +1,6 @@
 macro_rules! impl_composed_styling_methods {
     {
-        args: [$self:ident, $effect:ident, $underline_effect:ident, $target:ident, $color:ident, $value:ident, $other:ident];
+        args: [$self:ident, $effect:ident, $underline_effect:ident, $target:ident, $color:ident, $value:ident, $other:ident, $enabled:ident];
         example_variable: $example_variable:literal;
 
         set_effect: $set_effect:block
@@ -11,6 +11,8 @@ macro_rules! impl_composed_styling_methods {
         set_color: $set_color:block
         get_color: $get_color:block
         merge_style: $merge_style:block
+        set_enabled: $set_enabled:block
+        is_enabled: $is_enabled:block
     } => {
         /// Sets the given effect to the specified value.
         #[must_use]
@@ -89,6 +91,18 @@ macro_rules! impl_composed_styling_methods {
         #[must_use]
         pub fn merge_style($self, $other: Style) -> Self {
             $merge_style
+        }
+
+        /// Sets whether the styling is enabled.
+        #[must_use]
+        pub fn set_enabled($self, $enabled: bool) -> Self {
+            $set_enabled
+        }
+
+        /// Gets whether the styling is enabled.
+        #[must_use]
+        pub fn is_enabled(&$self) -> bool {
+            $is_enabled
         }
     };
 }

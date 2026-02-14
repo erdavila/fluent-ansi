@@ -323,6 +323,23 @@
 //! ```
 //!
 //!
+//! # Controling the use of styling
+//!
+//! Styling can be enabled or disabled using the method `set_enabled(bool)` in [`Style`] and [`Styled`].
+//! The recommended approach is to set whether styling is enabled in a base [`Style`] value and then use this
+//! value to set additional styling.
+//!
+//! ```
+//! use fluent_ansi::{prelude::*, Style};
+//! use std::io::IsTerminal as _;
+//!
+//! let base_style = Style::new().set_enabled(std::io::stdout().is_terminal());
+//!
+//! println!("Is this {}?", base_style.bold().applied_to("BOLD"));
+//! println!("And is this {}?", base_style.fg(Color::RED).applied_to("RED"));
+//! ```
+//!
+//!
 //! # The [`Reset`] singleton
 //!
 //! [`Reset`] is a singleton value that represents the "reset" ANSI code. It can be used to manually control

@@ -53,3 +53,12 @@ fn combined_display() {
 fn default() {
     assert_display!(Style::default(), "\x1b[0m");
 }
+
+#[test]
+fn enabled() {
+    let style = Style::new().bold().set_enabled(false).fg(BasicColor::Red);
+    assert_display!(style, "");
+
+    let style = style.set_enabled(true);
+    assert_display!(style, "\x1b[1;31m");
+}

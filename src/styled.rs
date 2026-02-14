@@ -66,7 +66,7 @@ impl<C: Display> Styled<C> {
     }
 
     impl_composed_styling_methods! {
-        args: [self, effect, underline_effect, target, color, value, other];
+        args: [self, effect, underline_effect, target, color, value, other, enabled];
         example_variable: r"styled";
 
         set_effect: {
@@ -100,6 +100,14 @@ impl<C: Display> Styled<C> {
         merge_style: {
             self.modify_style(|style| style.merge_style(other))
         }
+
+        set_enabled: {
+            self.modify_style(|style| style.set_enabled(enabled))
+        }
+
+        is_enabled: {
+            self.style.is_enabled()
+        }
     }
 
     #[must_use]
@@ -115,7 +123,7 @@ impl<C: Display> Display for Styled<C> {
             write!(f, "{}", self.content)
         } else {
             let start = self.style;
-            let end = Style::default();
+            let end = Style::default().set_enabled(self.style.is_enabled());
             write!(f, "{start}{}{end}", self.content)
         }
     }

@@ -64,3 +64,15 @@ fn combined_display() {
         .bg(BasicColor::Green);
     assert_display!(styled, "\x1b[1;4;31;42mCONTENT\x1b[0m");
 }
+
+#[test]
+fn enabled() {
+    let style = Styled::new("CONTENT")
+        .bold()
+        .set_enabled(false)
+        .fg(BasicColor::Red);
+    assert_display!(style, "CONTENT");
+
+    let style = style.set_enabled(true);
+    assert_display!(style, "\x1b[1;31mCONTENT\x1b[0m");
+}

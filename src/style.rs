@@ -15,12 +15,13 @@ pub use encoded_effects::*;
 mod encoded_effects;
 
 /// A structure representing text styling with effects and colors.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Style {
     encoded_effects: EncodedEffects,
     foreground_color: Option<Color>,
     background_color: Option<Color>,
     underline_color: Option<Color>,
+    enabled: bool,
 }
 
 impl Style {
@@ -32,11 +33,12 @@ impl Style {
             foreground_color: None,
             background_color: None,
             underline_color: None,
+            enabled: true,
         }
     }
 
     impl_composed_styling_methods! {
-        args: [self, effect, underline_effect, target, color, value, other];
+        args: [self, effect, underline_effect, target, color, value, other, enabled];
         example_variable: r"style";
 
         set_effect: {
@@ -95,7 +97,19 @@ impl Style {
                 foreground_color: other.foreground_color.or(self.foreground_color),
                 background_color: other.background_color.or(self.background_color),
                 underline_color: other.underline_color.or(self.underline_color),
+                enabled: other.enabled,
             }
+        }
+
+        set_enabled: {
+            Self {
+                enabled,
+                ..self
+            }
+        }
+
+        is_enabled: {
+            self.enabled
         }
     }
 }
@@ -105,9 +119,17 @@ impl_additive_styling_type!(Style {
     to_style: SELF
 });
 
+impl Default for Style {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Display for Style {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        if *self == Style::new() {
+        if !self.enabled {
+            Ok(())
+        } else if *self == Style::new() {
             write_escape_sequence(f, 0)
         } else {
             struct Codes(Style);

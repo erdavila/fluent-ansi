@@ -291,6 +291,19 @@ macro_rules! test_composed_styling_type {
                         .background(Color::BLUE)
                         .underline_color(Color::YELLOW)
                 );
+
+                for self_enabled in [false, true] {
+                    for other_enabled in [false, true] {
+                        assert_merge_style!(
+                            $empty_composed_styling
+                                .set_enabled(self_enabled),
+                            Style::new()
+                                .set_enabled(other_enabled);
+                            $empty_composed_styling
+                                .set_enabled(other_enabled)
+                        );
+                    }
+                }
             }
         }
     };
