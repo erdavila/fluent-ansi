@@ -245,10 +245,10 @@
 //!
 //! | Method | To remove what | Note |
 //! |--------|----------------|------|
-//! | [`remove(Effect)`](Style::remove)          | effect |
-//! | [`remove(UnderlineEffect)`](Style::remove) | underline effect | Remove the specific effect, if set |
-//! | [`remove(UnderlineStyle)`](Style::remove)  | underline effect | Remove any underline effect that may be set |
-//! | [`remove(ColorTarget)`](Style::remove)     | color |
+//! | [`remove(Effect)`](traits::Composed::remove)          | effect |
+//! | [`remove(UnderlineEffect)`](traits::Composed::remove) | underline effect | Remove the specific effect, if set |
+//! | [`remove(UnderlineStyle)`](traits::Composed::remove)  | underline effect | Remove any underline effect that may be set |
+//! | [`remove(ColorTarget)`](traits::Composed::remove)     | color |
 //!
 //! ### Example
 //!
@@ -290,17 +290,17 @@
 //!
 //! | Methods | Styling |
 //! |---------|---------|
-//! | [`set(Effect, bool)`](Style::set)                            <br/> [`set_effect(Effect, bool)`](Style::set_effect)                                          | effect
-//! | [`set(UnderlineEffect, bool)`](Style::set)                   <br/> [`set_effect(UnderlineEffect, bool)`](Style::set_effect)                                 | underline effect |
-//! | [`set(UnderlineStyle, Option<UnderlineEffect>)`](Style::set) <br/> [`set_underline_effect(Option<UnderlineEffect>)`](Style::set_underline_effect)           | underline effect |
-//! | [`set(ColorTarget, Option<Color>)`](Style::set)              <br/> [`set_color(ColorTarget, Option<impl Into<Color>>)`](Style::set_color) [^set-color-none] | color |
+//! | [`set(Effect, bool)`](traits::Composed::set)                            <br/> [`set_effect(Effect, bool)`](traits::Composed::set_effect)                                          | effect
+//! | [`set(UnderlineEffect, bool)`](traits::Composed::set)                   <br/> [`set_effect(UnderlineEffect, bool)`](traits::Composed::set_effect)                                 | underline effect |
+//! | [`set(UnderlineStyle, Option<UnderlineEffect>)`](traits::Composed::set) <br/> [`set_underline_effect(Option<UnderlineEffect>)`](traits::Composed::set_underline_effect)           | underline effect |
+//! | [`set(ColorTarget, Option<Color>)`](traits::Composed::set)              <br/> [`set_color(ColorTarget, Option<impl Into<Color>>)`](traits::Composed::set_color) [^set-color-none] | color |
 //!
 //! | Methods | Styling |
 //! |---------|---------|
-//! | [`get(Effect) -> bool`](Style::get)                            <br/> [`get_effect(Effect) -> bool`](Style::get_effect) <br/>[`get_effects() -> GetEffects`](Style::get_effect) | effect
-//! | [`get(UnderlineEffect) -> bool`](Style::get)                   <br/> [`get_effect(UnderlineEffect) -> bool`](Style::get_effect)                                                | underline effect |
-//! | [`get(UnderlineStyle) -> Option<UnderlineEffect>`](Style::get) <br/> [`get_underline_effect() -> Option<UnderlineEffect>`](Style::get_underline_effect)                        | underline effect |
-//! | [`get(ColorTarget) -> Option<Color>`](Style::get)              <br/> [`get_color(ColorTarget) -> Option<Color>)`](Style::get_color)                                            | color |
+//! | [`get(Effect) -> bool`](traits::Composed::get)                            <br/> [`get_effect(Effect) -> bool`](traits::Composed::get_effect) <br/>[`get_effects() -> GetEffects`](traits::Composed::get_effect) | effect
+//! | [`get(UnderlineEffect) -> bool`](traits::Composed::get)                   <br/> [`get_effect(UnderlineEffect) -> bool`](traits::Composed::get_effect)                                                | underline effect |
+//! | [`get(UnderlineStyle) -> Option<UnderlineEffect>`](traits::Composed::get) <br/> [`get_underline_effect() -> Option<UnderlineEffect>`](traits::Composed::get_underline_effect)                        | underline effect |
+//! | [`get(ColorTarget) -> Option<Color>`](traits::Composed::get)              <br/> [`get_color(ColorTarget) -> Option<Color>)`](traits::Composed::get_color)                                            | color |
 //!
 //! ### Example
 //!
@@ -364,7 +364,7 @@
 //! [composed styling types]: #composed-styling-types
 //!
 //! [^applied-to-method]: [`applied_to()`](Style::applied_to) is not available in [`Styled<C>`] values, and always returns a [`Styled<C>`].
-//! [^set-color-none]: To clear a color with [`set_color()`](Style::set_color), the color type must be specified in the `None` value as e.g.
+//! [^set-color-none]: To clear a color with [`set_color()`](traits::Composed::set_color), the color type must be specified in the `None` value as e.g.
 //!     `None::<Color>`. As an alternative, use the [`Color::none()`](color::Color::none) method.
 
 pub use crate::{

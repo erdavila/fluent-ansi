@@ -6,7 +6,7 @@ mod common;
 
 test_additive_styling_methods!(Styled::new("CONTENT"), Styled::new("CONTENT"));
 
-test_composed_styling_type!(Styled::new("CONTENT"));
+test_composed!(Styled::new("CONTENT"));
 
 #[test]
 fn content_and_style() {

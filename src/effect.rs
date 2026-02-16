@@ -80,6 +80,7 @@ impl_additive_styling_type!(Effect {
 impl_styling_element_for! { Effect {
     args: [self, composed_styling];
     add_to: {
+        use crate::traits::Composed as _;
         composed_styling.set_effect(self, true)
     }
 }}
@@ -89,10 +90,12 @@ impl_styling_atribute_for! { Effect {
     args: [self, composed_styling, value];
 
     set_in: {
+        use crate::traits::Composed as _;
         composed_styling.set_effect(self, value)
     }
 
     get_from: {
+        use crate::traits::Composed as _;
         composed_styling.get_effect(self)
     }
 }}

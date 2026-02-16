@@ -122,6 +122,7 @@ macro_rules! impl_additive_styling_methods {
         /// Sets the given effect.
         #[must_use]
         pub fn effect(self, effect: impl Into<$crate::Effect>) -> $composed_styling_type {
+            use $crate::traits::Composed as _;
             self.to_composed_styling().set_effect(effect, true)
         }
 
@@ -167,6 +168,7 @@ macro_rules! impl_additive_styling_methods {
             self,
             targeted_color: impl Into<$crate::TargetedColor>,
         ) -> $composed_styling_type {
+            use $crate::traits::Composed as _;
             let targeted_color = targeted_color.into();
             self.to_composed_styling().set_color(
                 targeted_color.get_target(),

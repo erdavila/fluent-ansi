@@ -3,11 +3,9 @@ use core::fmt::{Display, Formatter, Result, Write};
 use crate::{
     ColorTarget, Effect, Reset, UnderlineEffect,
     colors::{Color, WriteColorCodes as _},
-    impl_macros::{
-        additive_styling::impl_additive_styling_type,
-        composed_styling::impl_composed_styling_methods,
-    },
+    impl_macros::additive_styling::impl_additive_styling_type,
     style::encoded_effects::EncodedEffects,
+    traits::Composed,
 };
 
 pub use encoded_effects::*;
@@ -36,81 +34,81 @@ impl Style {
             enabled: true,
         }
     }
+}
 
-    impl_composed_styling_methods! {
-        args: [self, effect, underline_effect, target, color, value, other, enabled];
-        example_variable: r"style";
+impl Composed for Style {
+    fn set_effect(self, effect: impl Into<Effect>, value: bool) -> Self {
+        let effect = effect.into();
+        let encoded_effects = self.encoded_effects.set(effect, value);
+        Self {
+            encoded_effects,
+            ..self
+        }
+    }
 
-        set_effect: {
-            let effect = effect.into();
-            let encoded_effects = self.encoded_effects.set(effect, value);
-            Self {
-                encoded_effects,
+    fn get_effect(&self, effect: impl Into<Effect>) -> bool {
+        let effect = effect.into();
+        self.encoded_effects.get(effect)
+    }
+
+    fn get_effects(&self) -> GetEffects {
+        self.encoded_effects.get_effects()
+    }
+
+    fn set_underline_effect(self, underline_effect: Option<UnderlineEffect>) -> Self {
+        let encoded_effects = self.encoded_effects.set_underline(underline_effect);
+        Self {
+            encoded_effects,
+            ..self
+        }
+    }
+
+    fn get_underline_effect(&self) -> Option<UnderlineEffect> {
+        UnderlineEffect::all().find(|&underline_effect| self.get_effect(underline_effect))
+    }
+
+    fn set_color(self, target: ColorTarget, color: Option<impl Into<Color>>) -> Self {
+        let color = color.map(Into::into);
+        match target {
+            ColorTarget::Foreground => Self {
+                foreground_color: color,
                 ..self
-            }
-        }
-
-        get_effect: {
-            let effect = effect.into();
-            self.encoded_effects.get(effect)
-        }
-
-        get_effects: {
-            self.encoded_effects.get_effects()
-        }
-
-        set_underline_effect: {
-            let encoded_effects = self.encoded_effects.set_underline(underline_effect);
-            Self {
-                encoded_effects,
+            },
+            ColorTarget::Background => Self {
+                background_color: color,
                 ..self
-            }
-        }
-
-        get_underline_effect: {
-            UnderlineEffect::all().find(|&underline_effect| self.get_effect(underline_effect))
-        }
-
-        set_color: {
-            let color = color.map(Into::into);
-            match target {
-                ColorTarget::Foreground => Self { foreground_color: color, ..self },
-                ColorTarget::Background => Self { background_color: color, ..self },
-                ColorTarget::Underline => Self {
-                    underline_color: color,
-                    ..self
-                },
-            }
-        }
-
-        get_color: {
-            match target {
-                ColorTarget::Foreground => self.foreground_color,
-                ColorTarget::Background => self.background_color,
-                ColorTarget::Underline => self.underline_color,
-            }
-        }
-
-        merge_style: {
-            Self {
-                encoded_effects: self.encoded_effects.merge(other.encoded_effects),
-                foreground_color: other.foreground_color.or(self.foreground_color),
-                background_color: other.background_color.or(self.background_color),
-                underline_color: other.underline_color.or(self.underline_color),
-                enabled: other.enabled,
-            }
-        }
-
-        set_enabled: {
-            Self {
-                enabled,
+            },
+            ColorTarget::Underline => Self {
+                underline_color: color,
                 ..self
-            }
+            },
         }
+    }
 
-        is_enabled: {
-            self.enabled
+    fn get_color(&self, target: ColorTarget) -> Option<Color> {
+        match target {
+            ColorTarget::Foreground => self.foreground_color,
+            ColorTarget::Background => self.background_color,
+            ColorTarget::Underline => self.underline_color,
         }
+    }
+
+    fn merge_style(self, other: Style) -> Self {
+        Self {
+            encoded_effects: self.encoded_effects.merge(other.encoded_effects),
+            foreground_color: other.foreground_color.or(self.foreground_color),
+            background_color: other.background_color.or(self.background_color),
+            underline_color: other.underline_color.or(self.underline_color),
+            enabled: other.enabled,
+        }
+    }
+
+    fn set_enabled(self, enabled: bool) -> Self {
+        Self { enabled, ..self }
+    }
+
+    fn is_enabled(&self) -> bool {
+        self.enabled
     }
 }
 

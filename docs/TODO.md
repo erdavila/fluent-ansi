@@ -1,6 +1,10 @@
 - Revert back to traits instead of macros
   - Is `ToStyle` needed?
     - It seems the same as `ToComposed<Composed = Style>`.
+  - `type_trait_table.md`
+    - Review bounds/supertraits.
+    - Remove `Reset` row.
+    - Remove "Color type" column.
   - Make `Copy` supertrait of all traits.
 - `const` everywhere - allow defining styles at compile time
   - Complete implementation requires experimental feature (`const_trait_impl`) and nightly compiler

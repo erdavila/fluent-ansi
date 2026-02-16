@@ -71,6 +71,7 @@ impl_additive_styling_type!(TargetedColor {
 impl_styling_element_for! { TargetedColor {
     args: [self, composed_styling];
     add_to: {
+        use crate::traits::Composed as _;
         composed_styling.set_color(self.get_target(), Some(self.get_color()))
     }
 }}
@@ -119,10 +120,12 @@ impl_styling_atribute_for! { ColorTarget {
     args: [self, composed_styling, value];
 
     set_in: {
+        use crate::traits::Composed as _;
         composed_styling.set_color(self, value)
     }
 
     get_from: {
+        use crate::traits::Composed as _;
         composed_styling.get_color(self)
     }
 }}

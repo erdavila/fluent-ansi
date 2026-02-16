@@ -13,16 +13,16 @@
 
 ## General
 
-| Type \\ Trait | Composed styling methods | Fluent methods | `applied_to` method | `to_style` method | Color type | `StyleElement` | `StyleAttribute` |
+| Type \\ Trait | `Composed` | Fluent methods | `applied_to` method | `to_style` method | Color type | `StyleElement` | `StyleAttribute` |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `Styled` | X | X | | | | | |
-| `Style` | X | X | X | X | | | |
-| `Effect` | | X | X | X | | X | X |
-| `UnderlineEffect` | | X | X | X | | X | X |
-| `TargetedColor` | | X | X | X | | X | |
-| `BasicColor`<br/>`SimpleColor`<br/>`IndexedColor`<br/>`RGBColor`<br/>`Color` | | X | X | X | X | X | |
-| `Reset` | | | | X | | | |
-| `ColorTarget` | | | | | | | X |
-| `UnderlineStyle` | | | | | | | X |
+| `Styled`          | X | X |   |   |   |   |   |
+| `Style`           | X | X | X | X |   |   |   |
+| `Effect`          |   | X | X | X |   | X | X |
+| `UnderlineEffect` |   | X | X | X |   | X | X |
+| `TargetedColor`   |   | X | X | X |   | X |   |
+| `impl ColorKind`  |   | X | X | X | X | X |   |
+| `Reset`           |   |   |   | X |   |   |   |
+| `ColorTarget`     |   |   |   |   |   |   | X |
+| `UnderlineStyle`  |   |   |   |   |   |   | X |
 
 Fluent type = Fluent methods + `applied_to` method + `to_style` method

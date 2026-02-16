@@ -8,7 +8,7 @@ test_additive_styling_type![
     clear { Style::new(), Style::new() },
     bold { Style::new().bold(), Style::new().bold() },
 ];
-test_composed_styling_type!(Style::new());
+test_composed!(Style::new());
 
 #[test]
 fn effects_display() {

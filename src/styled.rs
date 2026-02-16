@@ -1,12 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Effect, GetEffects, Style, UnderlineEffect,
-    impl_macros::{
-        additive_styling::impl_additive_styling_methods,
-        composed_styling::impl_composed_styling_methods,
-    },
-    prelude::Color,
+    ColorTarget, Effect, GetEffects, Style, UnderlineEffect,
+    impl_macros::additive_styling::impl_additive_styling_methods, prelude::Color, traits::Composed,
 };
 
 /// A value that associates some content with a specific style.
@@ -65,55 +61,52 @@ impl<C: Display> Styled<C> {
         to_composed_styling: { self }
     }
 
-    impl_composed_styling_methods! {
-        args: [self, effect, underline_effect, target, color, value, other, enabled];
-        example_variable: r"styled";
-
-        set_effect: {
-            self.modify_style(|style| style.set_effect(effect, value))
-        }
-
-        get_effect: {
-            self.style.get_effect(effect)
-        }
-
-        get_effects: {
-            self.style.get_effects()
-        }
-
-        set_underline_effect: {
-            self.modify_style(|style| style.set_underline_effect(underline_effect))
-        }
-
-        get_underline_effect: {
-            self.style.get_underline_effect()
-        }
-
-        set_color: {
-            self.modify_style(|style| style.set_color(target, color))
-        }
-
-        get_color: {
-            self.style.get_color(target)
-        }
-
-        merge_style: {
-            self.modify_style(|style| style.merge_style(other))
-        }
-
-        set_enabled: {
-            self.modify_style(|style| style.set_enabled(enabled))
-        }
-
-        is_enabled: {
-            self.style.is_enabled()
-        }
-    }
-
     #[must_use]
     fn modify_style(self, f: impl FnOnce(Style) -> Style) -> Self {
         let style = f(self.style);
         Self { style, ..self }
+    }
+}
+
+impl<C: Display> Composed for Styled<C> {
+    fn set_effect(self, effect: impl Into<Effect>, value: bool) -> Self {
+        self.modify_style(|style| style.set_effect(effect, value))
+    }
+
+    fn get_effect(&self, effect: impl Into<Effect>) -> bool {
+        self.style.get_effect(effect)
+    }
+
+    fn get_effects(&self) -> GetEffects {
+        self.style.get_effects()
+    }
+
+    fn set_underline_effect(self, underline_effect: Option<UnderlineEffect>) -> Self {
+        self.modify_style(|style| style.set_underline_effect(underline_effect))
+    }
+
+    fn get_underline_effect(&self) -> Option<UnderlineEffect> {
+        self.style.get_underline_effect()
+    }
+
+    fn set_color(self, target: ColorTarget, color: Option<impl Into<Color>>) -> Self {
+        self.modify_style(|style| style.set_color(target, color))
+    }
+
+    fn get_color(&self, target: ColorTarget) -> Option<Color> {
+        self.style.get_color(target)
+    }
+
+    fn merge_style(self, other: Style) -> Self {
+        self.modify_style(|style| style.merge_style(other))
+    }
+
+    fn set_enabled(self, enabled: bool) -> Self {
+        self.modify_style(|style| style.set_enabled(enabled))
+    }
+
+    fn is_enabled(&self) -> bool {
+        self.style.is_enabled()
     }
 }
 

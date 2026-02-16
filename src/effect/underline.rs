@@ -62,6 +62,7 @@ impl Display for UnderlineEffect {
 impl_styling_element_for! { UnderlineEffect {
     args: [self, composed_styling];
     add_to: {
+        use crate::traits::Composed as _;
         composed_styling.set_underline_effect(Some(self))
     }
 }}
@@ -71,19 +72,19 @@ impl_styling_atribute_for! { UnderlineEffect {
     args: [self, composed_styling, value];
 
     set_in: {
+        use crate::traits::Composed as _;
         composed_styling.set_effect(self.to_effect(), value)
     }
 
     get_from: {
+        use crate::traits::Composed as _;
         composed_styling.get_effect(self.to_effect())
     }
 }}
 
 /// The underline attribute.
 ///
-/// Usable in the
-/// [`Style::set`](crate::Style::set)/[`Styled::set`](crate::Styled::set) and
-/// [`Style::get`](crate::Style::get)/[`Styled::get`](crate::Styled::get) methods.
+/// Usable in the [`Composed::set`](crate::traits::Composed::set) and [`Composed::get`](crate::traits::Composed::get) methods.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct UnderlineStyle;
 
@@ -92,10 +93,12 @@ impl_styling_atribute_for! { UnderlineStyle {
     args: [self, composed_styling, value];
 
     set_in: {
+        use crate::traits::Composed as _;
         composed_styling.set_underline_effect(value)
     }
 
     get_from: {
+        use crate::traits::Composed as _;
         composed_styling.get_underline_effect()
     }
 }}

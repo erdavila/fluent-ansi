@@ -2,12 +2,12 @@
 
 mod additive_styling;
 mod color_kind;
-mod composed_styling;
+mod composed;
 mod from_to;
 
 pub(crate) use additive_styling::*;
 pub(crate) use color_kind::*;
-pub(crate) use composed_styling::*;
+pub(crate) use composed::*;
 pub(crate) use from_to::*;
 
 /// A macro to assert that a type implementing `Display` produces the expected output.
