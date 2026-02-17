@@ -1,7 +1,4 @@
-use crate::{
-    colors::SimpleColor,
-    impl_macros::{color_type::impl_color_type, from_to::impl_from_to},
-};
+use crate::{colors::SimpleColor, impl_macros::from_to::impl_from_to};
 
 /// The 8 basic non-bright terminal colors.
 ///
@@ -49,10 +46,6 @@ impl BasicColor {
         self as u8
     }
 }
-
-impl_color_type!(BasicColor {
-    args: [self];
-});
 
 impl_from_to!(
     #[doc = r"Convert this basic color into a [`SimpleColor`]."]

@@ -4,7 +4,7 @@ use enum_iterator::Sequence;
 
 use crate::{
     Effect,
-    impl_macros::{additive_styling::impl_additive_styling_type, from_to::impl_from_to},
+    impl_macros::from_to::impl_from_to,
     traits::{Composed, StylingAttribute, StylingElement},
 };
 
@@ -34,11 +34,6 @@ impl UnderlineEffect {
         enum_iterator::all()
     }
 }
-
-impl_additive_styling_type!(UnderlineEffect {
-    args: [self];
-    to_style: { self.to_effect().to_style() }
-});
 
 impl_from_to!(
     #[doc = r"Converts the type into an [`Effect`]."]

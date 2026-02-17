@@ -1,11 +1,11 @@
 #![allow(unused)]
 
-mod additive_styling;
+mod additive;
 mod color_kind;
 mod composed;
 mod from_to;
 
-pub(crate) use additive_styling::*;
+pub(crate) use additive::*;
 pub(crate) use color_kind::*;
 pub(crate) use composed::*;
 pub(crate) use from_to::*;

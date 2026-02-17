@@ -4,7 +4,7 @@ use common::*;
 
 mod common;
 
-test_additive_styling_type![
+test_additive_and_to_style![
     clear { Style::new(), Style::new() },
     bold { Style::new().bold(), Style::new().bold() },
 ];

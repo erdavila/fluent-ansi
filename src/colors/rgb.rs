@@ -1,8 +1,6 @@
 use core::fmt::Result;
 
-use crate::{
-    CodeWriter, ColorTarget, color::WriteColorCodes, impl_macros::color_type::impl_color_type,
-};
+use crate::{CodeWriter, ColorTarget, color::WriteColorCodes};
 
 /// A type alias for [`RGBColor`].
 pub type RGB = RGBColor;
@@ -35,10 +33,6 @@ impl RGBColor {
         Self { r, g, b }
     }
 }
-
-impl_color_type!(RGBColor {
-    args: [self];
-});
 
 impl WriteColorCodes for RGBColor {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {

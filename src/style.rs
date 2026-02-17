@@ -3,7 +3,6 @@ use core::fmt::{Display, Formatter, Result, Write};
 use crate::{
     ColorTarget, Effect, UnderlineEffect,
     colors::{Color, WriteColorCodes as _},
-    impl_macros::additive_styling::impl_additive_styling_type,
     style::encoded_effects::EncodedEffects,
     traits::{Composed, StylingElement},
 };
@@ -111,11 +110,6 @@ impl Composed for Style {
         self.enabled
     }
 }
-
-impl_additive_styling_type!(Style {
-    args: [self];
-    to_style: { self }
-});
 
 impl Default for Style {
     fn default() -> Self {

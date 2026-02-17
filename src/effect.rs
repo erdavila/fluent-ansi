@@ -4,7 +4,6 @@ use enum_iterator::Sequence;
 
 use crate::{
     CodeWriter,
-    impl_macros::additive_styling::impl_additive_styling_type,
     traits::{Composed, StylingAttribute, StylingElement, ToStyle as _},
 };
 pub use underline::*;
@@ -72,11 +71,6 @@ impl Effect {
         code_writer.write_code(codes)
     }
 }
-
-impl_additive_styling_type!(Effect {
-    args: [self];
-    to_style: { Style::new().effect(self) }
-});
 
 impl StylingElement for Effect {
     fn add_to<C: Composed>(self, composed: C) -> C {

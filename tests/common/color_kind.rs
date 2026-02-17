@@ -16,7 +16,7 @@ macro_rules! test_color_kind {
     };
 
     (NO_MOD: $color:expr, $as_color:expr, $as_style:expr) => {
-        use fluent_ansi::{color::*, traits::ColorKind as _, *};
+        use fluent_ansi::{color::*, traits::*, *};
         use $crate::common::assert_from_to;
 
         #[test]
@@ -47,7 +47,7 @@ macro_rules! test_color_kind {
             assert_eq!($color.for_target(ColorTarget::Underline), expected);
         }
 
-        $crate::common::test_additive_styling_type!(NO_MOD: $color, Style::new().fg($color));
+        $crate::common::test_additive_and_to_style!(NO_MOD: $color, Style::new().fg($color));
 
         #[test]
         fn to_targeted_color() {

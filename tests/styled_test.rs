@@ -4,7 +4,7 @@ use common::*;
 
 mod common;
 
-test_additive_styling_methods!(Styled::new("CONTENT"), Styled::new("CONTENT"));
+test_additive!(Styled::new("CONTENT"), Styled::new("CONTENT"));
 
 test_composed!(Styled::new("CONTENT"));
 

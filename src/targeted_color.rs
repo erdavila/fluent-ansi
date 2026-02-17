@@ -2,7 +2,6 @@ use core::fmt::{Display, Formatter, Result};
 
 use crate::{
     color::Color,
-    impl_macros::additive_styling::impl_additive_styling_type,
     traits::{Composed, StylingAttribute, StylingElement, ToStyle as _},
 };
 
@@ -63,11 +62,6 @@ impl TargetedColor {
         self.target
     }
 }
-
-impl_additive_styling_type!(TargetedColor {
-    args: [self];
-    to_style: { Style::new().color(self) }
-});
 
 impl StylingElement for TargetedColor {
     fn add_to<C: Composed>(self, composed: C) -> C {

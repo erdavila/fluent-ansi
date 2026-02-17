@@ -193,12 +193,6 @@
 //!
 //! <div class="warning">
 //!
-//!    In the methods docs below, the links take to their implementation in [`Style`], but they are the same for all types.
-//!
-//! </div>
-//!
-//! <div class="warning">
-//!
 //!    Although some methods below are documented with varying signatures (e.g. `color(TargetedColor)` and `color(impl Into<Color>)`),
 //!    each method name has a single implementation with a generic argument in each type. Check the linked method documentation to see
 //!    the real signature.
@@ -212,13 +206,13 @@
 //!
 //! | Method | To set what |
 //! |--------|-------------|
-//! | [`bold()`](Style::bold),<br/>[`italic()`](Style::italic),<br/>[`solid_underline()`](Style::solid_underline),<br/>etc.                                                                                                                                 | effect |
-//! | [`effect(impl Into<Effect>)`](Style::effect)                                                                                                                                                                                                          | effect<br/>(including underline effects) |
-//! | [`underline_effect(UnderlineEffect)`](Style::underline_effect)                                                                                                                                                                                        | underline effect |
-//! | [`foreground(impl Into<Color>)`](Style::foreground)/[`fg(impl Into<Color>)`](Style::fg)<br/>[`background(impl Into<Color>)`](Style::background)/[`bg(impl Into<Color>)`](Style::bg)<br/>[`underline_color(impl Into<Color>)`](Style::underline_color) | color |
-//! | [`color(TargetedColor)`](Style::color)                                                                                                                                                                                                                | color |
-//! | [`color(impl Into<Color>)`](Style::color)                                                                                                                                                                                                             | foreground color |
-//! | [`applied_to(impl Display)`](traits::ToStyle::applied_to) [^applied-to-method]                                                                                                                                                                                  | content |
+//! | [`bold()`](traits::Additive::bold),<br/>[`italic()`](traits::Additive::italic),<br/>[`solid_underline()`](traits::Additive::solid_underline),<br/>etc.                                                                                                                                                       | effect |
+//! | [`effect(impl Into<Effect>)`](traits::Additive::effect)                                                                                                                                                                                                                                                      | effect<br/>(including underline effects) |
+//! | [`underline_effect(UnderlineEffect)`](traits::Additive::underline_effect)                                                                                                                                                                                                                                    | underline effect |
+//! | [`foreground(impl Into<Color>)`](traits::Additive::foreground)/[`fg(impl Into<Color>)`](traits::Additive::fg)<br/>[`background(impl Into<Color>)`](traits::Additive::background)/[`bg(impl Into<Color>)`](traits::Additive::bg)<br/>[`underline_color(impl Into<Color>)`](traits::Additive::underline_color) | color |
+//! | [`color(TargetedColor)`](traits::Additive::color)                                                                                                                                                                                                                                                            | color |
+//! | [`color(impl Into<Color>)`](traits::Additive::color)                                                                                                                                                                                                                                                         | foreground color |
+//! | [`applied_to(impl Display)`](traits::ToStyle::applied_to) [^applied-to-method]                                                                                                                                                                                                                               | content |
 //!
 //!
 //! ## Methods for elements and sets
@@ -234,10 +228,10 @@
 //!
 //! | Method | To add what |
 //! |--------|-------------|
-//! | [`add(Effect)`](Style::add)           | effect |
-//! | [`add(UnderlineEffect)`](Style::add)  | underline effect |
-//! | [`add(TargetedColor)`](Style::add)    | color |
-//! | [`add(impl Into<Color>)`](Style::add) | foreground color |
+//! | [`add(Effect)`](traits::Additive::add)           | effect |
+//! | [`add(UnderlineEffect)`](traits::Additive::add)  | underline effect |
+//! | [`add(TargetedColor)`](traits::Additive::add)    | color |
+//! | [`add(impl Into<Color>)`](traits::Additive::add) | foreground color |
 //!
 //! ### The `remove` method
 //!

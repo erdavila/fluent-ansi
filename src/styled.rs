@@ -2,7 +2,8 @@ use core::fmt::{Display, Formatter, Result};
 
 use crate::{
     ColorTarget, Effect, GetEffects, Style, UnderlineEffect,
-    impl_macros::additive_styling::impl_additive_styling_methods, prelude::Color, traits::Composed,
+    prelude::Color,
+    traits::{Additive, Composed},
 };
 
 /// A value that associates some content with a specific style.
@@ -55,16 +56,18 @@ impl<C: Display> Styled<C> {
         Self { style, ..self }
     }
 
-    impl_additive_styling_methods! {
-        type ComposedStyling = Styled<C>;
-        args: [self];
-        to_composed_styling: { self }
-    }
-
     #[must_use]
     fn modify_style(self, f: impl FnOnce(Style) -> Style) -> Self {
         let style = f(self.style);
         Self { style, ..self }
+    }
+}
+
+impl<C: Display> Additive for Styled<C> {
+    type Composed = Self;
+
+    fn to_composed(self) -> Self::Composed {
+        self
     }
 }
 

@@ -1,33 +1,21 @@
-macro_rules! test_additive_styling_type {
+macro_rules! test_additive_and_to_style {
     ( $( $mod:ident { $value:expr, $as_style:expr } ),+ $(,)? ) => {
         mod fluent_type {
             $(
                 mod $mod {
-                    #[allow(unused_imports)]
-                    use fluent_ansi::{*, color::*};
+                    use fluent_ansi::{*, prelude::*};
 
-                    $crate::common::test_additive_styling_type!(NO_MOD: $value, $as_style);
+                    $crate::common::test_additive_and_to_style!(NO_MOD: $value, $as_style);
                 }
             )+
         }
     };
 
-    ($value:expr, $as_style:expr) => {
-        mod fluent_type {
-            #[allow(unused_imports)]
-            use fluent_ansi::{*, color::*};
-
-            $crate::common::test_additive_styling_type!(NO_MOD: $value, $as_style);
-        }
-    };
-
     (NO_MOD: $value:expr, $as_style:expr) => {
-        $crate::common::test_additive_styling_methods!(NO_MOD: $value, $as_style);
+        $crate::common::test_additive!(NO_MOD: $value, $as_style);
 
         #[test]
         fn applied_to() {
-            use fluent_ansi::traits::ToStyle as _;
-
             let styled = $value.applied_to("CONTENT");
 
             assert_eq!(styled.get_content(), &"CONTENT");
@@ -36,8 +24,6 @@ macro_rules! test_additive_styling_type {
 
         #[test]
         fn to_style() {
-            use fluent_ansi::traits::ToStyle as _;
-
             $crate::common::assert_from_to!(
                 to_style, fluent_ansi::Style;
                 $value,
@@ -46,22 +32,20 @@ macro_rules! test_additive_styling_type {
         }
     };
 }
-pub(crate) use test_additive_styling_type;
+pub(crate) use test_additive_and_to_style;
 
-macro_rules! test_additive_styling_methods {
+macro_rules! test_additive {
     ($value:expr, $as_composed:expr) => {
         mod fluent_methods {
-            use fluent_ansi::*;
+            use fluent_ansi::{*, prelude::*};
 
-            $crate::common::test_additive_styling_methods!(NO_MOD: $value, $as_composed);
+            $crate::common::test_additive!(NO_MOD: $value, $as_composed);
         }
     };
 
     (NO_MOD: $value:expr, $as_composed:expr) => {
         #[test]
         fn effects() {
-            use fluent_ansi::*;
-
             macro_rules! assert_effect_method {
                 ($effect:expr, $method:ident) => {{
                     let expected_style = $as_composed.$method();
@@ -105,8 +89,6 @@ macro_rules! test_additive_styling_methods {
 
         #[test]
         fn underline_effects() {
-            use fluent_ansi::*;
-
             macro_rules! assert_effect_method {
                 ($underline_effect:expr, $method:ident) => {{
                     let expected_style = $as_composed.$method();
@@ -144,8 +126,6 @@ macro_rules! test_additive_styling_methods {
 
         #[test]
         fn colors() {
-            use fluent_ansi::prelude::*;
-
             macro_rules! assert_method_for_color {
                 ($method:ident) => {
                     assert_method_for_color!($method, Color::RED);
@@ -195,4 +175,4 @@ macro_rules! test_additive_styling_methods {
         }
     };
 }
-pub(crate) use test_additive_styling_methods;
+pub(crate) use test_additive;
