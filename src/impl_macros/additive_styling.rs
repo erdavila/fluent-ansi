@@ -12,11 +12,11 @@ macro_rules! impl_additive_styling_type {
                 let style = $crate::Style::from(self);
                 $crate::Styled::new(content).with_style(style)
             }
-        }
 
-        $crate::impl_macros::additive_styling::__impl_additive_styling_type__to_style!(
-            $name, $self, $to_style
-        );
+            /// Convert this type into a [`Style`](crate::Style).
+            #[must_use]
+            pub fn to_style($self) -> $crate::Style $to_style
+        }
     };
 }
 pub(crate) use impl_additive_styling_type;
@@ -26,7 +26,9 @@ macro_rules! impl_additive_styling_methods {
         $crate::impl_macros::additive_styling::impl_additive_styling_methods! {
             type ComposedStyling = $crate::Style;
             args: [self];
-            to_composed_styling: { self.to_style() }
+            to_composed_styling: {
+                self.to_style()
+            }
         }
     };
 
@@ -190,25 +192,3 @@ macro_rules! impl_additive_styling_methods {
     };
 }
 pub(crate) use impl_additive_styling_methods;
-
-macro_rules! __impl_additive_styling_type__to_style {
-    ($name:ident, $self:ident, SELF) => {
-        // Defines only the to_style method
-        impl $name {
-            #[doc = r"Convert this type into a [`Style`](crate::Style)."]
-            #[must_use]
-            pub fn to_style(self) -> Style {
-                self
-            }
-        }
-    };
-
-    ($name:ident, $self:ident, $to_style:tt ) => {
-        // Defines the to_style method and impl From<$name> for Style
-        $crate::impl_macros::from_to::impl_from_to!(
-            #[doc = r"Converts the type into a [`Style`](crate::Style)."]
-            fn to_style($self: $name) -> $crate::Style $to_style
-        );
-    };
-}
-pub(crate) use __impl_additive_styling_type__to_style;

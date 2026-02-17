@@ -1,11 +1,11 @@
 use core::fmt::{Display, Formatter, Result, Write};
 
 use crate::{
-    ColorTarget, Effect, Reset, UnderlineEffect,
+    ColorTarget, Effect, UnderlineEffect,
     colors::{Color, WriteColorCodes as _},
     impl_macros::additive_styling::impl_additive_styling_type,
     style::encoded_effects::EncodedEffects,
-    traits::Composed,
+    traits::{Composed, StylingElement},
 };
 
 pub use encoded_effects::*;
@@ -114,7 +114,7 @@ impl Composed for Style {
 
 impl_additive_styling_type!(Style {
     args: [self];
-    to_style: SELF
+    to_style: { self }
 });
 
 impl Default for Style {
@@ -157,9 +157,12 @@ impl Display for Style {
     }
 }
 
-impl PartialEq<Reset> for Style {
-    fn eq(&self, other: &Reset) -> bool {
-        *self == other.to_style()
+impl<T> From<T> for Style
+where
+    T: StylingElement,
+{
+    fn from(element: T) -> Self {
+        element.add_to(Style::new())
     }
 }
 
