@@ -1,8 +1,8 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Style, color::Color, impl_macros::additive_styling::impl_additive_styling_type,
-    impl_styling_atribute_for, impl_styling_element_for,
+    color::Color,
+    traits::{Composed, StylingAttribute, StylingElement, ToStyle as _},
 };
 
 /// A color in a specific color target.
@@ -63,21 +63,24 @@ impl TargetedColor {
     }
 }
 
-impl_additive_styling_type!(TargetedColor {
-    args: [self];
-    to_style: { Style::new().color(self) }
-});
-
-impl_styling_element_for! { TargetedColor {
-    args: [self, composed_styling];
-    add_to: {
-        composed_styling.set_color(self.get_target(), Some(self.get_color()))
+impl StylingElement for TargetedColor {
+    fn add_to<C: Composed>(self, composed: C) -> C {
+        composed.set_color(self.get_target(), Some(self.get_color()))
     }
-}}
+}
 
 impl Display for TargetedColor {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         self.to_style().fmt(f)
+    }
+}
+
+impl<T> From<T> for TargetedColor
+where
+    T: Into<Color>,
+{
+    fn from(value: T) -> Self {
+        TargetedColor::new_for_fg(value.into())
     }
 }
 
@@ -105,15 +108,14 @@ impl ColorTarget {
     }
 }
 
-impl_styling_atribute_for! { ColorTarget {
+impl StylingAttribute for ColorTarget {
     type Value = Option<Color>;
-    args: [self, composed_styling, value];
 
-    set_in: {
-        composed_styling.set_color(self, value)
+    fn set_in<C: Composed>(self, composed: C, value: Self::Value) -> C {
+        composed.set_color(self, value)
     }
 
-    get_from: {
-        composed_styling.get_color(self)
+    fn get_from<C: Composed>(self, composed: &C) -> Self::Value {
+        composed.get_color(self)
     }
-}}
+}

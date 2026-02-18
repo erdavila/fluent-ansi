@@ -1,11 +1,10 @@
-use core::fmt::{Display, Formatter, Result};
+use core::fmt::{Debug, Display, Formatter, Result};
 
 use enum_iterator::Sequence;
 
 use crate::{
     Effect,
-    impl_macros::{additive_styling::impl_additive_styling_type, from_to::impl_from_to},
-    impl_styling_atribute_for, impl_styling_element_for,
+    traits::{Composed, StylingAttribute, StylingElement},
 };
 
 pub(crate) type AllUnderlineEffects = enum_iterator::All<UnderlineEffect>;
@@ -33,69 +32,52 @@ impl UnderlineEffect {
     pub(crate) fn all() -> AllUnderlineEffects {
         enum_iterator::all()
     }
-}
 
-impl_additive_styling_type!(UnderlineEffect {
-    args: [self];
-    to_style: { self.to_effect().to_style() }
-});
-
-impl_from_to!(
-    #[doc = r"Converts the type into an [`Effect`]."]
-    fn to_effect(self: UnderlineEffect) -> Effect {
-        match self {
-            UnderlineEffect::Solid => Effect::SolidUnderline,
-            UnderlineEffect::Curly => Effect::CurlyUnderline,
-            UnderlineEffect::Dotted => Effect::DottedUnderline,
-            UnderlineEffect::Dashed => Effect::DashedUnderline,
-            UnderlineEffect::Double => Effect::DoubleUnderline,
-        }
+    /// Converts the type into an [`Effect`].
+    #[must_use]
+    pub fn to_effect(self: UnderlineEffect) -> Effect {
+        self.into()
     }
-);
+}
 
 impl Display for UnderlineEffect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        self.to_effect().fmt(f)
+        Display::fmt(&self.to_effect(), f)
     }
 }
 
-impl_styling_element_for! { UnderlineEffect {
-    args: [self, composed_styling];
-    add_to: {
-        composed_styling.set_underline_effect(Some(self))
+impl StylingElement for UnderlineEffect {
+    fn add_to<C: Composed>(self, composed: C) -> C {
+        composed.set_underline_effect(Some(self))
     }
-}}
+}
 
-impl_styling_atribute_for! { UnderlineEffect {
+impl StylingAttribute for UnderlineEffect {
     type Value = bool;
-    args: [self, composed_styling, value];
 
-    set_in: {
-        composed_styling.set_effect(self.to_effect(), value)
+    fn set_in<C: Composed>(self, composed: C, value: Self::Value) -> C {
+        composed.set_effect(self.to_effect(), value)
     }
 
-    get_from: {
-        composed_styling.get_effect(self.to_effect())
+    fn get_from<C: Composed>(self, composed: &C) -> Self::Value {
+        composed.get_effect(self.to_effect())
     }
-}}
+}
 
 /// The underline attribute.
 ///
-/// Usable in the
-/// [`Style::set`](crate::Style::set)/[`Styled::set`](crate::Styled::set) and
-/// [`Style::get`](crate::Style::get)/[`Styled::get`](crate::Styled::get) methods.
+/// Usable in the [`Composed::set`](crate::traits::Composed::set) and [`Composed::get`](crate::traits::Composed::get) methods.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct UnderlineStyle;
 
-impl_styling_atribute_for! { UnderlineStyle {
+impl StylingAttribute for UnderlineStyle {
     type Value = Option<UnderlineEffect>;
-    args: [self, composed_styling, value];
 
-    set_in: {
-        composed_styling.set_underline_effect(value)
+    fn set_in<C: Composed>(self, composed: C, value: Self::Value) -> C {
+        composed.set_underline_effect(value)
     }
 
-    get_from: {
-        composed_styling.get_underline_effect()
+    fn get_from<C: Composed>(self, composed: &C) -> Self::Value {
+        composed.get_underline_effect()
     }
-}}
+}

@@ -1,28 +1,18 @@
-macro_rules! test_additive_styling_type {
+macro_rules! test_additive_and_to_style {
     ( $( $mod:ident { $value:expr, $as_style:expr } ),+ $(,)? ) => {
         mod fluent_type {
             $(
                 mod $mod {
-                    #[allow(unused_imports)]
-                    use fluent_ansi::{*, color::*};
+                    use fluent_ansi::{*, prelude::*};
 
-                    $crate::common::test_additive_styling_type!(NO_MOD: $value, $as_style);
+                    $crate::common::test_additive_and_to_style!(NO_MOD: $value, $as_style);
                 }
             )+
         }
     };
 
-    ($value:expr, $as_style:expr) => {
-        mod fluent_type {
-            #[allow(unused_imports)]
-            use fluent_ansi::{*, color::*};
-
-            $crate::common::test_additive_styling_type!(NO_MOD: $value, $as_style);
-        }
-    };
-
     (NO_MOD: $value:expr, $as_style:expr) => {
-        $crate::common::test_additive_styling_methods!(NO_MOD: $value, $as_style);
+        $crate::common::test_additive!(NO_MOD: $value, $as_style);
 
         #[test]
         fn applied_to() {
@@ -42,25 +32,23 @@ macro_rules! test_additive_styling_type {
         }
     };
 }
-pub(crate) use test_additive_styling_type;
+pub(crate) use test_additive_and_to_style;
 
-macro_rules! test_additive_styling_methods {
-    ($value:expr, $as_composed_styling:expr) => {
+macro_rules! test_additive {
+    ($value:expr, $as_composed:expr) => {
         mod fluent_methods {
-            use fluent_ansi::*;
+            use fluent_ansi::{*, prelude::*};
 
-            $crate::common::test_additive_styling_methods!(NO_MOD: $value, $as_composed_styling);
+            $crate::common::test_additive!(NO_MOD: $value, $as_composed);
         }
     };
 
-    (NO_MOD: $value:expr, $as_composed_styling:expr) => {
+    (NO_MOD: $value:expr, $as_composed:expr) => {
         #[test]
         fn effects() {
-            use fluent_ansi::*;
-
             macro_rules! assert_effect_method {
                 ($effect:expr, $method:ident) => {{
-                    let expected_style = $as_composed_styling.$method();
+                    let expected_style = $as_composed.$method();
 
                     assert_eq!(
                         $value.$method(),
@@ -101,11 +89,9 @@ macro_rules! test_additive_styling_methods {
 
         #[test]
         fn underline_effects() {
-            use fluent_ansi::*;
-
             macro_rules! assert_effect_method {
                 ($underline_effect:expr, $method:ident) => {{
-                    let expected_style = $as_composed_styling.$method();
+                    let expected_style = $as_composed.$method();
 
                     assert_eq!(
                         $value.underline_effect($underline_effect),
@@ -140,8 +126,6 @@ macro_rules! test_additive_styling_methods {
 
         #[test]
         fn colors() {
-            use fluent_ansi::prelude::*;
-
             macro_rules! assert_method_for_color {
                 ($method:ident) => {
                     assert_method_for_color!($method, Color::RED);
@@ -149,7 +133,7 @@ macro_rules! test_additive_styling_methods {
                 };
                 ($method:ident, $color:expr) => {{
                     let result = $value.$method($color);
-                    let expected = $as_composed_styling.$method($color);
+                    let expected = $as_composed.$method($color);
                     assert_eq!(result, expected);
                 }};
             }
@@ -175,7 +159,7 @@ macro_rules! test_additive_styling_methods {
                 };
                 ($method:ident, $color:expr, $target_method:ident, $arg:expr) => {{
                     let result = $value.$method($arg);
-                    let expected = $as_composed_styling.$target_method($color);
+                    let expected = $as_composed.$target_method($color);
                     assert_eq!(result, expected);
                 }};
             }
@@ -191,4 +175,4 @@ macro_rules! test_additive_styling_methods {
         }
     };
 }
-pub(crate) use test_additive_styling_methods;
+pub(crate) use test_additive;

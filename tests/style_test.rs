@@ -4,11 +4,11 @@ use common::*;
 
 mod common;
 
-test_additive_styling_type![
+test_additive_and_to_style![
     clear { Style::new(), Style::new() },
     bold { Style::new().bold(), Style::new().bold() },
 ];
-test_composed_styling_type!(Style::new());
+test_composed!(Style::new());
 
 #[test]
 fn effects_display() {

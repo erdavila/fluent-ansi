@@ -3,8 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    CodeWriter, Style, impl_macros::additive_styling::impl_additive_styling_type,
-    impl_styling_atribute_for, impl_styling_element_for,
+    CodeWriter,
+    traits::{Composed, StylingAttribute, StylingElement, ToStyle as _},
 };
 pub use underline::*;
 
@@ -72,33 +72,38 @@ impl Effect {
     }
 }
 
-impl_additive_styling_type!(Effect {
-    args: [self];
-    to_style: { Style::new().effect(self) }
-});
-
-impl_styling_element_for! { Effect {
-    args: [self, composed_styling];
-    add_to: {
-        composed_styling.set_effect(self, true)
+impl StylingElement for Effect {
+    fn add_to<C: Composed>(self, composed: C) -> C {
+        composed.set_effect(self, true)
     }
-}}
+}
 
-impl_styling_atribute_for! { Effect {
+impl StylingAttribute for Effect {
     type Value = bool;
-    args: [self, composed_styling, value];
 
-    set_in: {
-        composed_styling.set_effect(self, value)
+    fn set_in<C: Composed>(self, composed: C, value: Self::Value) -> C {
+        composed.set_effect(self, value)
     }
 
-    get_from: {
-        composed_styling.get_effect(self)
+    fn get_from<C: Composed>(self, composed: &C) -> Self::Value {
+        composed.get_effect(self)
     }
-}}
+}
 
 impl Display for Effect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         self.to_style().fmt(f)
+    }
+}
+
+impl From<UnderlineEffect> for Effect {
+    fn from(underline_effect: UnderlineEffect) -> Self {
+        match underline_effect {
+            UnderlineEffect::Solid => Effect::SolidUnderline,
+            UnderlineEffect::Curly => Effect::CurlyUnderline,
+            UnderlineEffect::Dotted => Effect::DottedUnderline,
+            UnderlineEffect::Dashed => Effect::DashedUnderline,
+            UnderlineEffect::Double => Effect::DoubleUnderline,
+        }
     }
 }

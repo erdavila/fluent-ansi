@@ -2,8 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{BasicColor, Color, IndexedColor, WriteColorCodes},
-    impl_macros::color_type::impl_color_type,
+    color::{BasicColor, IndexedColor, WriteColorCodes},
 };
 
 /// A simple color type representing the 16 basic terminal colors (8 basic colors + bright variants).
@@ -63,11 +62,6 @@ impl SimpleColor {
     }
 }
 
-impl_color_type!(SimpleColor {
-    args: [self];
-    to_color: { Color::Simple(self) }
-});
-
 impl WriteColorCodes for SimpleColor {
     fn write_color_codes(self, target: ColorTarget, writer: &mut CodeWriter) -> Result {
         let offset = self.basic_color.code_offset();
@@ -84,5 +78,11 @@ impl WriteColorCodes for SimpleColor {
                 IndexedColor(offset + 8).write_color_codes(target, writer)
             }
         }
+    }
+}
+
+impl From<BasicColor> for SimpleColor {
+    fn from(basic_color: BasicColor) -> Self {
+        Self::new(basic_color)
     }
 }

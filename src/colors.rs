@@ -1,6 +1,6 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, ColorTarget};
+use crate::{CodeWriter, ColorTarget, traits::ColorKind as _};
 pub use basic::*;
 pub use color::*;
 pub use indexed::*;

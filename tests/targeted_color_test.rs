@@ -1,4 +1,4 @@
-use fluent_ansi::{color::*, *};
+use fluent_ansi::{color::*, traits::ColorKind as _, *};
 
 use crate::common::*;
 
@@ -34,7 +34,7 @@ fn color_target_for_color() {
     assert_for_color!(ColorTarget::Underline);
 }
 
-test_additive_styling_type![
+test_additive_and_to_style![
     red_foreground { TargetedColor::new_for_foreground(Color::RED), Style::new().fg(Color::RED) },
     red_fg { TargetedColor::new_for_fg(Color::RED), Style::new().fg(Color::RED) },
     green_foreground { TargetedColor::new_for_foreground(Color::GREEN), Style::new().fg(Color::GREEN) },
