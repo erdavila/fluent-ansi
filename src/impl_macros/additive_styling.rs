@@ -179,7 +179,7 @@ macro_rules! impl_additive_styling_methods {
         /// Adds the given element to the style.
         #[expect(clippy::should_implement_trait)]
         #[must_use]
-        pub fn add(self, element: impl $crate::StylingElement<$composed_styling_type>) -> $composed_styling_type {
+        pub fn add(self, element: impl $crate::traits::StylingElement) -> $composed_styling_type {
             let composed_styling = self.to_composed_styling();
             element.add_to(composed_styling)
         }

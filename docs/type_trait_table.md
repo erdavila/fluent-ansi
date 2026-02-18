@@ -13,16 +13,19 @@
 
 ## General
 
-| Type \\ Trait | `Composed` | Fluent methods | `applied_to` method | `to_style` method | Color type | `StyleElement` | `StyleAttribute` |
+| Type \\ Trait | `Composed` | Fluent methods | `applied_to` method | `to_style` method | Color type | `StylingElement` | `StyleAttribute` |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `Styled`          | X | X |   |   |   |   |   |
-| `Style`           | X | X | X | X |   |   |   |
-| `Effect`          |   | X | X | X |   | X | X |
-| `UnderlineEffect` |   | X | X | X |   | X | X |
-| `TargetedColor`   |   | X | X | X |   | X |   |
-| `impl ColorKind`  |   | X | X | X | X | X |   |
-| `Reset`           |   |   |   | X |   |   |   |
-| `ColorTarget`     |   |   |   |   |   |   | X |
-| `UnderlineStyle`  |   |   |   |   |   |   | X |
+| `Styled`          | X | X |   |   |   |                                  |   |
+| `Style`           | X | X | X | X |   |                                  |   |
+| `Effect`          |   | X | X | X |   | X                                | X |
+| `UnderlineEffect` |   | X | X | X |   | X                                | X |
+| `TargetedColor`   |   | X | X | X |   | X                                |   |
+| `impl ColorKind`  |   | X | X | X | X | X[^StylingElement-for-ColorKind] |   |
+| `Reset`           |   |   |   | X |   |                                  |   |
+| `ColorTarget`     |   |   |   |   |   |                                  | X |
+| `UnderlineStyle`  |   |   |   |   |   |                                  | X |
 
 Fluent type = Fluent methods + `applied_to` method + `to_style` method
+
+
+[^StylingElement-for-ColorKind]: Blanket implementation: `impl<T> StylingElement for T where T: ColorKind`

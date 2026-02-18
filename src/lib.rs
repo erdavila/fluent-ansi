@@ -368,8 +368,7 @@
 //!     `None::<Color>`. As an alternative, use the [`Color::none()`](color::Color::none) method.
 
 pub use crate::{
-    effect::*, reset::*, style::*, styled::*, styling_attribute::*, styling_element::*,
-    targeted_color::*,
+    effect::*, reset::*, style::*, styled::*, styling_attribute::*, targeted_color::*,
 };
 
 mod colors;
@@ -378,7 +377,6 @@ mod reset;
 mod style;
 mod styled;
 mod styling_attribute;
-mod styling_element;
 mod targeted_color;
 pub mod traits;
 

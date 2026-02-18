@@ -5,7 +5,8 @@ use enum_iterator::Sequence;
 use crate::{
     Effect,
     impl_macros::{additive_styling::impl_additive_styling_type, from_to::impl_from_to},
-    impl_styling_atribute_for, impl_styling_element_for,
+    impl_styling_atribute_for,
+    traits::{Composed, StylingElement},
 };
 
 pub(crate) type AllUnderlineEffects = enum_iterator::All<UnderlineEffect>;
@@ -59,13 +60,11 @@ impl Display for UnderlineEffect {
     }
 }
 
-impl_styling_element_for! { UnderlineEffect {
-    args: [self, composed_styling];
-    add_to: {
-        use crate::traits::Composed as _;
-        composed_styling.set_underline_effect(Some(self))
+impl StylingElement for UnderlineEffect {
+    fn add_to<C: Composed>(self, composed: C) -> C {
+        composed.set_underline_effect(Some(self))
     }
-}}
+}
 
 impl_styling_atribute_for! { UnderlineEffect {
     type Value = bool;

@@ -3,8 +3,10 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    CodeWriter, Style, impl_macros::additive_styling::impl_additive_styling_type,
-    impl_styling_atribute_for, impl_styling_element_for,
+    CodeWriter, Style,
+    impl_macros::additive_styling::impl_additive_styling_type,
+    impl_styling_atribute_for,
+    traits::{Composed, StylingElement},
 };
 pub use underline::*;
 
@@ -77,13 +79,11 @@ impl_additive_styling_type!(Effect {
     to_style: { Style::new().effect(self) }
 });
 
-impl_styling_element_for! { Effect {
-    args: [self, composed_styling];
-    add_to: {
-        use crate::traits::Composed as _;
-        composed_styling.set_effect(self, true)
+impl StylingElement for Effect {
+    fn add_to<C: Composed>(self, composed: C) -> C {
+        composed.set_effect(self, true)
     }
-}}
+}
 
 impl_styling_atribute_for! { Effect {
     type Value = bool;

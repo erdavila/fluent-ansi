@@ -1,4 +1,8 @@
-use crate::{ColorTarget, TargetedColor, color::Color};
+use crate::{
+    ColorTarget, TargetedColor,
+    color::Color,
+    traits::{Composed, StylingElement},
+};
 
 /// A trait that provides methods for all color types.
 pub trait ColorKind: Into<Color> + Copy {
@@ -52,3 +56,12 @@ pub trait ColorKind: Into<Color> + Copy {
 }
 
 impl<T> ColorKind for T where T: Into<Color> + Copy {}
+
+impl<T> StylingElement for T
+where
+    T: ColorKind,
+{
+    fn add_to<C: Composed>(self, composed: C) -> C {
+        TargetedColor::from(self).add_to(composed)
+    }
+}

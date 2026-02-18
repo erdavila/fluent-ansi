@@ -1,8 +1,11 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Style, color::Color, impl_macros::additive_styling::impl_additive_styling_type,
-    impl_styling_atribute_for, impl_styling_element_for,
+    Style,
+    color::Color,
+    impl_macros::additive_styling::impl_additive_styling_type,
+    impl_styling_atribute_for,
+    traits::{Composed, StylingElement},
 };
 
 /// A color in a specific color target.
@@ -68,13 +71,11 @@ impl_additive_styling_type!(TargetedColor {
     to_style: { Style::new().color(self) }
 });
 
-impl_styling_element_for! { TargetedColor {
-    args: [self, composed_styling];
-    add_to: {
-        use crate::traits::Composed as _;
-        composed_styling.set_color(self.get_target(), Some(self.get_color()))
+impl StylingElement for TargetedColor {
+    fn add_to<C: Composed>(self, composed: C) -> C {
+        composed.set_color(self.get_target(), Some(self.get_color()))
     }
-}}
+}
 
 impl Display for TargetedColor {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
