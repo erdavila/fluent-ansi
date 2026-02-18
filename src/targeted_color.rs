@@ -4,8 +4,7 @@ use crate::{
     Style,
     color::Color,
     impl_macros::additive_styling::impl_additive_styling_type,
-    impl_styling_atribute_for,
-    traits::{Composed, StylingElement},
+    traits::{Composed, StylingAttribute, StylingElement},
 };
 
 /// A color in a specific color target.
@@ -116,17 +115,14 @@ impl ColorTarget {
     }
 }
 
-impl_styling_atribute_for! { ColorTarget {
+impl StylingAttribute for ColorTarget {
     type Value = Option<Color>;
-    args: [self, composed_styling, value];
 
-    set_in: {
-        use crate::traits::Composed as _;
-        composed_styling.set_color(self, value)
+    fn set_in<C: Composed>(self, composed: C, value: Self::Value) -> C {
+        composed.set_color(self, value)
     }
 
-    get_from: {
-        use crate::traits::Composed as _;
-        composed_styling.get_color(self)
+    fn get_from<C: Composed>(self, composed: &C) -> Self::Value {
+        composed.get_color(self)
     }
-}}
+}

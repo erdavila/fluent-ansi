@@ -367,16 +367,13 @@
 //! [^set-color-none]: To clear a color with [`set_color()`](traits::Composed::set_color), the color type must be specified in the `None` value as e.g.
 //!     `None::<Color>`. As an alternative, use the [`Color::none()`](color::Color::none) method.
 
-pub use crate::{
-    effect::*, reset::*, style::*, styled::*, styling_attribute::*, targeted_color::*,
-};
+pub use crate::{effect::*, reset::*, style::*, styled::*, targeted_color::*};
 
 mod colors;
 mod effect;
 mod reset;
 mod style;
 mod styled;
-mod styling_attribute;
 mod targeted_color;
 pub mod traits;
 

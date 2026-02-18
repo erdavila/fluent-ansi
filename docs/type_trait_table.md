@@ -13,7 +13,7 @@
 
 ## General
 
-| Type \\ Trait | `Composed` | Fluent methods | `applied_to` method | `to_style` method | Color type | `StylingElement` | `StyleAttribute` |
+| Type \\ Trait | `Composed` | Fluent methods | `applied_to` method | `to_style` method | Color type | `StylingElement` | `StylingAttribute` |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `Styled`          | X | X |   |   |   |                                  |   |
 | `Style`           | X | X | X | X |   |                                  |   |

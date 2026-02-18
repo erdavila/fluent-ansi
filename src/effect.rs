@@ -5,8 +5,7 @@ use enum_iterator::Sequence;
 use crate::{
     CodeWriter, Style,
     impl_macros::additive_styling::impl_additive_styling_type,
-    impl_styling_atribute_for,
-    traits::{Composed, StylingElement},
+    traits::{Composed, StylingAttribute, StylingElement},
 };
 pub use underline::*;
 
@@ -85,20 +84,17 @@ impl StylingElement for Effect {
     }
 }
 
-impl_styling_atribute_for! { Effect {
+impl StylingAttribute for Effect {
     type Value = bool;
-    args: [self, composed_styling, value];
 
-    set_in: {
-        use crate::traits::Composed as _;
-        composed_styling.set_effect(self, value)
+    fn set_in<C: Composed>(self, composed: C, value: Self::Value) -> C {
+        composed.set_effect(self, value)
     }
 
-    get_from: {
-        use crate::traits::Composed as _;
-        composed_styling.get_effect(self)
+    fn get_from<C: Composed>(self, composed: &C) -> Self::Value {
+        composed.get_effect(self)
     }
-}}
+}
 
 impl Display for Effect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {

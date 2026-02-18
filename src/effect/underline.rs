@@ -1,12 +1,11 @@
-use core::fmt::{Display, Formatter, Result};
+use core::fmt::{Debug, Display, Formatter, Result};
 
 use enum_iterator::Sequence;
 
 use crate::{
     Effect,
     impl_macros::{additive_styling::impl_additive_styling_type, from_to::impl_from_to},
-    impl_styling_atribute_for,
-    traits::{Composed, StylingElement},
+    traits::{Composed, StylingAttribute, StylingElement},
 };
 
 pub(crate) type AllUnderlineEffects = enum_iterator::All<UnderlineEffect>;
@@ -56,7 +55,7 @@ impl_from_to!(
 
 impl Display for UnderlineEffect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        self.to_effect().fmt(f)
+        Display::fmt(&self.to_effect(), f)
     }
 }
 
@@ -66,20 +65,17 @@ impl StylingElement for UnderlineEffect {
     }
 }
 
-impl_styling_atribute_for! { UnderlineEffect {
+impl StylingAttribute for UnderlineEffect {
     type Value = bool;
-    args: [self, composed_styling, value];
 
-    set_in: {
-        use crate::traits::Composed as _;
-        composed_styling.set_effect(self.to_effect(), value)
+    fn set_in<C: Composed>(self, composed: C, value: Self::Value) -> C {
+        composed.set_effect(self.to_effect(), value)
     }
 
-    get_from: {
-        use crate::traits::Composed as _;
-        composed_styling.get_effect(self.to_effect())
+    fn get_from<C: Composed>(self, composed: &C) -> Self::Value {
+        composed.get_effect(self.to_effect())
     }
-}}
+}
 
 /// The underline attribute.
 ///
@@ -87,17 +83,14 @@ impl_styling_atribute_for! { UnderlineEffect {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct UnderlineStyle;
 
-impl_styling_atribute_for! { UnderlineStyle {
+impl StylingAttribute for UnderlineStyle {
     type Value = Option<UnderlineEffect>;
-    args: [self, composed_styling, value];
 
-    set_in: {
-        use crate::traits::Composed as _;
-        composed_styling.set_underline_effect(value)
+    fn set_in<C: Composed>(self, composed: C, value: Self::Value) -> C {
+        composed.set_underline_effect(value)
     }
 
-    get_from: {
-        use crate::traits::Composed as _;
-        composed_styling.get_underline_effect()
+    fn get_from<C: Composed>(self, composed: &C) -> Self::Value {
+        composed.get_underline_effect()
     }
-}}
+}

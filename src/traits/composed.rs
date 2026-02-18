@@ -1,5 +1,5 @@
 use crate::{
-    ColorTarget, Effect, GetEffects, Style, StylingAttribute, UnderlineEffect, color::Color,
+    ColorTarget, Effect, GetEffects, Style, UnderlineEffect, color::Color, traits::StylingAttribute,
 };
 
 /// A trait for types that are composed of styling.
@@ -47,7 +47,7 @@ pub trait Composed {
 
     /// Sets the given attribute to the specified value.
     #[must_use]
-    fn set<A: StylingAttribute<Self>>(self, attr: A, value: A::Value) -> Self
+    fn set<A: StylingAttribute>(self, attr: A, value: A::Value) -> Self
     where
         Self: Sized,
     {
@@ -56,7 +56,7 @@ pub trait Composed {
 
     /// Gets the value of the given attribute.
     #[must_use]
-    fn get<A: StylingAttribute<Self>>(&self, attr: A) -> A::Value
+    fn get<A: StylingAttribute>(&self, attr: A) -> A::Value
     where
         Self: Sized,
     {
@@ -65,7 +65,7 @@ pub trait Composed {
 
     /// Clears the given attribute.
     #[must_use]
-    fn remove<A: StylingAttribute<Self>>(self, attr: A) -> Self
+    fn remove<A: StylingAttribute>(self, attr: A) -> Self
     where
         Self: Sized,
     {
