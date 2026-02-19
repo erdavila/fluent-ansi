@@ -13,17 +13,16 @@
 
 ## General
 
-| Type \\ Trait | `Composed` | `Additive` | `ToStyle`<br>`: Into<Style>` | `From<T> for Style` | Color type | `StylingElement` | `StylingAttribute` |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `Styled`          | X | X                  |                   |                  |   |                                  |   |
-| `Style`           | X | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^T-from-T]     |   |                                  |   |
-| `Effect`          |   | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^Style-from-T] |   | X                                | X |
-| `UnderlineEffect` |   | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^Style-from-T] |   | X                                | X |
-| `TargetedColor`   |   | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^Style-from-T] |   | X                                |   |
-| `impl ColorKind`  |   | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^Style-from-T] | X | X[^StylingElement-for-ColorKind] |   |
-| `Reset`           |   |                    |                   |                  |   |                                  |   |
-| `ColorTarget`     |   |                    |                   |                  |   |                                  | X |
-| `UnderlineStyle`  |   |                    |                   |                  |   |                                  | X |
+| Type \\ Trait | `Composed` | `Additive` | `ToStyle`<br>`: Into<Style>` | `From<T> for Style` | `StylingElement` | `StylingAttribute` |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| `Styled`          | X | X                  |                   |                  |                                 |   |
+| `Style`           | X | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^T-from-T]     |                                 |   |
+| `Effect`          |   | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^Style-from-T] |X                                | X |
+| `UnderlineEffect` |   | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^Style-from-T] |X                                | X |
+| `TargetedColor`   |   | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^Style-from-T] |X                                |   |
+| `impl ColorKind`  |   | X[^Additive-for-T] | X[^ToStyle-for-T] | X[^Style-from-T] |X[^StylingElement-for-ColorKind] |   |
+| `ColorTarget`     |   |                    |                   |                  |                                 | X |
+| `UnderlineStyle`  |   |                    |                   |                  |                                 | X |
 
 [^Additive-for-T]: blanket implementation: `impl<T> Additive for T where T: Into<Style>`
 [^StylingElement-for-ColorKind]: Blanket implementation: `impl<T> StylingElement for T where T: ColorKind`

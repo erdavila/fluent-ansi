@@ -2,7 +2,7 @@
 #![warn(clippy::pedantic)]
 #![warn(missing_docs)]
 //! `fluent-ansi` is a library to handle ANSI escape sequences for the terminal.
-//! It is `no_std`, and relies on the [`Display`](core::fmt::Display) trait to render the sequences.
+//! It is `no_std`, and relies on the [`Display`] trait to render the sequences.
 //!
 //! ```
 //! use fluent_ansi::{prelude::*, Style, Styled};
@@ -32,19 +32,21 @@
 //! let style: Style = Color::RED.for_fg().bold();
 //! ```
 //!
-//! All styling types are immutable and implement [`Copy`], except for [`Styled<C>`](Styled),
+//! All styling types are immutable and implement [`Copy`], except for [`Styled<C>`],
 //! which is copiable only if its content `C` type is also copiable.
+//!
+//! Most of the methods are provided by traits, which are implemented in all styling types.
 //!
 //!
 //! # Styling types
 //!
 //! The styling types are categorized according to the following:
 //!
-//! * [Styling element types]:
-//!   * [Effect types](#effect-types):
+//! * [Styling elements]:
+//!   * [Effect types]:
 //!     * [`Effect`]
 //!     * [`UnderlineEffect`]
-//!   * [Color types](#color-types):
+//!   * [Color types]:
 //!     * [`TargetedColor`]
 //!     * The color types in [`color`]
 //! * [Composed styling types]:
@@ -52,7 +54,7 @@
 //!   * [`Styled<C>`]
 //!
 //!
-//! ## Styling element types
+//! ## Styling elements
 //!
 //! Each styling element type represents a single styling.
 //! They can be used on their own or -- through their fluent methods -- combined with other styling elements, or applied to some content:
@@ -97,8 +99,8 @@
 //!
 //! There is a handful of color types, which are defined in the [`color`] module.
 //!
-//! A color is rendered in a [`ColorTarget`], which is [`Foreground`](ColorTarget::Foreground),
-//! [`Background`](ColorTarget::Background) or [`Underline`](ColorTarget::Underline).
+//! A color is rendered in a [`ColorTarget`], which is [`Foreground`],
+//! [`Background`] or [`Underline`].
 //!
 //! The type [`TargetedColor`] associates a color with a [`ColorTarget`]:
 //!
@@ -147,7 +149,7 @@
 //!
 //! ## Composed styling types
 //!
-//! [`Style`] is the result of composing [styling element] values. A [`Style`] can be used on its own or -- through
+//! [`Style`] is the result of composing [styling elements] values. A [`Style`] can be used on its own or -- through
 //! their methods -- compose with other styling elements, or applied to some content:
 //!
 //! ```
@@ -164,11 +166,11 @@
 //! ```
 //!
 //! [`Styled<C>`] includes a [`Style`] and some content to have the styling applied to. The content can
-//! be any type that implements [`Display`](core::fmt::Display). When rendered, the content is preceded by the
+//! be any type that implements [`Display`]. When rendered, the content is preceded by the
 //! escape sequence corresponding to the styling, and is succeeded by the escape sequence that resets the styling.
 //!
-//! A [`Styled<C>`] instance is obtained with the `applied_to()` method available in any [styling element type]
-//! and in [`Style`], or with [`Styled<C>::new()`] to create an instance without any styling.
+//! A [`Styled<C>`] instance is obtained with the [`applied_to()`] method available in any [styling element]
+//! and in [`Style`], or with [`Styled<C>::new()`] which creates an instance without any styling.
 //!
 //! ```
 //! use fluent_ansi::{prelude::*, Styled};
@@ -202,17 +204,18 @@
 //!
 //! ## Fluent methods
 //!
-//! The fluent methods allow to _compose_/_add_/_set_ styling. They are available in all [styling types](#styling-types).
+//! The fluent methods allow to _compose_/_add_/_set_ styling. They are available in all [styling types] and
+//! are provided by the [`Additive`] and [`ToStyle`] traits.
 //!
 //! | Method | To set what |
 //! |--------|-------------|
-//! | [`bold()`](traits::Additive::bold),<br/>[`italic()`](traits::Additive::italic),<br/>[`solid_underline()`](traits::Additive::solid_underline),<br/>etc.                                                                                                                                                       | effect |
-//! | [`effect(impl Into<Effect>)`](traits::Additive::effect)                                                                                                                                                                                                                                                      | effect<br/>(including underline effects) |
-//! | [`underline_effect(UnderlineEffect)`](traits::Additive::underline_effect)                                                                                                                                                                                                                                    | underline effect |
-//! | [`foreground(impl Into<Color>)`](traits::Additive::foreground)/[`fg(impl Into<Color>)`](traits::Additive::fg)<br/>[`background(impl Into<Color>)`](traits::Additive::background)/[`bg(impl Into<Color>)`](traits::Additive::bg)<br/>[`underline_color(impl Into<Color>)`](traits::Additive::underline_color) | color |
-//! | [`color(TargetedColor)`](traits::Additive::color)                                                                                                                                                                                                                                                            | color |
-//! | [`color(impl Into<Color>)`](traits::Additive::color)                                                                                                                                                                                                                                                         | foreground color |
-//! | [`applied_to(impl Display)`](traits::ToStyle::applied_to) [^applied-to-method]                                                                                                                                                                                                                               | content |
+//! | [`bold()`],<br/>[`italic()`],<br/>[`solid_underline()`],<br/>etc.                                                                                                 | effect |
+//! | [`effect(impl Into<Effect>)`]                                                                                                                                     | effect<br/>(including underline effects) |
+//! | [`underline_effect(UnderlineEffect)`]                                                                                                                             | underline effect |
+//! | [`foreground(impl Into<Color>)`]/[`fg(impl Into<Color>)`]<br/>[`background(impl Into<Color>)`]/[`bg(impl Into<Color>)`]<br/>[`underline_color(impl Into<Color>)`] | color |
+//! | [`color(TargetedColor)`]                                                                                                                | color |
+//! | [`color(impl Into<Color>)`]                                                                                                             | foreground color |
+//! | [`applied_to(impl Display)`][^applied-to-method]                                                                                    | content |
 //!
 //!
 //! ## Methods for elements and sets
@@ -224,25 +227,27 @@
 //!
 //! ### The `add` method
 //!
-//! The `add` method can be used to _compose_/_add_/_set_ some styling, and is available in all [styling types].
+//! The `add` method can be used to _compose_/_add_/_set_ some styling, is available in all [styling types], and is
+//! provided by the [`Additive`] trait.
 //!
 //! | Method | To add what |
 //! |--------|-------------|
-//! | [`add(Effect)`](traits::Additive::add)           | effect |
-//! | [`add(UnderlineEffect)`](traits::Additive::add)  | underline effect |
-//! | [`add(TargetedColor)`](traits::Additive::add)    | color |
-//! | [`add(impl Into<Color>)`](traits::Additive::add) | foreground color |
+//! | [`add(Effect)`]           | effect |
+//! | [`add(UnderlineEffect)`]  | underline effect |
+//! | [`add(TargetedColor)`]    | color |
+//! | [`add(impl Into<Color>)`] | foreground color |
 //!
 //! ### The `remove` method
 //!
-//! The `remove` method can be used to _clear_/_remove_ some styling, and is available in the [composed styling types].
+//! The `remove` method can be used to _clear_/_remove_ some styling, is available in the [composed styling types],
+//! and is provided by the [`Composed`] trait.
 //!
 //! | Method | To remove what | Note |
 //! |--------|----------------|------|
-//! | [`remove(Effect)`](traits::Composed::remove)          | effect |
-//! | [`remove(UnderlineEffect)`](traits::Composed::remove) | underline effect | Remove the specific effect, if set |
-//! | [`remove(UnderlineStyle)`](traits::Composed::remove)  | underline effect | Remove any underline effect that may be set |
-//! | [`remove(ColorTarget)`](traits::Composed::remove)     | color |
+//! | [`remove(Effect)`]          | effect |
+//! | [`remove(UnderlineEffect)`] | underline effect | Remove the specific effect, if set |
+//! | [`remove(UnderlineStyle)`]  | underline effect | Remove any underline effect that may be set |
+//! | [`remove(ColorTarget)`]     | color |
 //!
 //! ### Example
 //!
@@ -277,24 +282,24 @@
 //! | [`ColorTarget`]     | [`Option<Color>`]           | Which color is in use for that target, if any |
 //!
 //! The `set` method can be used to _add_/_set_/_clear_/_remove_ some styling, and the `get` method can be used to _query_ any styling.
-//! Both methods are available in all [composed styling types].
+//! Both methods are available in all [composed styling types], and are provided by the [`Composed`] trait.
 //!
 //! There are also styling-specific variations for the `set` and `get` methods, in addition to the `get_effects()`, that returns an
 //! iterator on the effects that are set.
 //!
 //! | Methods | Styling |
 //! |---------|---------|
-//! | [`set(Effect, bool)`](traits::Composed::set)                            <br/> [`set_effect(Effect, bool)`](traits::Composed::set_effect)                                          | effect
-//! | [`set(UnderlineEffect, bool)`](traits::Composed::set)                   <br/> [`set_effect(UnderlineEffect, bool)`](traits::Composed::set_effect)                                 | underline effect |
-//! | [`set(UnderlineStyle, Option<UnderlineEffect>)`](traits::Composed::set) <br/> [`set_underline_effect(Option<UnderlineEffect>)`](traits::Composed::set_underline_effect)           | underline effect |
-//! | [`set(ColorTarget, Option<Color>)`](traits::Composed::set)              <br/> [`set_color(ColorTarget, Option<impl Into<Color>>)`](traits::Composed::set_color) [^set-color-none] | color |
+//! | [`set(Effect, bool)`]                            <br/> [`set_effect(Effect, bool)`]                                           | effect
+//! | [`set(UnderlineEffect, bool)`]                   <br/> [`set_effect(UnderlineEffect, bool)`]                                  | underline effect |
+//! | [`set(UnderlineStyle, Option<UnderlineEffect>)`] <br/> [`set_underline_effect(Option<UnderlineEffect>)`]                      | underline effect |
+//! | [`set(ColorTarget, Option<Color>)`]              <br/> [`set_color(ColorTarget, Option<impl Into<Color>>)`] [^set-color-none] | color |
 //!
 //! | Methods | Styling |
 //! |---------|---------|
-//! | [`get(Effect) -> bool`](traits::Composed::get)                            <br/> [`get_effect(Effect) -> bool`](traits::Composed::get_effect) <br/>[`get_effects() -> GetEffects`](traits::Composed::get_effect) | effect
-//! | [`get(UnderlineEffect) -> bool`](traits::Composed::get)                   <br/> [`get_effect(UnderlineEffect) -> bool`](traits::Composed::get_effect)                                                | underline effect |
-//! | [`get(UnderlineStyle) -> Option<UnderlineEffect>`](traits::Composed::get) <br/> [`get_underline_effect() -> Option<UnderlineEffect>`](traits::Composed::get_underline_effect)                        | underline effect |
-//! | [`get(ColorTarget) -> Option<Color>`](traits::Composed::get)              <br/> [`get_color(ColorTarget) -> Option<Color>)`](traits::Composed::get_color)                                            | color |
+//! | [`get(Effect) -> bool`]                            <br/> [`get_effect(Effect) -> bool`] <br/>[`get_effects() -> GetEffects`] | effect
+//! | [`get(UnderlineEffect) -> bool`]                   <br/> [`get_effect(UnderlineEffect) -> bool`]                             | underline effect |
+//! | [`get(UnderlineStyle) -> Option<UnderlineEffect>`] <br/> [`get_underline_effect() -> Option<UnderlineEffect>`]               | underline effect |
+//! | [`get(ColorTarget) -> Option<Color>`]              <br/> [`get_color(ColorTarget) -> Option<Color>)`]                        | color |
 //!
 //! ### Example
 //!
@@ -319,7 +324,7 @@
 //!
 //! # Controling the use of styling
 //!
-//! Styling can be enabled or disabled using the method `set_enabled(bool)` in [`Style`] and [`Styled`].
+//! Styling can be enabled or disabled using the method [`set_enabled(bool)`] in [`Style`] and [`Styled`].
 //! The recommended approach is to set whether styling is enabled in a base [`Style`] value and then use this
 //! value to set additional styling.
 //!
@@ -348,17 +353,66 @@
 //! assert_eq!(output, "\x1b[1;31mSome content\x1b[0m");
 //! ```
 //!
+//! [`Additive`]: traits::Additive
+//! [`Background`]: ColorTarget::Background
+//! [`Composed`]: traits::Composed
+//! [`Display`]: core::fmt::Display
+//! [`Foreground`]: ColorTarget::Foreground
+//! [`ToStyle`]: traits::ToStyle
+//! [`Underline`]: ColorTarget::Underline
 //!
-//! [styling types]: #styling-types
-//! [styling element]: #styling-element-types
-//! [styling elements]: #styling-element-types
-//! [styling element type]: #styling-element-types
-//! [styling element types]: #styling-element-types
+//! [`add(Effect)`]: traits::Additive::add
+//! [`add(impl Into<Color>)`]: traits::Additive::add
+//! [`add(TargetedColor)`]: traits::Additive::add
+//! [`add(UnderlineEffect)`]: traits::Additive::add
+//! [`applied_to()`]: traits::ToStyle::applied_to
+//! [`applied_to(impl Display)`]: traits::ToStyle::applied_to
+//! [`background(impl Into<Color>)`]: traits::Additive::background
+//! [`bg(impl Into<Color>)`]: traits::Additive::bg
+//! [`bold()`]: traits::Additive::bold
+//! [`color(impl Into<Color>)`]: traits::Additive::color
+//! [`color(TargetedColor)`]: traits::Additive::color
+//! [`effect(impl Into<Effect>)`]: traits::Additive::effect
+//! [`fg(impl Into<Color>)`]: traits::Additive::fg
+//! [`foreground(impl Into<Color>)`]: traits::Additive::foreground
+//! [`get(ColorTarget) -> Option<Color>`]: traits::Composed::get
+//! [`get(Effect) -> bool`]: traits::Composed::get
+//! [`get(UnderlineEffect) -> bool`]: traits::Composed::get
+//! [`get(UnderlineStyle) -> Option<UnderlineEffect>`]: traits::Composed::get
+//! [`get_color(ColorTarget) -> Option<Color>)`]: traits::Composed::get_color
+//! [`get_effect(Effect) -> bool`]: traits::Composed::get_effect
+//! [`get_effect(UnderlineEffect) -> bool`]: traits::Composed::get_effect
+//! [`get_effects() -> GetEffects`]: traits::Composed::get_effect
+//! [`get_underline_effect() -> Option<UnderlineEffect>`]: traits::Composed::get_underline_effect
+//! [`italic()`]: traits::Additive::italic
+//! [`remove(ColorTarget)`]: traits::Composed::remove
+//! [`remove(Effect)`]: traits::Composed::remove
+//! [`remove(UnderlineEffect)`]: traits::Composed::remove
+//! [`remove(UnderlineStyle)`]: traits::Composed::remove
+//! [`set(ColorTarget, Option<Color>)`]: traits::Composed::set
+//! [`set(Effect, bool)`]: traits::Composed::set
+//! [`set(UnderlineEffect, bool)`]: traits::Composed::set
+//! [`set(UnderlineStyle, Option<UnderlineEffect>)`]: traits::Composed::set
+//! [`set_color()`]: traits::Composed::set_color
+//! [`set_color(ColorTarget, Option<impl Into<Color>>)`]: traits::Composed::set_color
+//! [`set_effect(Effect, bool)`]: traits::Composed::set_effect
+//! [`set_effect(UnderlineEffect, bool)`]: traits::Composed::set_effect
+//! [`set_enabled(bool)`]: traits::Composed::set_enabled
+//! [`set_underline_effect(Option<UnderlineEffect>)`]: traits::Composed::set_underline_effect
+//! [`solid_underline()`]: traits::Additive::solid_underline
+//! [`underline_color(impl Into<Color>)`]: traits::Additive::underline_color
+//! [`underline_effect(UnderlineEffect)`]: traits::Additive::underline_effect
+//!
+//! [color types]: #color-types
 //! [composed styling type]: #composed-styling-types
 //! [composed styling types]: #composed-styling-types
+//! [effect types]: #effect-types
+//! [styling element]: #styling-elements
+//! [styling elements]: #styling-elements
+//! [styling types]: #styling-types
 //!
-//! [^applied-to-method]: [`applied_to()`](traits::ToStyle::applied_to) is not available in [`Styled<C>`] values, and always returns a [`Styled<C>`].
-//! [^set-color-none]: To clear a color with [`set_color()`](traits::Composed::set_color), the color type must be specified in the `None` value as e.g.
+//! [^applied-to-method]: [`applied_to()`] is not available in [`Styled<C>`] values, and always returns a [`Styled<C>`].
+//! [^set-color-none]: To clear a color with [`set_color()`], the color type must be specified in the `None` value as e.g.
 //!     `None::<Color>`. As an alternative, use the [`Color::none()`](color::Color::none) method.
 
 pub use crate::{effect::*, reset::*, style::*, styled::*, targeted_color::*};
