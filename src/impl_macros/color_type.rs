@@ -44,19 +44,18 @@ macro_rules! impl_color_type {
             pub fn to_color(self) -> Color {
                 self.into()
             }
+
+            /// Converts the type into a [`TargetedColor`](crate::TargetedColor).
+            #[must_use]
+            pub fn to_targeted_color(self) -> $crate::TargetedColor {
+                $crate::TargetedColor::new_for_fg(self.to_color())
+            }
         }
 
         $crate::impl_macros::additive_styling::impl_additive_styling_type!($name {
             args: [self];
             to_style: { $crate::TargetedColor::from(self).to_style() }
         });
-
-        $crate::impl_macros::from_to::impl_from_to!(
-            #[doc = r"Converts the type into a [`TargetedColor`](crate::TargetedColor)"]
-            fn to_targeted_color(self: $name) -> $crate::TargetedColor {
-                $crate::TargetedColor::new_for_fg(self)
-            }
-        );
 
         $crate::impl_styling_element_for! { $name {
             args: [$self, composed_styling];

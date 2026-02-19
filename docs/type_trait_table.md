@@ -2,12 +2,13 @@
 
 ## Color types
 
-| Type \\ impl | `From<T> for Color` |
-| :--- | :---: |
-| `BasicColor`<br/>`SimpleColor`<br/>`IndexedColor`<br/>`RGBColor` | X                    |
-| `Color`                                                          | X[^Color-from-Color] |
+| Type \\ impl | `From<T> for TargetedColor` | `From<T> for Color` |
+| :--- | :---: | :---: |
+| `BasicColor`<br/>`SimpleColor`<br/>`IndexedColor`<br/>`RGBColor` | X[^TargetedColor-from-T] | X                    |
+| `Color`                                                          | X[^TargetedColor-from-T] | X[^Color-from-Color] |
 
 [^Color-from-Color]: Blanket implementation provided by [`std`](https://doc.rust-lang.org/std/convert/trait.From.html#impl-From%3CT%3E-for-T).
+[^TargetedColor-from-T]: Blanket implementation: `impl<T> From<T> for TargetedColor where T: Into<Color>`
 
 ## General
 

@@ -81,6 +81,15 @@ impl Display for TargetedColor {
     }
 }
 
+impl<T> From<T> for TargetedColor
+where
+    T: Into<Color>,
+{
+    fn from(value: T) -> Self {
+        TargetedColor::new_for_fg(value.into())
+    }
+}
+
 /// The target where a color is applied.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum ColorTarget {
