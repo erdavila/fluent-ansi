@@ -1,6 +1,15 @@
 # Types and their implementations
 
-It includes blanket implementations.
+## Color types
+
+| Type \\ impl | `From<T> for Color` |
+| :--- | :---: |
+| `BasicColor`<br/>`SimpleColor`<br/>`IndexedColor`<br/>`RGBColor` | X                    |
+| `Color`                                                          | X[^Color-from-Color] |
+
+[^Color-from-Color]: Blanket implementation provided by [`std`](https://doc.rust-lang.org/std/convert/trait.From.html#impl-From%3CT%3E-for-T).
+
+## General
 
 | Type \\ Trait | Composed styling methods | Fluent methods | `applied_to` method | `to_style` method | Color type | `StyleElement` | `StyleAttribute` |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |

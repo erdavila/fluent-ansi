@@ -65,7 +65,6 @@ impl SimpleColor {
 
 impl_color_type!(SimpleColor {
     args: [self];
-    to_color: { Color::Simple(self) }
 });
 
 impl WriteColorCodes for SimpleColor {

@@ -52,9 +52,6 @@ impl BasicColor {
 
 impl_color_type!(BasicColor {
     args: [self];
-    to_color: {
-        self.to_simple_color().to_color()
-    }
 });
 
 impl_from_to!(

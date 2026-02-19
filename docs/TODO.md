@@ -1,6 +1,7 @@
 - Revert back to traits instead of macros
   - Is `ToStyle` needed?
     - It seems the same as `ToComposed<Composed = Style>`.
+  - Make `Copy` supertrait of all traits.
 - `const` everywhere - allow defining styles at compile time
   - Complete implementation requires experimental feature (`const_trait_impl`) and nightly compiler
     - Implement what is possible in `main`, and the remaining in a branch or behind a feature.

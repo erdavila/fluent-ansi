@@ -36,7 +36,6 @@ impl IndexedColor {
 
 impl_color_type!(IndexedColor {
     args: [self];
-    to_color: { Color::Indexed(self) }
 });
 
 impl WriteColorCodes for IndexedColor {

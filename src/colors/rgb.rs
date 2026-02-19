@@ -40,7 +40,6 @@ impl RGBColor {
 
 impl_color_type!(RGBColor {
     args: [self];
-    to_color: { Color::RGB(self) }
 });
 
 impl WriteColorCodes for RGBColor {

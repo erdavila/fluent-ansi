@@ -59,7 +59,6 @@ impl Color {
 
 impl_color_type!(Color {
     args: [self];
-    to_color: SELF
 });
 
 impl WriteColorCodes for Color {
@@ -69,5 +68,29 @@ impl WriteColorCodes for Color {
             Color::Indexed(indexed) => indexed.write_color_codes(target, writer),
             Color::RGB(rgb) => rgb.write_color_codes(target, writer),
         }
+    }
+}
+
+impl From<BasicColor> for Color {
+    fn from(basic_color: BasicColor) -> Self {
+        basic_color.to_simple_color().into()
+    }
+}
+
+impl From<SimpleColor> for Color {
+    fn from(simple_color: SimpleColor) -> Self {
+        Color::Simple(simple_color)
+    }
+}
+
+impl From<IndexedColor> for Color {
+    fn from(indexed_color: IndexedColor) -> Self {
+        Color::Indexed(indexed_color)
+    }
+}
+
+impl From<RGBColor> for Color {
+    fn from(rgb_color: RGBColor) -> Self {
+        Color::RGB(rgb_color)
     }
 }
