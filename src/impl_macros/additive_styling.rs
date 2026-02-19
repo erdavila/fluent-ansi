@@ -5,17 +5,6 @@ macro_rules! impl_additive_styling_type {
     }) => {
         impl $name {
             $crate::impl_macros::additive_styling::impl_additive_styling_methods!();
-
-            /// Applies the styling to the given content, returning a [`Styled<C>`](crate::Styled) instance.
-            #[must_use]
-            pub fn applied_to<C: core::fmt::Display>(self, content: C) -> $crate::Styled<C> {
-                let style = $crate::Style::from(self);
-                $crate::Styled::new(content).with_style(style)
-            }
-
-            /// Convert this type into a [`Style`](crate::Style).
-            #[must_use]
-            pub fn to_style($self) -> $crate::Style $to_style
         }
     };
 }
@@ -27,6 +16,7 @@ macro_rules! impl_additive_styling_methods {
             type ComposedStyling = $crate::Style;
             args: [self];
             to_composed_styling: {
+                use $crate::traits::ToStyle as _;
                 self.to_style()
             }
         }

@@ -26,6 +26,8 @@ macro_rules! test_additive_styling_type {
 
         #[test]
         fn applied_to() {
+            use fluent_ansi::traits::ToStyle as _;
+
             let styled = $value.applied_to("CONTENT");
 
             assert_eq!(styled.get_content(), &"CONTENT");
@@ -34,6 +36,8 @@ macro_rules! test_additive_styling_type {
 
         #[test]
         fn to_style() {
+            use fluent_ansi::traits::ToStyle as _;
+
             $crate::common::assert_from_to!(
                 to_style, fluent_ansi::Style;
                 $value,

@@ -3,9 +3,9 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    CodeWriter, Style,
+    CodeWriter,
     impl_macros::additive_styling::impl_additive_styling_type,
-    traits::{Composed, StylingAttribute, StylingElement},
+    traits::{Composed, StylingAttribute, StylingElement, ToStyle as _},
 };
 pub use underline::*;
 

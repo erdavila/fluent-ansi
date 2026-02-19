@@ -218,7 +218,7 @@
 //! | [`foreground(impl Into<Color>)`](Style::foreground)/[`fg(impl Into<Color>)`](Style::fg)<br/>[`background(impl Into<Color>)`](Style::background)/[`bg(impl Into<Color>)`](Style::bg)<br/>[`underline_color(impl Into<Color>)`](Style::underline_color) | color |
 //! | [`color(TargetedColor)`](Style::color)                                                                                                                                                                                                                | color |
 //! | [`color(impl Into<Color>)`](Style::color)                                                                                                                                                                                                             | foreground color |
-//! | [`applied_to(impl Display)`](Style::applied_to) [^applied-to-method]                                                                                                                                                                                  | content |
+//! | [`applied_to(impl Display)`](traits::ToStyle::applied_to) [^applied-to-method]                                                                                                                                                                                  | content |
 //!
 //!
 //! ## Methods for elements and sets
@@ -363,7 +363,7 @@
 //! [composed styling type]: #composed-styling-types
 //! [composed styling types]: #composed-styling-types
 //!
-//! [^applied-to-method]: [`applied_to()`](Style::applied_to) is not available in [`Styled<C>`] values, and always returns a [`Styled<C>`].
+//! [^applied-to-method]: [`applied_to()`](traits::ToStyle::applied_to) is not available in [`Styled<C>`] values, and always returns a [`Styled<C>`].
 //! [^set-color-none]: To clear a color with [`set_color()`](traits::Composed::set_color), the color type must be specified in the `None` value as e.g.
 //!     `None::<Color>`. As an alternative, use the [`Color::none()`](color::Color::none) method.
 

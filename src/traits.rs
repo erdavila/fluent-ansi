@@ -4,8 +4,10 @@ pub use color_kind::*;
 pub use composed::*;
 pub use styling_attribute::*;
 pub use styling_element::*;
+pub use to_style::*;
 
 mod color_kind;
 mod composed;
 mod styling_attribute;
 mod styling_element;
+mod to_style;

@@ -1,10 +1,9 @@
 use core::fmt::{Display, Formatter, Result};
 
 use crate::{
-    Style,
     color::Color,
     impl_macros::additive_styling::impl_additive_styling_type,
-    traits::{Composed, StylingAttribute, StylingElement},
+    traits::{Composed, StylingAttribute, StylingElement, ToStyle as _},
 };
 
 /// A color in a specific color target.
