@@ -1,5 +1,5 @@
 use crate::{
-    colors::{Color, SimpleColor},
+    colors::SimpleColor,
     impl_macros::{color_type::impl_color_type, from_to::impl_from_to},
 };
 

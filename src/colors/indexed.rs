@@ -4,8 +4,6 @@ use crate::{
     CodeWriter, ColorTarget, color::WriteColorCodes, impl_macros::color_type::impl_color_type,
 };
 
-use super::Color;
-
 /// An 8-bit color type representing colors in the 256-color ANSI palette.
 ///
 /// These colors are also available from the method [`Color::indexed()`](super::Color::indexed):

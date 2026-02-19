@@ -2,7 +2,7 @@ use core::fmt::Result;
 
 use crate::{
     CodeWriter, ColorTarget,
-    color::{BasicColor, Color, IndexedColor, WriteColorCodes},
+    color::{BasicColor, IndexedColor, WriteColorCodes},
     impl_macros::color_type::impl_color_type,
 };
 

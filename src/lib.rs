@@ -380,6 +380,7 @@ mod styled;
 mod styling_attribute;
 mod styling_element;
 mod targeted_color;
+pub mod traits;
 
 mod impl_macros;
 
@@ -444,4 +445,5 @@ pub mod prelude {
     pub use crate::Effect;
     pub use crate::UnderlineEffect;
     pub use crate::color::Color;
+    pub use crate::traits::*;
 }

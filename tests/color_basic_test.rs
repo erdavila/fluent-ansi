@@ -4,7 +4,7 @@ use common::*;
 
 mod common;
 
-test_color_type!(
+test_color_kind!(
     BasicColor::Red,
     Color::Simple(SimpleColor::new(BasicColor::Red)),
     Style::new().fg(BasicColor::Red)

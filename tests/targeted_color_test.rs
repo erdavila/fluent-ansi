@@ -1,4 +1,4 @@
-use fluent_ansi::{color::*, *};
+use fluent_ansi::{color::*, traits::ColorKind as _, *};
 
 use crate::common::*;
 
