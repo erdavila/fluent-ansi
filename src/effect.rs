@@ -95,3 +95,15 @@ impl Display for Effect {
         self.to_style().fmt(f)
     }
 }
+
+impl From<UnderlineEffect> for Effect {
+    fn from(underline_effect: UnderlineEffect) -> Self {
+        match underline_effect {
+            UnderlineEffect::Solid => Effect::SolidUnderline,
+            UnderlineEffect::Curly => Effect::CurlyUnderline,
+            UnderlineEffect::Dotted => Effect::DottedUnderline,
+            UnderlineEffect::Dashed => Effect::DashedUnderline,
+            UnderlineEffect::Double => Effect::DoubleUnderline,
+        }
+    }
+}

@@ -4,7 +4,6 @@ use enum_iterator::Sequence;
 
 use crate::{
     Effect,
-    impl_macros::from_to::impl_from_to,
     traits::{Composed, StylingAttribute, StylingElement},
 };
 
@@ -33,20 +32,13 @@ impl UnderlineEffect {
     pub(crate) fn all() -> AllUnderlineEffects {
         enum_iterator::all()
     }
-}
 
-impl_from_to!(
-    #[doc = r"Converts the type into an [`Effect`]."]
-    fn to_effect(self: UnderlineEffect) -> Effect {
-        match self {
-            UnderlineEffect::Solid => Effect::SolidUnderline,
-            UnderlineEffect::Curly => Effect::CurlyUnderline,
-            UnderlineEffect::Dotted => Effect::DottedUnderline,
-            UnderlineEffect::Dashed => Effect::DashedUnderline,
-            UnderlineEffect::Double => Effect::DoubleUnderline,
-        }
+    /// Converts the type into an [`Effect`].
+    #[must_use]
+    pub fn to_effect(self: UnderlineEffect) -> Effect {
+        self.into()
     }
-);
+}
 
 impl Display for UnderlineEffect {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {

@@ -80,3 +80,9 @@ impl WriteColorCodes for SimpleColor {
         }
     }
 }
+
+impl From<BasicColor> for SimpleColor {
+    fn from(basic_color: BasicColor) -> Self {
+        Self::new(basic_color)
+    }
+}

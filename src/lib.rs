@@ -371,8 +371,6 @@ mod styled;
 mod targeted_color;
 pub mod traits;
 
-mod impl_macros;
-
 pub mod color {
     //! Color types and trait.
     //!
