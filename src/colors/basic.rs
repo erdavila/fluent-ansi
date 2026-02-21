@@ -1,4 +1,4 @@
-use crate::colors::SimpleColor;
+use crate::{Style, colors::SimpleColor, macros::impl_add_styling_element};
 
 /// The 8 basic non-bright terminal colors.
 ///
@@ -52,3 +52,5 @@ impl BasicColor {
         self.into()
     }
 }
+
+impl_add_styling_element!(for BasicColor, Output = Style);

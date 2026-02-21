@@ -1,8 +1,9 @@
 use core::fmt::Result;
 
 use crate::{
-    CodeWriter, ColorTarget,
+    CodeWriter, ColorTarget, Style,
     colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, WriteColorCodes},
+    macros::impl_add_styling_element,
 };
 
 /// An enum representing all supported color types.
@@ -88,3 +89,5 @@ impl From<RGBColor> for Color {
         Color::RGB(rgb_color)
     }
 }
+
+impl_add_styling_element!(for Color, Output = Style);

@@ -3,7 +3,8 @@ use core::fmt::{Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    CodeWriter,
+    CodeWriter, Style,
+    macros::impl_add_styling_element,
     traits::{Composed, StylingAttribute, StylingElement, ToStyle as _},
 };
 pub use underline::*;
@@ -107,3 +108,5 @@ impl From<UnderlineEffect> for Effect {
         }
     }
 }
+
+impl_add_styling_element!(for Effect, Output = Style);

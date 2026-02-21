@@ -1,6 +1,8 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, ColorTarget, color::WriteColorCodes};
+use crate::{
+    CodeWriter, ColorTarget, Style, color::WriteColorCodes, macros::impl_add_styling_element,
+};
 
 /// A type alias for [`RGBColor`].
 pub type RGB = RGBColor;
@@ -50,3 +52,5 @@ impl WriteColorCodes for RGBColor {
         Ok(())
     }
 }
+
+impl_add_styling_element!(for RGBColor, Output = Style);

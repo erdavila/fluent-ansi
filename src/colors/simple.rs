@@ -1,8 +1,9 @@
 use core::fmt::Result;
 
 use crate::{
-    CodeWriter, ColorTarget,
+    CodeWriter, ColorTarget, Style,
     color::{BasicColor, IndexedColor, WriteColorCodes},
+    macros::impl_add_styling_element,
 };
 
 /// A simple color type representing the 16 basic terminal colors (8 basic colors + bright variants).
@@ -86,3 +87,5 @@ impl From<BasicColor> for SimpleColor {
         Self::new(basic_color)
     }
 }
+
+impl_add_styling_element!(for SimpleColor, Output = Style);

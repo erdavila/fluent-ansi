@@ -71,6 +71,13 @@ macro_rules! test_additive {
                         $value,
                         $effect
                     );
+                    assert_eq!(
+                        $value + $effect,
+                        expected_style,
+                        "{:?} + {:?}",
+                        $value,
+                        $effect
+                    );
                 }};
             }
 
@@ -114,6 +121,13 @@ macro_rules! test_additive {
                         $value,
                         $underline_effect
                     );
+                    assert_eq!(
+                        $value + $underline_effect,
+                        expected_style,
+                        "{:?} + {:?}",
+                        $value,
+                        $underline_effect
+                    );
                 }};
             }
 
@@ -139,11 +153,11 @@ macro_rules! test_additive {
             }
 
             macro_rules! assert_method_for_targeted_color {
-                ($method:ident) => {
+                ($method:tt) => {
                     assert_method_for_targeted_color!($method, Color::RED);
                     assert_method_for_targeted_color!($method, Color::GREEN);
                 };
-                ($method:ident, $color:expr) => {
+                ($method:tt, $color:expr) => {
                     // Foreground by default
                     assert_method_for_targeted_color!($method, $color, fg, $color);
 
@@ -157,8 +171,17 @@ macro_rules! test_additive {
                         $color.for_underline()
                     );
                 };
-                ($method:ident, $color:expr, $target_method:ident, $arg:expr) => {{
-                    let result = $value.$method($arg);
+                ($method:tt, $color:expr, $target_method:ident, $arg:expr) => {{
+                    macro_rules! apply {
+                        (+) => {
+                            $value + $arg
+                        };
+                        ($_method:ident) => {
+                            $value.$method($arg)
+                        };
+                    }
+
+                    let result = apply!($method);
                     let expected = $as_composed.$target_method($color);
                     assert_eq!(result, expected);
                 }};
@@ -172,6 +195,7 @@ macro_rules! test_additive {
 
             assert_method_for_targeted_color!(color);
             assert_method_for_targeted_color!(add);
+            assert_method_for_targeted_color!(+);
         }
     };
 }

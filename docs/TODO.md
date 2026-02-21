@@ -47,14 +47,19 @@
 
     ```
 - Consider implementing the `Add` and `Sub` traits that delegate to the `add` and `remove` methods.
-  | `+` | `StylingElement` | `Style` | `Styled<C>` |
+  ## `+`
+  | `x`\\`y` | `impl StylingElement` | `Style` | `Styled<C>` |
   | :--- | :---: | :---: | :---: |
-  | `StylingElement` | `Style`     | `Style`     | `Styled<C>` |
-  | `Style`          | `Style`     | `Style`     | `Styled<C>` |
-  | `Styled<C>`      | `Styled<C>` | `Styled<C>` | -           |
+  | `impl StylingElement` | `x.add(y)`<br/>`Style`     | `x.to_style().merge_style(y)`<br/>`Style` | `x.to_style().merge_style(y.get_style()).applied_to(y.into_content())`<br/>`Styled<C>` |
+  | `Style`               | `x.add(y)`<br/>`Style`     | `x.merge_style(y)`<br/>`Style`            | `x.merge_style(y.get_style()).applied_to(y.into_content())`<br/>`Styled<C>`            |
+  | `Styled<C>`           | `x.add(y)`<br/>`Styled<C>` | `x.merge_style(y)`<br/>`Styled<C>`        | -                                                                                      |
 
-  | `-` | `StylingAttribute`
+  ## `+=`
+
+  ## `-`
+  | `x`\\`y` | `impl StylingAttribute`
   | :--- | :---: |
-  | `Style`     | `Style`     |
-  | `Styled<C>` | `Styled<C>` |
+  | `Style`     | `x.remove(y)`<br/>`Style`     |
+  | `Styled<C>` | `x.remove(y)`<br/>`Styled<C>` |
 
+  ## `-=`

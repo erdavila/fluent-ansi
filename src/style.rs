@@ -3,6 +3,7 @@ use core::fmt::{Display, Formatter, Result, Write};
 use crate::{
     ColorTarget, Effect, UnderlineEffect,
     colors::{Color, WriteColorCodes as _},
+    macros::impl_add_styling_element,
     style::encoded_effects::EncodedEffects,
     traits::{Composed, StylingElement},
 };
@@ -159,6 +160,8 @@ where
         element.add_to(Style::new())
     }
 }
+
+impl_add_styling_element!(for Style, Output = Style);
 
 pub(crate) struct CodeWriter<'a, 'b> {
     f: &'a mut Formatter<'b>,

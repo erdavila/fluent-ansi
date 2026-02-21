@@ -426,6 +426,7 @@ pub use crate::{effect::*, reset::*, style::*, styled::*, targeted_color::*};
 
 mod colors;
 mod effect;
+pub(crate) mod macros;
 mod reset;
 mod style;
 mod styled;

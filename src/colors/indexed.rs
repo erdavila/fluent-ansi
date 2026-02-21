@@ -1,6 +1,8 @@
 use core::fmt::Result;
 
-use crate::{CodeWriter, ColorTarget, color::WriteColorCodes};
+use crate::{
+    CodeWriter, ColorTarget, Style, color::WriteColorCodes, macros::impl_add_styling_element,
+};
 
 /// An 8-bit color type representing colors in the 256-color ANSI palette.
 ///
@@ -44,3 +46,5 @@ impl WriteColorCodes for IndexedColor {
         Ok(())
     }
 }
+
+impl_add_styling_element!(for IndexedColor, Output = Style);
