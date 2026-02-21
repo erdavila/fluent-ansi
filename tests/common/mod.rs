@@ -13,12 +13,8 @@ pub(crate) use from_to::*;
 /// A macro to assert that a type implementing `Display` produces the expected output.
 macro_rules! assert_display {
     ($display:expr, $expected:literal) => {{
-        use core::fmt::Write as _;
-        let mut s = String::new();
-
-        write!(&mut s, "{}", $display).unwrap();
-
-        assert_eq!(s.as_str(), $expected);
+        // Every type that implements `Display` also implements `ToString`, so we can call `to_string()` on it.
+        assert_eq!($display.to_string(), $expected);
     }};
 }
 pub(crate) use assert_display;
