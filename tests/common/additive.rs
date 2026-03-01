@@ -30,6 +30,17 @@ macro_rules! test_additive_and_to_style {
                 $as_style
             );
         }
+
+        #[test]
+        fn add_styled() {
+            let merged_style = Style::new().bold().curly_underline().fg(Color::RED);
+            let styled: Styled<_> = merged_style.applied_to("CONTENT");
+
+            assert_eq!(
+                $value + styled,
+                $as_style.merge_style(merged_style).applied_to("CONTENT"),
+            );
+        }
     };
 }
 pub(crate) use test_additive_and_to_style;
