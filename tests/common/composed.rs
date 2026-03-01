@@ -31,10 +31,19 @@ macro_rules! test_composed {
                     assert_eq!(composed.get_effect(Effect::Bold), true);
                     assert_eq!(composed.get(Effect::Bold), true);
 
-                    let composed = composed.remove(Effect::Bold);
-                    assert_eq!(composed, $empty_composed);
-                    assert_eq!(composed.get_effect(Effect::Bold), false);
-                    assert_eq!(composed.get(Effect::Bold), false);
+                    {
+                        let composed = composed.remove(Effect::Bold);
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_effect(Effect::Bold), false);
+                        assert_eq!(composed.get(Effect::Bold), false);
+                    }
+
+                    {
+                        let composed = composed - Effect::Bold;
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_effect(Effect::Bold), false);
+                        assert_eq!(composed.get(Effect::Bold), false);
+                    }
                 }
             }
 
@@ -87,10 +96,19 @@ macro_rules! test_composed {
                         Some(UnderlineEffect::Solid)
                     );
 
-                    let composed = composed.remove(UnderlineStyle);
-                    assert_eq!(composed, $empty_composed);
-                    assert_eq!(composed.get_underline_effect(), None);
-                    assert_eq!(composed.get(UnderlineStyle), None);
+                    {
+                        let composed = composed.remove(UnderlineStyle);
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_underline_effect(), None);
+                        assert_eq!(composed.get(UnderlineStyle), None);
+                    }
+
+                    {
+                        let composed = composed - UnderlineStyle;
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_underline_effect(), None);
+                        assert_eq!(composed.get(UnderlineStyle), None);
+                    }
                 }
 
                 {
@@ -107,11 +125,21 @@ macro_rules! test_composed {
                     );
                     assert_eq!(composed.get(UnderlineEffect::Solid), true);
 
-                    let composed = composed.remove(UnderlineEffect::Solid);
-                    assert_eq!(composed, $empty_composed);
-                    assert_eq!(composed.get_underline_effect(), None);
-                    assert_eq!(composed.get(UnderlineStyle), None);
-                    assert_eq!(composed.get(UnderlineEffect::Solid), false);
+                    {
+                        let composed = composed.remove(UnderlineEffect::Solid);
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_underline_effect(), None);
+                        assert_eq!(composed.get(UnderlineStyle), None);
+                        assert_eq!(composed.get(UnderlineEffect::Solid), false);
+                    }
+
+                    {
+                        let composed = composed - UnderlineEffect::Solid;
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_underline_effect(), None);
+                        assert_eq!(composed.get(UnderlineStyle), None);
+                        assert_eq!(composed.get(UnderlineEffect::Solid), false);
+                    }
                 }
 
                 {
@@ -207,6 +235,13 @@ macro_rules! test_composed {
 
                     {
                         let empty_composed = composed.remove($color_target);
+                        assert_eq!(empty_composed, $empty_composed);
+                        assert_eq!(empty_composed.get_color($color_target), None);
+                        assert_eq!(empty_composed.get($color_target), None);
+                    }
+
+                    {
+                        let empty_composed = composed - $color_target;
                         assert_eq!(empty_composed, $empty_composed);
                         assert_eq!(empty_composed.get_color($color_target), None);
                         assert_eq!(empty_composed.get($color_target), None);
