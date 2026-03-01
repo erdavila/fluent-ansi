@@ -13,3 +13,18 @@ macro_rules! impl_add_styling_element {
     };
 }
 pub(crate) use impl_add_styling_element;
+
+macro_rules! impl_add_style {
+    ( $( < $type_arg:ident : $bound:ident > )? for $ty:ty, Output = $output:ty) => {
+        impl< $( $type_arg: $bound )? > core::ops::Add<Style> for $ty {
+            type Output = $output;
+
+            /// Merges the styling from the given [`Style`] into this type.
+            fn add(self, rhs: Style) -> Self::Output {
+                let composed = $crate::traits::Additive::to_composed(self);
+                $crate::traits::Composed::merge_style(composed, rhs)
+            }
+        }
+    };
+}
+pub(crate) use impl_add_style;

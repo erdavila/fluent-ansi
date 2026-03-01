@@ -197,6 +197,18 @@ macro_rules! test_additive {
             assert_method_for_targeted_color!(add);
             assert_method_for_targeted_color!(+);
         }
+
+        #[test]
+        fn add_style() {
+            let style = Style::new().bold().curly_underline().fg(Color::RED);
+
+            assert_eq!(
+                $value + style,
+                $as_composed.merge_style(style),
+                "{:?} + style",
+                $value
+            );
+        }
     };
 }
 pub(crate) use test_additive;

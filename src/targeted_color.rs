@@ -3,7 +3,7 @@ use core::fmt::{Display, Formatter, Result};
 use crate::{
     Style,
     color::Color,
-    macros::impl_add_styling_element,
+    macros::{impl_add_style, impl_add_styling_element},
     traits::{Composed, StylingAttribute, StylingElement, ToStyle as _},
 };
 
@@ -87,6 +87,7 @@ where
 }
 
 impl_add_styling_element!(for TargetedColor, Output = Style);
+impl_add_style!(for TargetedColor, Output = Style);
 
 /// The target where a color is applied.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
