@@ -1,6 +1,6 @@
 use core::{
     fmt::{Display, Formatter, Result},
-    ops::{Add, AddAssign},
+    ops::{Add, AddAssign, Sub, SubAssign},
 };
 
 use replace_with::replace_with_or_abort;
@@ -141,5 +141,14 @@ where
 {
     fn add_assign(&mut self, rhs: T) {
         replace_with_or_abort(self, |this| this + rhs);
+    }
+}
+
+impl<C: Display, T> SubAssign<T> for Styled<C>
+where
+    Self: Sub<T, Output = Self>,
+{
+    fn sub_assign(&mut self, rhs: T) {
+        replace_with_or_abort(self, |this| this - rhs);
     }
 }

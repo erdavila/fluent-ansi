@@ -1,6 +1,6 @@
 use core::{
     fmt::{Display, Formatter, Result, Write},
-    ops::{Add, AddAssign},
+    ops::{Add, AddAssign, Sub, SubAssign},
 };
 
 use crate::{
@@ -176,6 +176,15 @@ where
 {
     fn add_assign(&mut self, rhs: T) {
         *self = *self + rhs;
+    }
+}
+
+impl<T> SubAssign<T> for Style
+where
+    Self: Sub<T, Output = Self>,
+{
+    fn sub_assign(&mut self, rhs: T) {
+        *self = *self - rhs;
     }
 }
 

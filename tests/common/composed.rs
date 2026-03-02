@@ -377,6 +377,47 @@ macro_rules! test_composed {
                 composed += merged_style;
                 assert_eq!(composed, initial_composed.merge_style(merged_style));
 			}
+
+            #[test]
+            fn sub_assign_styling_element() {
+                let initial_composed = $empty_composed.bold().curly_underline().fg(Color::RED);
+
+                {
+                    let mut composed = initial_composed;
+                    composed -= Effect::Bold;
+                    assert_eq!(
+                        composed,
+                        initial_composed.remove(Effect::Bold)
+                    );
+                }
+
+                {
+                    let mut composed = initial_composed;
+                    composed -= UnderlineEffect::Curly;
+                    assert_eq!(
+                        composed,
+                        initial_composed.remove(UnderlineEffect::Curly)
+                    );
+                }
+
+                {
+                    let mut composed = initial_composed;
+                    composed -= UnderlineStyle;
+                    assert_eq!(
+                        composed,
+                        initial_composed.remove(UnderlineStyle)
+                    );
+                }
+
+                {
+                    let mut composed = initial_composed;
+                    composed -= ColorTarget::Foreground;
+                    assert_eq!(
+                        composed,
+                        initial_composed.remove(ColorTarget::Foreground)
+                    );
+                }
+            }
         }
     };
 }
