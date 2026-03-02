@@ -1,4 +1,9 @@
-use core::fmt::{Display, Formatter, Result};
+use core::{
+    fmt::{Display, Formatter, Result},
+    ops::{Add, AddAssign},
+};
+
+use replace_with::replace_with_or_abort;
 
 use crate::{
     ColorTarget, Effect, GetEffects, Style, UnderlineEffect,
@@ -129,3 +134,12 @@ impl<C: Display> Display for Styled<C> {
 impl_add_for_additive_type!(<C: Display> for Styled<C>, Output = Styled<C>);
 
 impl_sub_for_composed_type!(<C: Display> for Styled<C>);
+
+impl<C: Display, T> AddAssign<T> for Styled<C>
+where
+    Self: Add<T, Output = Self>,
+{
+    fn add_assign(&mut self, rhs: T) {
+        replace_with_or_abort(self, |this| this + rhs);
+    }
+}

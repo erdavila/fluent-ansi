@@ -1,4 +1,7 @@
-use core::fmt::{Display, Formatter, Result, Write};
+use core::{
+    fmt::{Display, Formatter, Result, Write},
+    ops::{Add, AddAssign},
+};
 
 use crate::{
     ColorTarget, Effect, UnderlineEffect,
@@ -166,6 +169,15 @@ impl_add_for_additive_type!(for Style, Output = Style);
 impl_add_for_to_style_type!(for Style);
 
 impl_sub_for_composed_type!(for Style);
+
+impl<T> AddAssign<T> for Style
+where
+    Self: Add<T, Output = Self>,
+{
+    fn add_assign(&mut self, rhs: T) {
+        *self = *self + rhs;
+    }
+}
 
 pub(crate) struct CodeWriter<'a, 'b> {
     f: &'a mut Formatter<'b>,

@@ -340,6 +340,43 @@ macro_rules! test_composed {
                     }
                 }
             }
+
+			#[test]
+			fn add_assign_styling_element() {
+				{
+					let mut composed = $empty_composed;
+					composed += Effect::Bold;
+					assert_eq!(composed, $empty_composed.bold());
+				}
+
+				{
+					let mut composed = $empty_composed;
+					composed += UnderlineEffect::Curly;
+					assert_eq!(composed, $empty_composed.curly_underline());
+				}
+
+				{
+					let mut composed = $empty_composed;
+					composed += Color::RED;
+					assert_eq!(composed, $empty_composed.fg(Color::RED));
+				}
+
+				{
+					let mut composed = $empty_composed;
+					composed += TargetedColor::new_for_bg(Color::RED);
+					assert_eq!(composed, $empty_composed.bg(Color::RED));
+				}
+			}
+
+			#[test]
+			fn add_assign_style() {
+                let initial_composed = $empty_composed.bold().curly_underline().fg(Color::RED);
+                let merged_style = Style::new().italic().solid_underline().fg(Color::GREEN);
+
+                let mut composed = initial_composed;
+                composed += merged_style;
+                assert_eq!(composed, initial_composed.merge_style(merged_style));
+			}
         }
     };
 }
