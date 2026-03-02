@@ -1,7 +1,13 @@
-use core::fmt::{Display, Formatter, Result};
+use core::{
+    fmt::{Display, Formatter, Result},
+    ops::{Add, AddAssign, Sub, SubAssign},
+};
+
+use replace_with::replace_with_or_abort;
 
 use crate::{
     ColorTarget, Effect, GetEffects, Style, UnderlineEffect,
+    macros::{impl_add_for_additive_type, impl_sub_for_composed_type},
     prelude::Color,
     traits::{Additive, Composed},
 };
@@ -122,5 +128,27 @@ impl<C: Display> Display for Styled<C> {
             let end = Style::default().set_enabled(self.style.is_enabled());
             write!(f, "{start}{}{end}", self.content)
         }
+    }
+}
+
+impl_add_for_additive_type!(<C: Display> for Styled<C>, Output = Styled<C>);
+
+impl_sub_for_composed_type!(<C: Display> for Styled<C>);
+
+impl<C: Display, T> AddAssign<T> for Styled<C>
+where
+    Self: Add<T, Output = Self>,
+{
+    fn add_assign(&mut self, rhs: T) {
+        replace_with_or_abort(self, |this| this + rhs);
+    }
+}
+
+impl<C: Display, T> SubAssign<T> for Styled<C>
+where
+    Self: Sub<T, Output = Self>,
+{
+    fn sub_assign(&mut self, rhs: T) {
+        replace_with_or_abort(self, |this| this - rhs);
     }
 }

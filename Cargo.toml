@@ -11,6 +11,7 @@ exclude = ["docs/**", "build.sh", "GEMINI.md"]
 
 [dependencies]
 enum-iterator = "2.3.0"
+replace_with = { version = "0.1.8", default-features = false }
 
 [dev-dependencies]
 terminal_size = "0.4.3"

@@ -3,7 +3,8 @@ use core::fmt::{Debug, Display, Formatter, Result};
 use enum_iterator::Sequence;
 
 use crate::{
-    Effect,
+    Effect, Style,
+    macros::{impl_add_for_additive_type, impl_add_for_to_style_type},
     traits::{Composed, StylingAttribute, StylingElement},
 };
 
@@ -63,6 +64,10 @@ impl StylingAttribute for UnderlineEffect {
         composed.get_effect(self.to_effect())
     }
 }
+
+impl_add_for_additive_type!(for UnderlineEffect, Output = Style);
+
+impl_add_for_to_style_type!(for UnderlineEffect);
 
 /// The underline attribute.
 ///

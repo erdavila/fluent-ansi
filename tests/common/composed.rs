@@ -31,10 +31,19 @@ macro_rules! test_composed {
                     assert_eq!(composed.get_effect(Effect::Bold), true);
                     assert_eq!(composed.get(Effect::Bold), true);
 
-                    let composed = composed.remove(Effect::Bold);
-                    assert_eq!(composed, $empty_composed);
-                    assert_eq!(composed.get_effect(Effect::Bold), false);
-                    assert_eq!(composed.get(Effect::Bold), false);
+                    {
+                        let composed = composed.remove(Effect::Bold);
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_effect(Effect::Bold), false);
+                        assert_eq!(composed.get(Effect::Bold), false);
+                    }
+
+                    {
+                        let composed = composed - Effect::Bold;
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_effect(Effect::Bold), false);
+                        assert_eq!(composed.get(Effect::Bold), false);
+                    }
                 }
             }
 
@@ -87,10 +96,19 @@ macro_rules! test_composed {
                         Some(UnderlineEffect::Solid)
                     );
 
-                    let composed = composed.remove(UnderlineStyle);
-                    assert_eq!(composed, $empty_composed);
-                    assert_eq!(composed.get_underline_effect(), None);
-                    assert_eq!(composed.get(UnderlineStyle), None);
+                    {
+                        let composed = composed.remove(UnderlineStyle);
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_underline_effect(), None);
+                        assert_eq!(composed.get(UnderlineStyle), None);
+                    }
+
+                    {
+                        let composed = composed - UnderlineStyle;
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_underline_effect(), None);
+                        assert_eq!(composed.get(UnderlineStyle), None);
+                    }
                 }
 
                 {
@@ -107,11 +125,21 @@ macro_rules! test_composed {
                     );
                     assert_eq!(composed.get(UnderlineEffect::Solid), true);
 
-                    let composed = composed.remove(UnderlineEffect::Solid);
-                    assert_eq!(composed, $empty_composed);
-                    assert_eq!(composed.get_underline_effect(), None);
-                    assert_eq!(composed.get(UnderlineStyle), None);
-                    assert_eq!(composed.get(UnderlineEffect::Solid), false);
+                    {
+                        let composed = composed.remove(UnderlineEffect::Solid);
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_underline_effect(), None);
+                        assert_eq!(composed.get(UnderlineStyle), None);
+                        assert_eq!(composed.get(UnderlineEffect::Solid), false);
+                    }
+
+                    {
+                        let composed = composed - UnderlineEffect::Solid;
+                        assert_eq!(composed, $empty_composed);
+                        assert_eq!(composed.get_underline_effect(), None);
+                        assert_eq!(composed.get(UnderlineStyle), None);
+                        assert_eq!(composed.get(UnderlineEffect::Solid), false);
+                    }
                 }
 
                 {
@@ -211,6 +239,13 @@ macro_rules! test_composed {
                         assert_eq!(empty_composed.get_color($color_target), None);
                         assert_eq!(empty_composed.get($color_target), None);
                     }
+
+                    {
+                        let empty_composed = composed - $color_target;
+                        assert_eq!(empty_composed, $empty_composed);
+                        assert_eq!(empty_composed.get_color($color_target), None);
+                        assert_eq!(empty_composed.get($color_target), None);
+                    }
                 };
             }
 
@@ -303,6 +338,84 @@ macro_rules! test_composed {
                                 .set_enabled(other_enabled)
                         );
                     }
+                }
+            }
+
+			#[test]
+			fn add_assign_styling_element() {
+				{
+					let mut composed = $empty_composed;
+					composed += Effect::Bold;
+					assert_eq!(composed, $empty_composed.bold());
+				}
+
+				{
+					let mut composed = $empty_composed;
+					composed += UnderlineEffect::Curly;
+					assert_eq!(composed, $empty_composed.curly_underline());
+				}
+
+				{
+					let mut composed = $empty_composed;
+					composed += Color::RED;
+					assert_eq!(composed, $empty_composed.fg(Color::RED));
+				}
+
+				{
+					let mut composed = $empty_composed;
+					composed += TargetedColor::new_for_bg(Color::RED);
+					assert_eq!(composed, $empty_composed.bg(Color::RED));
+				}
+			}
+
+			#[test]
+			fn add_assign_style() {
+                let initial_composed = $empty_composed.bold().curly_underline().fg(Color::RED);
+                let merged_style = Style::new().italic().solid_underline().fg(Color::GREEN);
+
+                let mut composed = initial_composed;
+                composed += merged_style;
+                assert_eq!(composed, initial_composed.merge_style(merged_style));
+			}
+
+            #[test]
+            fn sub_assign_styling_element() {
+                let initial_composed = $empty_composed.bold().curly_underline().fg(Color::RED);
+
+                {
+                    let mut composed = initial_composed;
+                    composed -= Effect::Bold;
+                    assert_eq!(
+                        composed,
+                        initial_composed.remove(Effect::Bold)
+                    );
+                }
+
+                {
+                    let mut composed = initial_composed;
+                    composed -= UnderlineEffect::Curly;
+                    assert_eq!(
+                        composed,
+                        initial_composed.remove(UnderlineEffect::Curly)
+                    );
+                }
+
+                {
+                    let mut composed = initial_composed;
+                    composed -= UnderlineStyle;
+                    assert_eq!(
+                        composed,
+                        initial_composed.remove(UnderlineStyle)
+                    );
+                }
+
+                {
+                    let mut composed = initial_composed;
+                    composed -= ColorTarget::Foreground;
+                    assert_eq!(
+                        composed,
+                        initial_composed.remove(ColorTarget::Foreground)
+                    );
                 }
             }
         }

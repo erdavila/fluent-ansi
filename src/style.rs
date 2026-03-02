@@ -1,8 +1,12 @@
-use core::fmt::{Display, Formatter, Result, Write};
+use core::{
+    fmt::{Display, Formatter, Result, Write},
+    ops::{Add, AddAssign, Sub, SubAssign},
+};
 
 use crate::{
     ColorTarget, Effect, UnderlineEffect,
     colors::{Color, WriteColorCodes as _},
+    macros::{impl_add_for_additive_type, impl_add_for_to_style_type, impl_sub_for_composed_type},
     style::encoded_effects::EncodedEffects,
     traits::{Composed, StylingElement},
 };
@@ -157,6 +161,30 @@ where
 {
     fn from(element: T) -> Self {
         element.add_to(Style::new())
+    }
+}
+
+impl_add_for_additive_type!(for Style, Output = Style);
+
+impl_add_for_to_style_type!(for Style);
+
+impl_sub_for_composed_type!(for Style);
+
+impl<T> AddAssign<T> for Style
+where
+    Self: Add<T, Output = Self>,
+{
+    fn add_assign(&mut self, rhs: T) {
+        *self = *self + rhs;
+    }
+}
+
+impl<T> SubAssign<T> for Style
+where
+    Self: Sub<T, Output = Self>,
+{
+    fn sub_assign(&mut self, rhs: T) {
+        *self = *self - rhs;
     }
 }
 

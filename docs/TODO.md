@@ -46,15 +46,3 @@
     );
 
     ```
-- Consider implementing the `Add` and `Sub` traits that delegate to the `add` and `remove` methods.
-  | `+` | `StylingElement` | `Style` | `Styled<C>` |
-  | :--- | :---: | :---: | :---: |
-  | `StylingElement` | `Style`     | `Style`     | `Styled<C>` |
-  | `Style`          | `Style`     | `Style`     | `Styled<C>` |
-  | `Styled<C>`      | `Styled<C>` | `Styled<C>` | -           |
-
-  | `-` | `StylingAttribute`
-  | :--- | :---: |
-  | `Style`     | `Style`     |
-  | `Styled<C>` | `Styled<C>` |
-
