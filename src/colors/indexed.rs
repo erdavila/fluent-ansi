@@ -1,9 +1,7 @@
 use core::fmt::Result;
 
 use crate::{
-    CodeWriter, ColorTarget, Style,
-    color::WriteColorCodes,
-    macros::{impl_add_style, impl_add_styling_element},
+    CodeWriter, ColorTarget, Style, color::WriteColorCodes, macros::impl_add_for_additive_type,
 };
 
 /// An 8-bit color type representing colors in the 256-color ANSI palette.
@@ -49,5 +47,4 @@ impl WriteColorCodes for IndexedColor {
     }
 }
 
-impl_add_styling_element!(for IndexedColor, Output = Style);
-impl_add_style!(for IndexedColor, Output = Style);
+impl_add_for_additive_type!(for IndexedColor, Output = Style);

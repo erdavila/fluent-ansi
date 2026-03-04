@@ -1,8 +1,4 @@
-use crate::{
-    Style,
-    color::SimpleColor,
-    macros::{impl_add_style, impl_add_styling_element},
-};
+use crate::{Style, color::SimpleColor, macros::impl_add_for_additive_type};
 
 /// The 8 basic non-bright terminal colors.
 ///
@@ -57,5 +53,4 @@ impl BasicColor {
     }
 }
 
-impl_add_styling_element!(for BasicColor, Output = Style);
-impl_add_style!(for BasicColor, Output = Style);
+impl_add_for_additive_type!(for BasicColor, Output = Style);

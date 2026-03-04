@@ -3,7 +3,7 @@ use core::fmt::Result;
 use crate::{
     CodeWriter, ColorTarget, Style,
     colors::{BasicColor, IndexedColor, RGBColor, SimpleColor, WriteColorCodes},
-    macros::{impl_add_style, impl_add_styling_element},
+    macros::impl_add_for_additive_type,
 };
 
 /// An enum representing all supported color types.
@@ -90,5 +90,4 @@ impl From<RGBColor> for Color {
     }
 }
 
-impl_add_styling_element!(for Color, Output = Style);
-impl_add_style!(for Color, Output = Style);
+impl_add_for_additive_type!(for Color, Output = Style);

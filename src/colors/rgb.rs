@@ -1,9 +1,7 @@
 use core::fmt::Result;
 
 use crate::{
-    CodeWriter, ColorTarget, Style,
-    color::WriteColorCodes,
-    macros::{impl_add_style, impl_add_styling_element},
+    CodeWriter, ColorTarget, Style, color::WriteColorCodes, macros::impl_add_for_additive_type,
 };
 
 /// A type alias for [`RGBColor`].
@@ -55,5 +53,4 @@ impl WriteColorCodes for RGBColor {
     }
 }
 
-impl_add_styling_element!(for RGBColor, Output = Style);
-impl_add_style!(for RGBColor, Output = Style);
+impl_add_for_additive_type!(for RGBColor, Output = Style);

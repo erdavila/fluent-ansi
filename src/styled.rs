@@ -2,7 +2,7 @@ use core::fmt::{Display, Formatter, Result};
 
 use crate::{
     ColorTarget, Effect, GetEffects, Style, UnderlineEffect,
-    macros::{impl_add_style, impl_add_styling_element},
+    macros::impl_add_for_additive_type,
     prelude::Color,
     traits::{Additive, Composed},
 };
@@ -126,5 +126,4 @@ impl<C: Display> Display for Styled<C> {
     }
 }
 
-impl_add_styling_element!(<C: Display> for Styled<C>, Output = Styled<C>);
-impl_add_style!(<C: Display> for Styled<C>, Output = Styled<C>);
+impl_add_for_additive_type!(<C: Display> for Styled<C>, Output = Styled<C>);

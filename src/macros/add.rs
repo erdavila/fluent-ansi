@@ -1,4 +1,5 @@
-macro_rules! impl_add_styling_element {
+// Implements the `Add` trait for types that implement the `Additive` trait.
+macro_rules! impl_add_for_additive_type {
     ( $( < $type_arg:ident : $bound:ident > )? for $ty:ty, Output = $output:ty) => {
         impl< $( $type_arg: $bound , )? T: $crate::traits::StylingElement> core::ops::Add<T> for $ty {
             type Output = $output;
@@ -10,12 +11,7 @@ macro_rules! impl_add_styling_element {
                 $crate::traits::Additive::add(self, rhs)
             }
         }
-    };
-}
-pub(crate) use impl_add_styling_element;
 
-macro_rules! impl_add_style {
-    ( $( < $type_arg:ident : $bound:ident > )? for $ty:ty, Output = $output:ty) => {
         impl< $( $type_arg: $bound )? > core::ops::Add<Style> for $ty {
             type Output = $output;
 
@@ -27,4 +23,4 @@ macro_rules! impl_add_style {
         }
     };
 }
-pub(crate) use impl_add_style;
+pub(crate) use impl_add_for_additive_type;

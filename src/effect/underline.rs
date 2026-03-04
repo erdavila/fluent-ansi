@@ -4,7 +4,7 @@ use enum_iterator::Sequence;
 
 use crate::{
     Effect, Style,
-    macros::{impl_add_style, impl_add_styling_element},
+    macros::impl_add_for_additive_type,
     traits::{Composed, StylingAttribute, StylingElement},
 };
 
@@ -65,8 +65,7 @@ impl StylingAttribute for UnderlineEffect {
     }
 }
 
-impl_add_styling_element!(for UnderlineEffect, Output = Style);
-impl_add_style!(for UnderlineEffect, Output = Style);
+impl_add_for_additive_type!(for UnderlineEffect, Output = Style);
 
 /// The underline attribute.
 ///
